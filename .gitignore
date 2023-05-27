@@ -20,3 +20,7 @@
 *.exe *.out *.app .idea/ .vscode/ build/*
 
 testing/build/*
+
+build/
+Debug/
+.DS_Store

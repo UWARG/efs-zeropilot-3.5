@@ -32,13 +32,13 @@ include_directories(
 set(HAL_DRIVERS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Boardfiles/${FOLDER_NAME}/Drivers)
 set(HAL_DRIVERS_C_SOURCES "${HAL_DRIVERS_DIR}/${FAMILY_NAME}_HAL_Driver/Src/*.c")
 
-set(FREE_RTOS_DIR ${CMAKE_CURRENT_SOURCE_DIR}Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source)
+set(FREE_RTOS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source)
 set(FREE_RTOS_C_SOURCES "${FREE_RTOS_DIR}/*.c"
                         "${FREE_RTOS_DIR}/CMSIS_RTOS_V2/*.c"
                         "${FREE_RTOS_DIR}/portable/GCC/ARM_${PORTABLE_NAME}/*.c"
                         "${FREE_RTOS_DIR}/portable/MemMang/*.c")
 
-set(HAL_CORE ${CMAKE_CURRENT_SOURCE_DIR}Boardfiles/${FOLDER_NAME}/Core)
+set(HAL_CORE ${CMAKE_CURRENT_SOURCE_DIR}/Boardfiles/${FOLDER_NAME}/Core)
 set(HAL_CORE_C_SOURCES "${HAL_CORE}/Src/*.c")
 set(HAL_CORE_CXX_SOURCES "${HAL_CORE}/Src/*.cpp")
 
