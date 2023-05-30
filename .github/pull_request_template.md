@@ -15,7 +15,13 @@
 
 ## Testing
 
-*What were the unit tests used to validate the code?*
+*What **manual** tests were used to validate the code?*
+<!-- Start listing manual tests below . . . -->
+
+<!-- Manual test listing done -->
+<br/>
+
+*What **unit** tests were used to validate the code?*
 <!-- Start listing unit tests below . . . -->
 
 <!-- Unit test listing done -->
@@ -24,7 +30,7 @@
 
 ## Documentation
 
-*Milestone number and description:*
+*Milestone number and name:*
 
 *Link to Asana task:*
 
