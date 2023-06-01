@@ -17,10 +17,11 @@
 *.lai *.la *.a *.lib
 
 # Executables
-*.exe *.out *.app .idea/ .vscode/ build/*
+*.exe *.out *.app 
 
-testing/build/*
-
+.idea/
+.vscode/
+.DS_Store/
 build/
+testing/build/
 Debug/
-.DS_Store
