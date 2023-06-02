@@ -154,8 +154,15 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
+    /* USER CODE BEGIN 3 */  
+    HAL_Delay(100);
+    // PG12 (green) 
+    // (LED10)  
+    HAL_GPIO_TogglePin(GPIOG, GPIO_PIN_12);  
+    // PG3 (red)    
+    // (LED9)
+    HAL_GPIO_TogglePin(GPIOG, GPIO_PIN_3);
 
-    /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
 }
