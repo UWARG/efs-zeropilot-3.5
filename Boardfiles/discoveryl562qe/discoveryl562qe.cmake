@@ -1,6 +1,6 @@
 set(FOLDER_NAME discoveryl562qe)      
-# set(STARTUP_ASM nucleol552zeq/Core/Startup/startup_stm32l552zetxq.s)    
-# set(LINKER_SCRIPT nucleol552zeq/STM32L552ZETXQ_FLASH.ld)    
+set(STARTUP_ASM discoveryl562qe/Core/Startup/startup_stm32l562qeixq.s)      
+set(LINKER_SCRIPT discoveryl562qe/STM32L562EDK_FLASH.ld)    
 set(PROJ_NAME discoveryl562qe)    
 set(FAMILY_NAME STM32L5xx)    
 set(PORTABLE_NAME CM33_NTZ/non_secure)      
@@ -46,4 +46,3 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)    
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)    
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)    
-
