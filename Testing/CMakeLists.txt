@@ -71,6 +71,19 @@ file(GLOB TM_CODE
     # "${TM_SRC}/foo.cpp"
 )
 
+# Drivers
+set(DRIVERS_FOLDER "${CMAKE_CURRENT_SOURCE_DIR}/../Drivers")
+set(DRIVERS_INC "{$DRIVERS_FOLDER}/Inc")
+set(DRIVERS_SRC "{$DRIVERS_FOLDER}/Src")
+
+include_directories(${DRIVERS_INC})
+file(GLOB DRIVERS_CODE
+    "${DRIVERS_FOLDER}/Tests/*.cpp"
+
+    # add necessary AttitudeManager source files below
+    # "${DRIVERS_SRC}/foo.cpp"
+)
+
 # --- ZeroPilot File Indexing End ---
 
 add_executable(test_build
@@ -78,6 +91,7 @@ add_executable(test_build
     ${PM_CODE}
     ${SM_CODE}
     ${TM_CODE}
+    ${DRIVERS_CODE}
 )
 
 target_link_libraries(test_build
@@ -85,4 +99,4 @@ target_link_libraries(test_build
 )
 
 include(GoogleTest)
-gtest_discover_tests(my_test)
+gtest_discover_tests(test_build)
