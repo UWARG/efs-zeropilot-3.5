@@ -130,6 +130,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  /*
   MX_ADC1_Init();
   MX_DFSDM1_Init();
   MX_FMC_Init();
@@ -145,24 +146,21 @@ int main(void)
   MX_TIM17_Init();
   MX_UCPD1_Init();
   MX_USB_PCD_Init();
-  /* USER CODE BEGIN 2 */
+  */
+  /* USER CODE BEGIN 2 */  
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
+  /* USER CODE BEGIN WHILE */  
+  // Blink the green LED
   while (1)
   {
     /* USER CODE END WHILE */
     /* USER CODE BEGIN 3 */  
-    HAL_Delay(100);
-    // PG12 (green) 
-    // (LED10)  
-    HAL_GPIO_TogglePin(GPIOG, GPIO_PIN_12);  
-    // PG3 (red)    
-    // (LED9)
-    HAL_GPIO_TogglePin(GPIOG, GPIO_PIN_3);
-
+    HAL_Delay(1000);                        // Sleep for one second
+    // PG12 is connected to green LED (LED10), and is active LOW 
+    HAL_GPIO_TogglePin(GPIOG, GPIO_PIN_12);      
   }
   /* USER CODE END 3 */
 }
