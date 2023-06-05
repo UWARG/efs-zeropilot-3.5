@@ -41,7 +41,7 @@ include_directories(${PM_INC})
 file(GLOB PM_CODE
     "${PM_FOLDER}/Tests/*.cpp"
 
-    # add necessary AttitudeManager source files below
+    # add necessary PathManager source files below
     # "${PM_SRC}/foo.cpp"
 )
 
@@ -54,7 +54,7 @@ include_directories(${SM_INC})
 file(GLOB SM_CODE
     "${SM_FOLDER}/Tests/*.cpp"
 
-    # add necessary AttitudeManager source files below
+    # add necessary SystemManager source files below
     # "${SM_SRC}/foo.cpp"
 )
 
@@ -67,7 +67,7 @@ include_directories(${TM_INC})
 file(GLOB TM_CODE
     "${TM_FOLDER}/Tests/*.cpp"
 
-    # add necessary AttitudeManager source files below
+    # add necessary TelemetryManager source files below
     # "${TM_SRC}/foo.cpp"
 )
 
@@ -80,13 +80,13 @@ include_directories(${DRIVERS_INC})
 file(GLOB DRIVERS_CODE
     "${DRIVERS_FOLDER}/Tests/*.cpp"
 
-    # add necessary AttitudeManager source files below
+    # add necessary Drivers source files below
     # "${DRIVERS_SRC}/foo.cpp"
 )
 
 # --- ZeroPilot File Indexing End ---
 
-add_executable(test_build
+add_executable(test_proj
     ${AM_CODE}
     ${PM_CODE}
     ${SM_CODE}
@@ -94,9 +94,9 @@ add_executable(test_build
     ${DRIVERS_CODE}
 )
 
-target_link_libraries(test_build
+target_link_libraries(test_proj
     GTest::gtest_main
 )
 
 include(GoogleTest)
-gtest_discover_tests(test_build)
+gtest_discover_tests(test_proj)
