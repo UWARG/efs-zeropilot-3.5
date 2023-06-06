@@ -1,0 +1,34 @@
+name: Unit Test
+
+on:
+  pull_request:
+    type: [opened, synchronize]
+
+jobs:
+  unit_test:
+    runs-on: ubuntu-latest 
+    
+    env:
+      URL: https://github.com/google/googletest.git
+      TAG: release-1.11.0
+    
+    steps:      
+      - name: Install CMake, make, and git
+        run: sudo apt-get -y install cmake make git
+
+      - name: Install GoogleTest
+        working-directory: /home/runner/work
+        run: |
+          git clone $URL -b $TAG
+          mkdir googletest/build && cd googletest/build
+          cmake -G "Unix Makefiles" ..
+          cmake --build . && sudo cmake --install .
+
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Build tests
+        run: bash ./Testing/test.bash build
+
+      - name: Run tests
+        run: bash ./Testing/test.bash run

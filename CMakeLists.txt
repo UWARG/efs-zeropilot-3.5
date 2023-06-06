@@ -66,25 +66,7 @@ add_custom_target("${PROJECT_NAME}.bin" ALL
   DEPENDS ${ELF_NAME}
 )
 
-# Print size information after compiling
-add_custom_command(TARGET ${ELF_NAME}
-  POST_BUILD
-  COMMENT "Binary size information:"
-  COMMAND ${CMAKE_SIZE} $<TARGET_FILE:${ELF_NAME}>
-)
-
-# the following is windows only
-set(INSTALL_CMD "ST-LINK_CLI")
-set(INSTALL_OPTS "-c SWD -P \"${BIN_FILE}\" 0x08000000 -NoPrompt -Rst -Run")
-
-install(CODE
-  "execute_process(
-    COMMAND ${INSTALL_CMD} ${INSTALL_OPTS}
-  )"
-)
-
-message("CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
-
+# Print build type
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
     message("Debug build.")
 ELSEIF(CMAKE_BUILD_TYPE MATCHES Release)
@@ -93,8 +75,9 @@ ELSE()
     message("Some other build type.")
 ENDIF()
 
-add_custom_target(UPLOAD
-        arm-none-eabi-gdb -iex "target remote tcp:127.0.0.1:3333"
-        -iex "monitor program $<TARGET_FILE:${PROJECT_NAME}.elf>"
-        -iex "monitor reset init"
-        -iex "disconnect" -iex "quit")
+# Print size information after compiling
+add_custom_command(TARGET ${ELF_NAME}
+  POST_BUILD
+  COMMENT "Binary size information:"
+  COMMAND ${CMAKE_SIZE} $<TARGET_FILE:${ELF_NAME}>
+)
