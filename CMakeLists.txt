@@ -6,6 +6,9 @@ set(ELF_NAME ${PROJECT_NAME}.elf)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include_directories(
+    ## Common Includes ##
+    ${CMAKE_CURRENT_SOURCE_DIR}/Common/Inc
+
     ## System Manager Includes ##
 
     ## Attitude Manager Includes ##
