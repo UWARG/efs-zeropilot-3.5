@@ -9,6 +9,8 @@ include_directories(
     ## System Manager Includes ##
 
     ## Attitude Manager Includes ##
+    ${CMAKE_CURRENT_SOURCE_DIR}/AttitudeManager/Inc
+    ${CMAKE_CURRENT_SOURCE_DIR}/AttitudeManager/ControlAlgorithms/Inc
 
     ## Path Manager Includes ##
 
@@ -42,12 +44,22 @@ set(HAL_CORE ${CMAKE_CURRENT_SOURCE_DIR}/Boardfiles/${FOLDER_NAME}/Core)
 set(HAL_CORE_C_SOURCES "${HAL_CORE}/Src/*.c")
 set(HAL_CORE_CXX_SOURCES "${HAL_CORE}/Src/*.cpp")
 
+## Zeropilot Sources ##
+set(ATTITUDE_MANGER ${CMAKE_CURRENT_SOURCE_DIR}/AttitudeManager)
+set(ATTITUDE_MANGER_C_SOURCES "${ATTITUDE_MANGER}/Src/*.c"
+                              "${ATTITUDE_MANGER}/ControlAlgorithms/Src/*.c")
+set(ATTITUDE_MANGER_CXX_SOURCES "${ATTITUDE_MANGER}/Src/*.cpp"
+                                "${ATTITUDE_MANGER}/ControlAlgorithms/Src/*.cpp")
+
 ## Actually find the sources, NOTE: if you add a new source above, add it here! ##
 file(GLOB_RECURSE C_SOURCES ${HAL_DRIVERS_C_SOURCES}
                             ${FREE_RTOS_C_SOURCES}
-                            ${HAL_CORE_C_SOURCES})                            
-message("MESSAGE: ${C_SOURCES}")                         
-file(GLOB_RECURSE CXX_SOURCES ${HAL_CORE_CXX_SOURCES})
+                            ${HAL_CORE_C_SOURCES}
+                            ${ATTITUDE_MANGER_C_SOURCES})
+message("C Sources: ${C_SOURCES}")
+file(GLOB_RECURSE CXX_SOURCES ${HAL_CORE_CXX_SOURCES}
+                              ${ATTITUDE_MANGER_CXX_SOURCES})
+message("C++ Sources: ${CXX_SOURCES}")
 
 ## Find the startup and linker script ##
 set(STARTUP_ASM_FILE ${CMAKE_CURRENT_SOURCE_DIR}/Boardfiles/${STARTUP_ASM})
