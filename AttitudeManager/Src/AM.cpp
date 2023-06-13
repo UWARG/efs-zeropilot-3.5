@@ -6,7 +6,7 @@
 #include <array>
 #include <cstdlib>
 
-#include "LOS_Actuators.hpp"
+// #include "LOS_Actuators.hpp"
 
 namespace AM {
 
@@ -26,9 +26,9 @@ void AttitudeManager::runControlLoopIteration(const AttitudeManagerInput &instru
     }
 
     // Write actuator outputs
-    for (auto output : controller_output) {
-        Los_Actuators::getInstance().set(output.channel, output.percent);
-    }
+    // for (auto output : controller_output) {
+    // Los_Actuators::getInstance().set(output.channel, output.percent);
+    // }
 }
 
 void AttitudeManager::setDesiredControlAlgorithm(uint8_t id) {

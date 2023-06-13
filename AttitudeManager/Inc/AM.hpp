@@ -22,7 +22,7 @@ class AttitudeManager {
 
     // https://en.cppreference.com/w/cpp/language/parameter_pack
     template <typename... Args>
-    AttitudeManager(Args... controllers) : controller_interfaces{controllers...} {};
+    AttitudeManager(Args... controllers) : controller_interfaces{controllers...} {}
 
     void runControlLoopIteration(const AttitudeManagerInput &instructions);
 
