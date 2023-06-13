@@ -40,10 +40,6 @@ void AttitudeManager::setDesiredControlAlgorithm(uint8_t id) {
     }
 }
 
-void AttitudeManager::setSmQueue(osMessageQId queueId) { SM_to_AM_queue = queueId; }
-
-osMessageQId AttitudeManager::getSmQueue() { return SM_to_AM_queue; }
-
 std::vector<ActuatorOutput> AttitudeManager::runTransitionMixingIteration(
     ControlInterface *current_controller, ControlInterface *desired_controller,
     const AttitudeManagerInput &instructions) {

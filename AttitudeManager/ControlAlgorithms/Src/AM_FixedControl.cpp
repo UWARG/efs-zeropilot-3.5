@@ -1,8 +1,6 @@
 #include "AM_FixedControl.hpp"
 
 #include "CommonDataTypes.hpp"
-#include "LOS_Actuators.hpp"
-#include "LOS_Link.hpp"
 #include "PID.hpp"
 
 namespace AM {
