@@ -22,6 +22,5 @@
 .idea/
 .vscode/
 .DS_Store/
-build/
-testing/build/
+Tools/*/build
 Debug/

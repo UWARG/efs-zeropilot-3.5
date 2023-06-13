@@ -1,0 +1,13 @@
+# --- Compile settings begin ---
+
+COMPILE_TYPE="Production"
+PLATFORM="nucleol552zeq"
+
+# --- Compile settings end ---
+
+
+# --- Testing settings begin ---
+ 
+TEST_FILTER="*"
+
+# --- Testing settings end ---

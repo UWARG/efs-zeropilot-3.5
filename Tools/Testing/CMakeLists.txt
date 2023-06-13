@@ -17,10 +17,12 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 enable_testing()
 
+set(ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../..")
+
 # --- ZeroPilot File Indexing Begin ---
 
 # Attitude Manager
-set(AM_FOLDER "${CMAKE_CURRENT_SOURCE_DIR}/../AttitudeManager")
+set(AM_FOLDER "${ROOT_DIR}/AttitudeManager")
 set(AM_INC "{$AM_FOLDER}/Inc")
 set(AM_SRC "{$AM_FOLDER}/Src")
 
@@ -33,7 +35,7 @@ file(GLOB AM_CODE
 )
 
 # Path Manager
-set(PM_FOLDER "${CMAKE_CURRENT_SOURCE_DIR}/../PathManager")
+set(PM_FOLDER "${ROOT_DIR}/PathManager")
 set(PM_INC "{$PM_FOLDER}/Inc")
 set(PM_SRC "{$PM_FOLDER}/Src")
 
@@ -46,7 +48,7 @@ file(GLOB PM_CODE
 )
 
 # System Manager
-set(SM_FOLDER "${CMAKE_CURRENT_SOURCE_DIR}/../SystemManager")
+set(SM_FOLDER "${ROOT_DIR}/SystemManager")
 set(SM_INC "{$SM_FOLDER}/Inc")
 set(SM_SRC "{$SM_FOLDER}/Src")
 
@@ -59,7 +61,7 @@ file(GLOB SM_CODE
 )
 
 # Telemetry Manager
-set(TM_FOLDER "${CMAKE_CURRENT_SOURCE_DIR}/../TelemetryManager")
+set(TM_FOLDER "${ROOT_DIR}/TelemetryManager")
 set(TM_INC "{$TM_FOLDER}/Inc")
 set(TM_SRC "{$TM_FOLDER}/Src")
 
@@ -72,7 +74,7 @@ file(GLOB TM_CODE
 )
 
 # Drivers
-set(DRIVERS_FOLDER "${CMAKE_CURRENT_SOURCE_DIR}/../Drivers")
+set(DRIVERS_FOLDER "${ROOT_DIR}/Drivers")
 set(DRIVERS_INC "{$DRIVERS_FOLDER}/Inc")
 set(DRIVERS_SRC "{$DRIVERS_FOLDER}/Src")
 
@@ -86,7 +88,7 @@ file(GLOB DRIVERS_CODE
 
 # --- ZeroPilot File Indexing End ---
 
-add_executable(test_proj
+add_executable(${PROJECT_NAME}
     ${AM_CODE}
     ${PM_CODE}
     ${SM_CODE}
@@ -94,9 +96,9 @@ add_executable(test_proj
     ${DRIVERS_CODE}
 )
 
-target_link_libraries(test_proj
-    GTest::gtest_main
+target_link_libraries(${PROJECT_NAME}
+    GTest::gmock_main
 )
 
 include(GoogleTest)
-gtest_discover_tests(test_proj)
+gtest_discover_tests(${PROJECT_NAME})
