@@ -9,16 +9,16 @@
 #ifndef ZPSW3_AM_LEVEL_QUAD_CONTROL_HPP
 #define ZPSW3_AM_LEVEL_QUAD_CONTROL_HPP
 
-#include "AM_ControlInterface.hpp"
+#include "AM_ControlAlgorithm.hpp"
 #include "PID.hpp"
 
 namespace AM {
 
-class LevelQuadControl : public ControlInterface {
+class LevelQuadControl : public ControlAlgorithm {
    public:
     LevelQuadControl(ActuatorConfig &frontRight, ActuatorConfig &frontLeft,
                      ActuatorConfig &backRight, ActuatorConfig &backLeft)
-        : ControlInterface(NumActuatorIdx), configs{frontRight, frontLeft, backRight, backLeft} {};
+        : ControlAlgorithm(NumActuatorIdx), configs{frontRight, frontLeft, backRight, backLeft} {};
 
     std::vector<ActuatorOutput> runControlsAlgorithm(
         const AttitudeManagerInput &instructions) override;

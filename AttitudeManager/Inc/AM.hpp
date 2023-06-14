@@ -9,7 +9,7 @@
 #ifndef ZPSW3_AM_HPP
 #define ZPSW3_AM_HPP
 
-#include "AM_ControlInterface.hpp"
+#include "AM_ControlAlgorithm.hpp"
 #include "AM_DataTypes.hpp"
 #include "CommonDataTypes.hpp"
 
@@ -17,12 +17,12 @@ namespace AM {
 
 class AttitudeManager {
    public:
-    AttitudeManager(ControlInterfaceList controller_interfaces)
-        : controller_interfaces(controller_interfaces){};
+    AttitudeManager(ControlAlgorithmList control_algorithms)
+        : control_algorithms(control_algorithms){};
 
     // https://en.cppreference.com/w/cpp/language/parameter_pack
     template <typename... Args>
-    AttitudeManager(Args... controllers) : controller_interfaces{controllers...} {}
+    AttitudeManager(Args... controllers) : control_algorithms{controllers...} {}
 
     void runControlLoopIteration(const AttitudeManagerInput &instructions);
 
@@ -31,7 +31,7 @@ class AttitudeManager {
 
     uint8_t current_controller_index = 0;
     uint8_t desired_controller_index = 0;
-    const ControlInterfaceList controller_interfaces;
+    const ControlAlgorithmList control_algorithms;
     LOS::LosSFData current;
     float desired_airspeed = 0;  // could this be determined by our desired controller index?
     float current_airspeed = 0;
@@ -40,7 +40,7 @@ class AttitudeManager {
     void setDesiredControlAlgorithm(uint8_t id);
 
     std::vector<ActuatorOutput> runTransitionMixingIteration(
-        ControlInterface *current, ControlInterface *desired,
+        ControlAlgorithm *current, ControlAlgorithm *desired,
         const AM::AttitudeManagerInput &instructions);
 };
 }  // namespace AM

@@ -1,5 +1,5 @@
 /*
- * AM_ControlInterface.hpp
+ * AM_ControlAlgorithm.hpp
  *
  * Attitude Manager Control Algorithm Interface
  *
@@ -14,14 +14,16 @@
 
 namespace AM {
 
-class ControlInterface {
+class ControlAlgorithm {
    public:
-    ControlInterface(uint8_t num_actuators) : num_actuators(num_actuators){};
+    ControlAlgorithm(uint8_t num_actuators) : num_actuators(num_actuators){};
 
     /// @brief Run the controls algorithm for the given flight model.
     ///
     /// @param instructions
     ///   The instructions for the flight model to follow
+    ///
+    /// @returns Vector of outputs to be written to actuators
     virtual std::vector<ActuatorOutput> runControlsAlgorithm(
         const AttitudeManagerInput &instructions) = 0;
 
@@ -30,10 +32,10 @@ class ControlInterface {
     const uint8_t num_actuators;  // Number of actuators for given flight model
 
    private:
-    ControlInterface();
+    ControlAlgorithm();
 };
 
-typedef std::vector<ControlInterface *> ControlInterfaceList;
+typedef std::vector<ControlAlgorithm *> ControlAlgorithmList;
 
 }  // namespace AM
 

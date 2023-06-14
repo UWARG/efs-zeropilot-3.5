@@ -17,12 +17,12 @@ void AttitudeManager::runControlLoopIteration(const AttitudeManagerInput &instru
     std::vector<ActuatorOutput> controller_output;
     if (current_controller_index == desired_controller_index) {
         controller_output =
-            controller_interfaces[current_controller_index]->runControlsAlgorithm(instructions);
+            control_algorithms[current_controller_index]->runControlsAlgorithm(instructions);
     } else {
         // Handle transition between flight modes
         controller_output = runTransitionMixingIteration(
-            controller_interfaces[current_controller_index],
-            controller_interfaces[desired_controller_index], instructions);
+            control_algorithms[current_controller_index],
+            control_algorithms[desired_controller_index], instructions);
     }
 
     // Write actuator outputs
@@ -33,7 +33,7 @@ void AttitudeManager::runControlLoopIteration(const AttitudeManagerInput &instru
 
 void AttitudeManager::setDesiredControlAlgorithm(uint8_t id) {
     // Only change desired controller if we aren't trying to transition already
-    if (id < controller_interfaces.size() && desired_controller_index == current_controller_index) {
+    if (id < control_algorithms.size() && desired_controller_index == current_controller_index) {
         desired_controller_index = id;
 
         transition_start_airspeed = abs(current.airspeed);
@@ -41,7 +41,7 @@ void AttitudeManager::setDesiredControlAlgorithm(uint8_t id) {
 }
 
 std::vector<ActuatorOutput> AttitudeManager::runTransitionMixingIteration(
-    ControlInterface *current_controller, ControlInterface *desired_controller,
+    ControlAlgorithm *current_controller, ControlAlgorithm *desired_controller,
     const AttitudeManagerInput &instructions) {
     // Run control algorithms to mix
     std::vector<ActuatorOutput> current_output =
