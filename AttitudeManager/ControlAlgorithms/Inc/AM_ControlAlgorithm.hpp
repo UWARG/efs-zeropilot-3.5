@@ -9,33 +9,21 @@
 #ifndef ZPSW3_AM_CONTROL_INTERFACE_HPP
 #define ZPSW3_AM_CONTROL_INTERFACE_HPP
 
-#include "AM_DataTypes.hpp"
 #include "CommonDataTypes.hpp"
 
 namespace AM {
 
 class ControlAlgorithm {
    public:
-    ControlAlgorithm(uint8_t num_actuators) : num_actuators(num_actuators){};
+    ControlAlgorithm(){};
 
     /// @brief Run the controls algorithm for the given flight model.
-    ///
-    /// @param instructions
-    ///   The instructions for the flight model to follow
-    ///
-    /// @returns Vector of outputs to be written to actuators
-    virtual std::vector<ActuatorOutput> runControlsAlgorithm(
-        const AttitudeManagerInput &instructions) = 0;
+    /// @param
+    /// @returns
+    virtual void run() = 0;
 
     virtual void updatePid() = 0;
-
-    const uint8_t num_actuators;  // Number of actuators for given flight model
-
-   private:
-    ControlAlgorithm();
 };
-
-typedef std::vector<ControlAlgorithm *> ControlAlgorithmList;
 
 }  // namespace AM
 
