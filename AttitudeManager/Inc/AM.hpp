@@ -23,7 +23,7 @@ class AttitudeManager {
    private:
     AttitudeManager();
 
-    const ControlAlgorithm* control_algorithm;
+    ControlAlgorithm* control_algorithm;
 };
 }  // namespace AM
 

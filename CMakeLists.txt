@@ -13,7 +13,7 @@ include_directories(
 
     ## Attitude Manager Includes ##
     ${CMAKE_CURRENT_SOURCE_DIR}/AttitudeManager/Inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/AttitudeManager/ControlAlgorithms/Inc
+    ${CMAKE_CURRENT_SOURCE_DIR}/AttitudeManager/FlightModes/Inc
 
     ## Path Manager Includes ##
 
@@ -50,9 +50,9 @@ set(HAL_CORE_CXX_SOURCES "${HAL_CORE}/Src/*.cpp")
 ## Zeropilot Sources ##
 set(ATTITUDE_MANAGER ${CMAKE_CURRENT_SOURCE_DIR}/AttitudeManager)
 set(ATTITUDE_MANAGER_C_SOURCES "${ATTITUDE_MANAGER}/Src/*.c"
-                              "${ATTITUDE_MANAGER}/ControlAlgorithms/Src/*.c")
+                              "${ATTITUDE_MANAGER}/FlightModes/Src/*.c")
 set(ATTITUDE_MANAGER_CXX_SOURCES "${ATTITUDE_MANAGER}/Src/*.cpp"
-                                "${ATTITUDE_MANAGER}/ControlAlgorithms/Src/*.cpp")
+                                "${ATTITUDE_MANAGER}/FlightModes/Src/*.cpp")
 
 ## Actually find the sources, NOTE: if you add a new source above, add it here! ##
 file(GLOB_RECURSE C_SOURCES ${HAL_DRIVERS_C_SOURCES}
