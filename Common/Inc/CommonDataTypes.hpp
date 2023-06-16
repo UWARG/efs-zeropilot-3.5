@@ -9,9 +9,10 @@
 
 namespace AM {
 
+// TODO: determine appropriate name for this struct (and if we even want to use a sruct for input)
 struct AttitudeManagerInput {
     int input = 0;
-};  // TODO: What is the correct name?
+};
 
 }  // Namespace AM
 
