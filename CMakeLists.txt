@@ -15,7 +15,8 @@ include_directories(
     ## Telemetry Manager Includes ##
 
     ## Driver Includes ##
-
+	${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CControl/Inc
+	${CMAKE_CURRENT_SOURCE_DIR}/Drivers/SensorFusion/Inc
     ## Boardfiles Includes ##
     ${CMAKE_CURRENT_SOURCE_DIR}/Boardfiles/${FOLDER_NAME}/Drivers/${FAMILY_NAME}_HAL_Driver/Inc
     ${CMAKE_CURRENT_SOURCE_DIR}/Boardfiles/${FOLDER_NAME}/Core/Inc
@@ -42,12 +43,20 @@ set(HAL_CORE ${CMAKE_CURRENT_SOURCE_DIR}/Boardfiles/${FOLDER_NAME}/Core)
 set(HAL_CORE_C_SOURCES "${HAL_CORE}/Src/*.c")
 set(HAL_CORE_CXX_SOURCES "${HAL_CORE}/Src/*.cpp")
 
+## Drivers Sources ##
+set(DRIVERS_CControl_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CControl/Src)
+set(DRIVERS_CControl_C_SOURCES "${DRIVERS_CControl_DIR}/*.c")
+set(DRIVERS_SensorFusion_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/SensorFusion/Src)
+set(DRIVERS_SensorFusion_CXX_SOURCES "${DRIVERS_SensorFusion_DIR}/*.cpp")
+
 ## Actually find the sources, NOTE: if you add a new source above, add it here! ##
 file(GLOB_RECURSE C_SOURCES ${HAL_DRIVERS_C_SOURCES}
                             ${FREE_RTOS_C_SOURCES}
-                            ${HAL_CORE_C_SOURCES})                            
+                            ${HAL_CORE_C_SOURCES}
+                            ${DRIVERS_CControl_C_SOURCES})                            
 message("MESSAGE: ${C_SOURCES}")                         
-file(GLOB_RECURSE CXX_SOURCES ${HAL_CORE_CXX_SOURCES})
+file(GLOB_RECURSE CXX_SOURCES ${HAL_CORE_CXX_SOURCES}
+							  ${DRIVERS_SensorFusion_CXX_SOURCES})
 
 ## Find the startup and linker script ##
 set(STARTUP_ASM_FILE ${CMAKE_CURRENT_SOURCE_DIR}/Boardfiles/${STARTUP_ASM})
