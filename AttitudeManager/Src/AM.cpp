@@ -6,8 +6,6 @@
 #include <array>
 #include <cstdlib>
 
-// #include "LOS_Actuators.hpp"
-
 namespace AM {
 
 void AttitudeManager::runControlLoopIteration(const AttitudeManagerInput &instructions) {
