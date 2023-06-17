@@ -1,6 +1,6 @@
 # --- Compile settings begin ---
 
-COMPILE_TYPE="Production"
+COMPILE_TYPE="Firmware"
 PLATFORM="nucleol552zeq"
 
 # --- Compile settings end ---

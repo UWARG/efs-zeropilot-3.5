@@ -37,7 +37,7 @@ $TEST_FILTER = if ($f) {$f} else {$TEST_FILTER}
 
 if($FUNCTION -eq "compile") {    
     # validate build type
-    if(! ( $COMPILE_TYPE -eq "Production" -or $COMPILE_TYPE -eq "Testing" ) ) {
+    if(! ( $COMPILE_TYPE -eq "Firmware" -or $COMPILE_TYPE -eq "Testing" ) ) {
         Write-Error "Error: Build type $COMPILE_TYPE is undefined."
         exit 1
     }
@@ -60,7 +60,7 @@ if($FUNCTION -eq "compile") {
     # compile setup
     Write-Host "Building ZeroPilot for $($COMPILE_TYPE.ToLower())."
     $COMPILE_DIR = "$PSScriptRoot/$COMPILE_TYPE/build"
-    if($COMPILE_TYPE -eq "Production") {
+    if($COMPILE_TYPE -eq "Firmware") {
         Write-Host "Building for $PLATFORM."
     }
     if($c) {
@@ -71,7 +71,7 @@ if($FUNCTION -eq "compile") {
     # create build system
     Write-Host "`nCreating $GENERATOR build system..."
     cmake -E make_directory $COMPILE_DIR
-    if($COMPILE_TYPE -eq "Production") {
+    if($COMPILE_TYPE -eq "Firmware") {
         cmake -E chdir $COMPILE_DIR `
             cmake `
                 -G "${GENERATOR}" `
