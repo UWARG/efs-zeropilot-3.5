@@ -10,7 +10,7 @@ jobs:
     
     env:
       URL: https://github.com/google/googletest.git
-      TAG: release-1.11.0
+      TAG: v1.13.0
     
     steps:      
       - name: Install CMake, make, and git

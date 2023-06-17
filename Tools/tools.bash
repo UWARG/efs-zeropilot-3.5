@@ -95,7 +95,7 @@ fi
 # compile project
 if [[ $RUN_TEST == false ]]; then 
     # validate build type
-    if [[ $COMPILE_TYPE != "Production" ]] && [[ $COMPILE_TYPE != "Testing" ]]; then
+    if [[ $COMPILE_TYPE != "Firmware" ]] && [[ $COMPILE_TYPE != "Testing" ]]; then
         throw_error "Error: Build type $COMPILE_TYPE is undefined."
     fi
 
@@ -113,7 +113,7 @@ if [[ $RUN_TEST == false ]]; then
     # compile setup
     echo "Building ZeroPilot for $(echo $COMPILE_TYPE | tr '[:upper:]' '[:lower:]')."  
     COMPILE_DIR="$SCRIPT_PATH/$COMPILE_TYPE/build" 
-    if [[ $COMPILE_TYPE == "Production" ]]; then
+    if [[ $COMPILE_TYPE == "Firmware" ]]; then
         echo "Building for $PLATFORM."
     fi 
     if [[ $CLEAN == true ]]; then
@@ -125,7 +125,7 @@ if [[ $RUN_TEST == false ]]; then
     echo ""
     echo "Creating $GENERATOR build system..."
     cmake -E make_directory $COMPILE_DIR
-    if [[ $COMPILE_TYPE == "Production" ]]; then
+    if [[ $COMPILE_TYPE == "Firmware" ]]; then
         cmake -E chdir $COMPILE_DIR \
             cmake \
                 -G "${GENERATOR}" \

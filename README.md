@@ -4,7 +4,7 @@
 
 - A bash script is provided for Linux and Mac
 
-- Once compiled, binaries for flashing can be found under *./Tools/Production/build*
+- Once compiled, binaries for flashing can be found under *./Tools/Firmware/build*
 
 - Once compiled, a testing executable can be found under *./Tools/Testing/build*
 
@@ -31,7 +31,7 @@ Options are nonmandatory parameters which are used to override the default confi
 
 ### Compile Only Options
 
-- -t <br> &nbsp;&nbsp;&nbsp;&nbsp;Specifies the build type. Set to either *Production* or *Testing* 
+- -t <br> &nbsp;&nbsp;&nbsp;&nbsp;Specifies the build type. Set to either *Firmware* or *Testing* 
 
 - -p <br> &nbsp;&nbsp;&nbsp;&nbsp;Specifies the platform to build for (i.e. nucleol552zeq)
 
@@ -52,3 +52,5 @@ Options are nonmandatory parameters which are used to override the default confi
 - Run with default filter <br> &nbsp;&nbsp;&nbsp;&nbsp;./Tools/tools.ps1 run
 
 - Run with custom filter <br> &nbsp;&nbsp;&nbsp;&nbsp;./Tools/tools.ps1 run -f \<filter\>
+
+- Note: The bash version of these examples have the same structure, just replace *.ps1* with *.bash*

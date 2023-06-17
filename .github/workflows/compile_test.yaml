@@ -27,4 +27,4 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Build project
-        run: bash ./Tools/tools.bash compile -t Production -c
+        run: bash ./Tools/tools.bash compile -t Firmware -c
