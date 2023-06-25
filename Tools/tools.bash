@@ -140,7 +140,7 @@ if [[ $RUN_TEST == false ]]; then
                 -G "${GENERATOR}" \
                 ../
     fi
-    if [[ $? != 0 ]]; then
+    if [[ ! $? -eq 0 ]]; then
         throw_error "Error: Failed to create $GENERATOR build system."
     fi
     
@@ -148,7 +148,7 @@ if [[ $RUN_TEST == false ]]; then
     echo ""
     echo "Compiling project..."
     cmake --build $COMPILE_DIR
-    if [[ $? != 0 ]]; then
+    if [[ ! $? -eq 0 ]]; then
         throw_error "Error: Failed to compile project."
     fi
 
