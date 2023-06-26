@@ -8,6 +8,7 @@
 #include "CommonDataTypes.hpp"
 #include "PM_DataTypes.hpp"
 #include "PM_LandingTakeoffManager.hpp"
+#include "PM_CruisingStateManager.hpp"
 
 namespace PM
 {
@@ -29,6 +30,9 @@ namespace PM
             LandingTakeoffManager vtol_manager;
             FlightStage flight_stage;
             bool isError;
+
+            CruisingStateManager waypoint_manager;
+            bool new_waypoints;
 
             void storeSmPmQueue(osMessageQId queueId);
             osMessageQId getSmPmQueue();
