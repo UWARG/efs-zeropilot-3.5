@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.2.0)
+cmake_minimum_required(VERSION 3.12.0)
 project(ZeroPilot C CXX ASM)
 
 set(ELF_NAME ${PROJECT_NAME}.elf)
@@ -71,6 +71,15 @@ set(STARTUP_ASM_FILE ${ROOT_DIR}/Boardfiles/${STARTUP_ASM})
 set(LINKER_SCRIPT_FILE ${ROOT_DIR}/Boardfiles/${LINKER_SCRIPT})
 
 add_executable(${ELF_NAME} ${C_SOURCES} ${CXX_SOURCES} ${STARTUP_ASM_FILE})
+
+# Specify C standard we use
+set_property(TARGET ${ELF_NAME} PROPERTY C_STANDARD 11)
+set_property(TARGET ${ELF_NAME} PROPERTY CXX_STANDARD 20)
+
+# Error on warnings, enable all warnings
+target_compile_options(${ELF_NAME} PRIVATE
+  -Werror -Wall -Wextra -Wpedantic
+)
 
 # Add project-specific linker flags (.ld script, .map file)
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -T${LINKER_SCRIPT_FILE} -Wl,-Map=${PROJECT_BINARY_DIR}/${PROJECT_NAME}.map,--cref")
