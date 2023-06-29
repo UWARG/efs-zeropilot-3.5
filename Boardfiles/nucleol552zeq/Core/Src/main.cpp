@@ -46,27 +46,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-/* Definitions for SensorFusion */
-osThreadId_t SensorFusionHandle;
-const osThreadAttr_t SensorFusion_attributes = {
-  .name = "SensorFusion",
-  .priority = (osPriority_t) osPriorityNormal,
-  .stack_size = 128 * 4
-};
-/* Definitions for MimicAm */
-osThreadId_t MimicAMHandle;
-const osThreadAttr_t MimicAM_attributes = {
-  .name = "MimicAM",
-  .priority = (osPriority_t) osPriorityBelowNormal,
-  .stack_size = 128 * 4
-};
-/* Definitions for MinicPM */
-osThreadId_t MimicPMHandle;
-const osThreadAttr_t MimicPM_attributes = {
-  .name = "MimicPM",
-  .priority = (osPriority_t) osPriorityBelowNormal,
-  .stack_size = 128 * 4
-};
 
 /* USER CODE END PD */
 
@@ -86,7 +65,6 @@ void SystemClock_Config(void);
 void StartSensorFusion(void *argument);
 void StartAM(void *argument);
 void StartPM(void *argument);
-void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -145,11 +123,20 @@ int main(void)
   MX_ICACHE_Init();
   /* USER CODE BEGIN 2 */
 
+  TaskHandle_t SFHandle = NULL;
+  xTaskCreate(StartSensorFusion, "SF", 50U, NULL, osPriorityNormal, &SFHandle);
+
+  TaskHandle_t AMHandle = NULL;
+  xTaskCreate(StartAM, "AM", 50U, NULL, osPriorityNormal, &AMHandle);
+
+  TaskHandle_t PMHandle = NULL;
+  xTaskCreate(StartPM, "PM", 50U, NULL, osPriorityNormal, &PMHandle);
+
+
   /* USER CODE END 2 */
 
   /* Init scheduler */
   osKernelInitialize();  /* Call init function for freertos objects (in freertos.c) */
-  MX_FREERTOS_Init();
 
   /* Start scheduler */
   osKernelStart();
@@ -223,16 +210,6 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-void MX_FREERTOS_Init(){
- /* creation of SensorFusion */
-  SensorFusionHandle = osThreadNew(StartSensorFusion, NULL, &SensorFusion_attributes);
-
-  /* creation of AM */
-  MimicAMHandle = osThreadNew(StartAM, NULL, &MimicAM_attributes);
-
-  /* creation of PM */
-  MimicPMHandle = osThreadNew(StartPM, NULL, &MimicPM_attributes);
-}
 
 void StartSensorFusion(void *argument)
 {
