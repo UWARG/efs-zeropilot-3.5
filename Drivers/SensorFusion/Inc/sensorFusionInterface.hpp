@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-void SensorFusionInterfaceInit(void);
+bool SensorFusionInterfaceInit(void);
 SFError_t SensorFusionInterfaceExecute(void);
 SFError_t SensorFusionInterfaceOutput(SFOutput_t *SFoutput);
 

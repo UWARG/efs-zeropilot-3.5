@@ -95,7 +95,7 @@ typedef struct  {
 /**
  * Initialize sensor fusion.
  */ 
-void SF_Init(void);
+bool SF_Init(void);
 
 /**
  * Generates fused sensor data. Should be called at a constant rate defined by SF_FREQ after SF_Init has been called once.

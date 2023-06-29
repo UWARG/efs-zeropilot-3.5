@@ -24,7 +24,7 @@
 extern "C"
 {
 #endif
-    #include "CControlFunctions.h"
+    #include "../../CControl/Inc/CControlFunctions.h"
 #ifdef __cplusplus
 }
 #endif
@@ -74,16 +74,18 @@ constexpr int LAT_DIST = 111133;
 //Maximum covariance before a sensor value is discarded
 const int HIGH_COVAR = 10000;
 
-void SF_Init(void)
+bool SF_Init(void)
 {
-    #ifdef TARGET_BUILD
-
-        //Waiting for definitions
-        //imuObj = &BMX160::getInstance();
-        //gpsObj = NEOM8::GetInstance();
-        //altimeterObj = MS5637::GetInstance();
-        //airspeedObj = dummyairspeed::GetInstance();
-
+	SF_mutex = xSemaphoreCreateMutex();
+    if (SF_mutex == NULL)
+        return false;
+    #ifdef Milestone3
+        imuObj = &BMX160::getInstance();
+	#elif Milestone4
+        imuObj = &BMX160::getInstance();
+        gpsObj = NEOM8::GetInstance();
+        altimeterObj = MS5637::GetInstance();
+        airspeedObj = dummyairspeed::GetInstance();
     #elif defined(UNIT_TESTING)
         imuObj = TestIMU::GetInstance();
         gpsObj = TestGps::GetInstance();
@@ -101,7 +103,7 @@ void SF_Init(void)
         iterData.prevP[4*NUM_KALMAN_VALUES+4] = 100000;
         iterData.prevP[5] = 0;
     #endif 
-
+    return true;
 }
 
 #ifdef SF_Milestone3
@@ -486,6 +488,7 @@ SFError_t SF_GenerateNewResult()
 {
     SFError_t SFError;
     SFError.errorCode = 0;
+    xSemaphoreTake(SF_mutex, portMAX_DELAY);
 #ifdef   SF_Milestone3
 
     SFAttitudeOutput_t attitudeOutput;
@@ -534,19 +537,22 @@ SFError_t SF_GenerateNewResult()
     #endif
 
 #endif
+    xSemaphoreGive(SF_mutex);
     return SFError;
 }
 
-
-
-SFError_t SF_GetResult(SFOutput_t *output)
+SFError_t SF_GetResult(SFOutput_t* output)
 {
     SFError_t SFError;
 
     //TODO: This function always return success as return, fix it?
     SFError.errorCode = 0;
 
-    *output = SFOutput;
+    xSemaphoreTake(SF_mutex, portMAX_DELAY);
+
+    output = &SFOutput;
+
+    xSemaphoreGive(SF_mutex);
 
     return SFError;
 }
