@@ -1,5 +1,5 @@
-#ifndef DRIVER_CONFIG_HPP_
-#define DRIVER_CONFIG_HPP_
+#ifndef DRIVERS_CONFIG_HPP_
+#define DRIVERS_CONFIG_HPP_
 
 //#include <cstdint>
 #include "main.h"

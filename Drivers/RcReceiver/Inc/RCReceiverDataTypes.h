@@ -1,17 +1,17 @@
-#ifndef COMMON_DATA_TYPES_H
-#define COMMON_DATA_TYPES_H
+#ifndef RC_RECEIVER_DATA_TYPES_H
+#define RC_RECEIVER_DATA_TYPES_H
 
 //#include <cstdint>
 
 #define SBUS_INPUT_CHANNELS	16
 
-struct SBus{
+typedef struct SBus{
     uint16_t ch[SBUS_INPUT_CHANNELS]; //value from 192 - 1792, can be little off
     bool lost_frame;
     bool failsafe;
     bool ch17, ch18;
     bool new_data;
-};
+} SBus_t;
 
 //the background work that allows a variable name refer to the same memory to an array element
 template<uint8_t Index, class T>

@@ -1,5 +1,5 @@
 #include "SBUSReceiver.hpp"
-#include "RCReceiver_config.hpp"
+#include "drivers_config.hpp"
 
 SBUSReceiver::SBUSReceiver(UART_HandleTypeDef* uart) : uart_(uart)
 {
@@ -16,7 +16,7 @@ SBUSReceiver::SBUSReceiver(UART_HandleTypeDef* uart) : uart_(uart)
     HAL_UART_Receive_DMA (uart_, raw_sbus_, SBUS_FRAME_SIZE);
 }
 
-SBus SBUSReceiver::GetSBUS(){
+SBus_t SBUSReceiver::GetSBUS(){
 	if(received_sbus_.new_data == false)
 		HAL_UART_Receive_DMA (uart_, raw_sbus_, SBUS_FRAME_SIZE);
     return received_sbus_;
@@ -103,20 +103,20 @@ void SBUSReceiver::cast_rccontrol()
     return static_cast<float>((channel_value - SBUS_RANGE_MIN) * (100.0f / SBUS_RANGE_RANGE));
  }
 
- void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
- {
-	 HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7,GPIO_PIN_SET);
-	 sbus_pointer->parse();
-	 HAL_UART_Receive_DMA (huart, sbus_pointer->raw_sbus_, SBUS_FRAME_SIZE);
-//	 SBUSSender::getInstance(huart)->assemble_packet();
-//	 HAL_UART_Transmit(huart, SBUSSender::getInstance(huart)->send_buf_, SBUS_FRAME_SIZE, 10);
-	 HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7,GPIO_PIN_RESET);
- }
+//  void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+//  {
+// 	 HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7,GPIO_PIN_SET);
+// 	 sbus_pointer->parse();
+// 	 HAL_UART_Receive_DMA (huart, sbus_pointer->raw_sbus_, SBUS_FRAME_SIZE);
+// //	 SBUSSender::getInstance(huart)->assemble_packet();
+// //	 HAL_UART_Transmit(huart, SBUSSender::getInstance(huart)->send_buf_, SBUS_FRAME_SIZE, 10);
+// 	 HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7,GPIO_PIN_RESET);
+//  }
 
- void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
- {
-	 HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9,GPIO_PIN_SET);
-	 HAL_UART_DMAStop(huart);
-	 HAL_UART_Receive_DMA(huart, sbus_pointer->raw_sbus_, SBUS_FRAME_SIZE);
-	 HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9,GPIO_PIN_RESET);
- }
+//  void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
+//  {
+// 	 HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9,GPIO_PIN_SET);
+// 	 HAL_UART_DMAStop(huart);
+// 	 HAL_UART_Receive_DMA(huart, sbus_pointer->raw_sbus_, SBUS_FRAME_SIZE);
+// 	 HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9,GPIO_PIN_RESET);
+//  }
