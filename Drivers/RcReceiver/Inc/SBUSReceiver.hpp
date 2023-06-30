@@ -3,8 +3,8 @@
 
 #include "main.h"
 #include "usart.h"
-#include "CommonDataTypes.h"
-#include "SBUSCommonDefines.h"
+#include "RCReceiverDataTypes.h"
+#include "SBUSDefines.h"
 
 /*
  * UART Config for this sbus driver
@@ -24,7 +24,7 @@ class SBUSReceiver{
         get the sbus data
         @return SBus struct
     */
-        SBus GetSBUS();
+        SBus_t GetSBUS();
 
     /*
         get the RCControl data that is parsed from sbus
@@ -48,7 +48,7 @@ class SBUSReceiver{
 
     // member variables
         UART_HandleTypeDef* uart_;
-        SBus received_sbus_;
+        SBus_t received_sbus_;
         RCControl received_rccontrol_;
 
     //private functions

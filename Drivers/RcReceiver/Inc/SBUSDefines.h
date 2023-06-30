@@ -1,5 +1,5 @@
-#ifndef SBUS_COMMON_DEFINES_H
-#define SBUS_COMMON_DEFINES_H
+#ifndef SBUS_DEFINES_H
+#define SBUS_DEFINES_H
 
 #define BAUD_RATE           100000
 

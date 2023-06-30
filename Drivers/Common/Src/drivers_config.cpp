@@ -1,4 +1,4 @@
-#include "RCReceiver_config.hpp"
+#include "drivers_config.hpp"
 
 /*
     creating sbusReceiver instance
