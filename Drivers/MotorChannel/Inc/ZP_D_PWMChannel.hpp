@@ -20,10 +20,11 @@ class PWMChannel : public MotorChannel {
         uint32_t clock_frequency_;     //system clock frequency
         uint32_t period_ticks_;
 
+        //set to min and max amount of counts in a duty cycle
+        uint32_t min_signal;
+        uint32_t max_signal;
+
         //values in microseconds(us)
-        static constexpr uint32_t PWM_PERIOD = 20000;
-        static constexpr uint32_t MIN_SIGNAL = 950; //standard for 50hz pwm signal, with a 100 Hz margin added to ensure we can reach the extreme values.
-        static constexpr uint32_t MAX_SIGNAL = 2050;
         const uint16_t DESIRED_FREQUENCY = 50;
 
 
