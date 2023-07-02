@@ -20,11 +20,12 @@ enable_testing()
 set(ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../..")
 
 # --- ZeroPilot File Indexing Begin ---
+include_directories(${ROOT_DIR}/Common/Inc)
 
 # Attitude Manager
 set(AM_FOLDER "${ROOT_DIR}/AttitudeManager")
-set(AM_INC "{$AM_FOLDER}/Inc")
-set(AM_SRC "{$AM_FOLDER}/Src")
+set(AM_INC "${AM_FOLDER}/Inc" "${AM_FOLDER}/FlightModes/Inc")
+set(AM_SRC "${AM_FOLDER}/Src")
 
 include_directories(${AM_INC})
 file(GLOB AM_CODE
@@ -36,8 +37,8 @@ file(GLOB AM_CODE
 
 # Path Manager
 set(PM_FOLDER "${ROOT_DIR}/PathManager")
-set(PM_INC "{$PM_FOLDER}/Inc")
-set(PM_SRC "{$PM_FOLDER}/Src")
+set(PM_INC "${PM_FOLDER}/Inc")
+set(PM_SRC "${PM_FOLDER}/Src")
 
 include_directories(${PM_INC})
 file(GLOB PM_CODE
@@ -49,8 +50,8 @@ file(GLOB PM_CODE
 
 # System Manager
 set(SM_FOLDER "${ROOT_DIR}/SystemManager")
-set(SM_INC "{$SM_FOLDER}/Inc")
-set(SM_SRC "{$SM_FOLDER}/Src")
+set(SM_INC "${SM_FOLDER}/Inc")
+set(SM_SRC "${SM_FOLDER}/Src")
 
 include_directories(${SM_INC})
 file(GLOB SM_CODE
@@ -62,8 +63,8 @@ file(GLOB SM_CODE
 
 # Telemetry Manager
 set(TM_FOLDER "${ROOT_DIR}/TelemetryManager")
-set(TM_INC "{$TM_FOLDER}/Inc")
-set(TM_SRC "{$TM_FOLDER}/Src")
+set(TM_INC "${TM_FOLDER}/Inc")
+set(TM_SRC "${TM_FOLDER}/Src")
 
 include_directories(${TM_INC})
 file(GLOB TM_CODE
@@ -75,8 +76,8 @@ file(GLOB TM_CODE
 
 # Drivers
 set(DRIVERS_FOLDER "${ROOT_DIR}/Drivers")
-set(DRIVERS_INC "{$DRIVERS_FOLDER}/Inc")
-set(DRIVERS_SRC "{$DRIVERS_FOLDER}/Src")
+set(DRIVERS_INC "${DRIVERS_FOLDER}/Inc")
+set(DRIVERS_SRC "${DRIVERS_FOLDER}/Src")
 
 include_directories(${DRIVERS_INC})
 file(GLOB DRIVERS_CODE

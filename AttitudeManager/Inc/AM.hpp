@@ -24,6 +24,7 @@ class AttitudeManager {
     AttitudeManager(ControlAlgorithm* control_algorithm) : control_algorithm(control_algorithm){};
 
     void runControlLoopIteration(const AttitudeManagerInput& instructions);
+
    private:
     AttitudeManager();
 
