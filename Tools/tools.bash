@@ -33,7 +33,7 @@ do
     fi
 
     # split line at "=" into a key-value pair
-    IFS="=" read -r key value <<< $line
+    IFS="=" read -r key value <<< "$line"
     
     # strip extra spaces
     key=$(echo $key)
