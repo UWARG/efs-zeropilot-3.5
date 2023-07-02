@@ -9,9 +9,11 @@
 
 namespace AM {
 
-// TODO: determine appropriate name for this struct (and if we even want to use a sruct for input)
 struct AttitudeManagerInput {
-    int input = 0;
+    float roll;
+    float pitch;
+    float yaw;
+    float throttle;
 };
 
 }  // Namespace AM
