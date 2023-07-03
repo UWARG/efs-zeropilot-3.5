@@ -1,7 +1,7 @@
 #ifndef RC_RECEIVER_DATA_TYPES_H
 #define RC_RECEIVER_DATA_TYPES_H
 
-//#include <cstdint>
+#include <stdint.h>
 
 #define SBUS_INPUT_CHANNELS	16
 
