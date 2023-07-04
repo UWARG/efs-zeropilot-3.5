@@ -1,5 +1,9 @@
 #include "../Inc/PM_Waypoint.hpp"
 
+// Reference Coordinates (University of Waterloo, Parking Lot C)
+#define REFERENCE_LONGITUDE -80.537331184
+#define REFERENCE_LATITUDE 43.467998128
+
 namespace PM::Waypoint {
 
     void calculate_direction_to_waypoint(float* nextWaypointCoordinates, float* prevWaypointCoordnates, float* waypointDirection)
@@ -20,9 +24,9 @@ namespace PM::Waypoint {
         return waypointDirection[0] * (position[0] - halfPlane[0]) + waypointDirection[1] * (position[1] - halfPlane[1]) + waypointDirection[2] * (position[2] - halfPlane[2]);
     }
     
-    void get_coordinates(long double longitude, long double latitude, float* xyCoordinates, float relativeLatitude, float relativeLongitude) { // Parameters expected to be in degrees
-        xyCoordinates[0] = get_distance(relativeLatitude, relativeLongitude, relativeLatitude, longitude); //Calculates longitude (x coordinate) relative to defined origin (RELATIVE_LONGITUDE, RELATIVE_LATITUDE)
-        xyCoordinates[1] = get_distance(relativeLatitude, relativeLongitude, latitude, relativeLongitude); //Calculates latitude (y coordinate) relative to defined origin (RELATIVE_LONGITUDE, RELATIVE_LATITUDE)
+    void get_coordinates(long double longitude, long double latitude, float* xyCoordinates) { // Parameters expected to be in degrees
+        xyCoordinates[0] = get_distance(REFERENCE_LATITUDE, REFERENCE_LONGITUDE, REFERENCE_LATITUDE, longitude); //Calculates longitude (x coordinate) relative to defined origin (RELATIVE_LONGITUDE, RELATIVE_LATITUDE)
+        xyCoordinates[1] = get_distance(REFERENCE_LATITUDE, REFERENCE_LONGITUDE, latitude, REFERENCE_LONGITUDE); //Calculates latitude (y coordinate) relative to defined origin (RELATIVE_LONGITUDE, RELATIVE_LATITUDE)
     }
 
     float get_distance(long double lat1, long double lon1, long double lat2, long double lon2) { // Parameters expected to be in degrees
