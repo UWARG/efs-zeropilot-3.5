@@ -4,7 +4,7 @@
 * A custom Kalmann filter is used along with the estimated attitude to estimate position.
 * Author: Lucy Gong, Dhruv Rawat, Anthony Bertnyk
 */
-#include "SensorFusion.hpp"
+#include "sensor_fusion.hpp"
 #include "MahonyAHRS.h"
 #include <cmath>
 #include "MathConstants.hpp"
@@ -24,7 +24,7 @@
 extern "C"
 {
 #endif
-    #include "../../CControl/Inc/CControlFunctions.h"
+    #include "CControlFunctions.h"
 #ifdef __cplusplus
 }
 #endif
@@ -50,6 +50,9 @@ struct SFIterationData_t{
     float prevX[NUM_KALMAN_VALUES];
     float prevP[NUM_KALMAN_VALUES*NUM_KALMAN_VALUES];
 };
+
+// Globals
+static SemaphoreHandle_t SF_mutex;
 
 static SFOutput_t SFOutput;
 
@@ -77,8 +80,9 @@ const int HIGH_COVAR = 10000;
 bool SF_Init(void)
 {
 	SF_mutex = xSemaphoreCreateMutex();
-    if (SF_mutex == NULL)
+    if (SF_mutex == NULL){
         return false;
+    }    
     #ifdef Milestone3
         imuObj = &BMX160::getInstance();
 	#elif Milestone4
@@ -488,23 +492,20 @@ SFError_t SF_GenerateNewResult()
 {
     SFError_t SFError;
     SFError.errorCode = 0;
-    xSemaphoreTake(SF_mutex, portMAX_DELAY);
+    SFAttitudeOutput_t attitudeOutput;
+    SFPathOutput_t pathOutput;
 #ifdef   SF_Milestone3
 
-    SFAttitudeOutput_t attitudeOutput;
     IMUData_t imuData;
     imuObj->GetResult(imuData);
 
     #ifdef  SF_Milestone4
-        SFPathOutput_t pathOutput;
         GpsData_t GpsData;
         AltimeterData_t altimeterData;
         airspeedData_t airspeedData;
         gpsObj->GetResult(GpsData);
         altimeterObj->GetResult(altimeterData);
         airspeedObj->GetResult(airspeedData);
-    
-
 
         //Send gps timestamp
         #ifndef UNIT_TESTING
@@ -520,24 +521,24 @@ SFError_t SF_GenerateNewResult()
     SFError = SF_GetAttitude(&attitudeOutput, &imuData);
     if(SFError.errorCode != 0) return SFError;
 
+    #ifdef  SF_Milestone4
+        SFError = SF_GetPosition(&pathOutput, &altimeterData, &GpsData, &imuData, &attitudeOutput, &iterData);
+        if(SFError.errorCode != 0) return SFError;
+    #endif
+#endif
+
+    xSemaphoreTake(SF_mutex, portMAX_DELAY);
     SFOutput.pitch = attitudeOutput.pitch;
     SFOutput.roll = attitudeOutput.roll;
     SFOutput.yaw = attitudeOutput.yaw;
-
-    #ifdef  SF_Milestone4
-    SFError = SF_GetPosition(&pathOutput, &altimeterData, &GpsData, &imuData, &attitudeOutput, &iterData);
-    if(SFError.errorCode != 0) return SFError;
-
     SFOutput.altitude = pathOutput.altitude;
     SFOutput.rateOfClimb = pathOutput.rateOfClimb;
     SFOutput.latitude = pathOutput.latitude;
     SFOutput.latitudeSpeed = pathOutput.latitudeSpeed;
     SFOutput.longitude = pathOutput.longitude;
     SFOutput.longitudeSpeed = pathOutput.longitudeSpeed;
-    #endif
-
-#endif
     xSemaphoreGive(SF_mutex);
+
     return SFError;
 }
 
@@ -550,7 +551,7 @@ SFError_t SF_GetResult(SFOutput_t* output)
 
     xSemaphoreTake(SF_mutex, portMAX_DELAY);
 
-    output = &SFOutput;
+    *output = SFOutput;
 
     xSemaphoreGive(SF_mutex);
 

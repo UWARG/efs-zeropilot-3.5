@@ -1,5 +1,5 @@
-#include "sensorFusionInterface.hpp"
-#include "SensorFusion.hpp"
+#include "sensor_fusion_interface.hpp"
+#include "sensor_fusion.hpp"
 
 bool SensorFusionInterfaceInit(void) {
     SF_Init();

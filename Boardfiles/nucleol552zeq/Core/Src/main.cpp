@@ -32,7 +32,7 @@
 #include "gpio.h"
 #include "FreeRTOS.h"
 #include "task.h"
-#include "sensorFusionInterface.hpp"
+#include "sensor_fusion_interface.hpp"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -124,13 +124,13 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   TaskHandle_t SFHandle = NULL;
-  xTaskCreate(StartSensorFusion, "SF", 50U, NULL, osPriorityNormal, &SFHandle);
+  xTaskCreate(StartSensorFusion, "SF", 500U, NULL, osPriorityNormal1, &SFHandle);
 
   TaskHandle_t AMHandle = NULL;
-  xTaskCreate(StartAM, "AM", 50U, NULL, osPriorityNormal, &AMHandle);
+  xTaskCreate(StartAM, "AM", 500U, NULL, osPriorityNormal, &AMHandle);
 
   TaskHandle_t PMHandle = NULL;
-  xTaskCreate(StartPM, "PM", 50U, NULL, osPriorityNormal, &PMHandle);
+  xTaskCreate(StartPM, "PM", 500U, NULL, osPriorityNormal, &PMHandle);
 
 
   /* USER CODE END 2 */

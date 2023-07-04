@@ -15,7 +15,7 @@
 // Header files
 
 #include "MahonyAHRS.h"
-#include "SensorFusion.hpp"
+#include "sensor_fusion.hpp"
 #include <math.h>
 
 //---------------------------------------------------------------------------------------------------
@@ -63,15 +63,15 @@ void MahonyAHRSupdate(float gx, float gy, float gz, float ax, float ay, float az
 
 		// Normalise accelerometer measurement
 		recipNorm = invSqrt(ax * ax + ay * ay + az * az);
-		ax *= recipNorm;
-		ay *= recipNorm;
-		az *= recipNorm;     
+		ax = ax * recipNorm;
+		ay = ay * recipNorm;
+		az = az * recipNorm;     
 
 		// Normalise magnetometer measurement
 		recipNorm = invSqrt(mx * mx + my * my + mz * mz);
-		mx *= recipNorm;
-		my *= recipNorm;
-		mz *= recipNorm;   
+		mx = mx * recipNorm;
+		my = my * recipNorm;
+		mz = mz * recipNorm;   
 
         // Auxiliary variables to avoid repeated arithmetic
         q0q0 = q0 * q0;
@@ -106,9 +106,9 @@ void MahonyAHRSupdate(float gx, float gy, float gz, float ax, float ay, float az
 
 		// Compute and apply integral feedback if enabled
 		if(twoKi > 0.0f) {
-			integralFBx += twoKi * halfex * (1.0f / sampleFreq);	// integral error scaled by Ki
-			integralFBy += twoKi * halfey * (1.0f / sampleFreq);
-			integralFBz += twoKi * halfez * (1.0f / sampleFreq);
+			integralFBx = integralFBx + twoKi * halfex * (1.0f / sampleFreq);	// integral error scaled by Ki
+			integralFBy = integralFBy + twoKi * halfey * (1.0f / sampleFreq);
+			integralFBz = integralFBx + twoKi * halfez * (1.0f / sampleFreq);
 			gx += integralFBx;	// apply integral feedback
 			gy += integralFBy;
 			gz += integralFBz;
@@ -132,17 +132,17 @@ void MahonyAHRSupdate(float gx, float gy, float gz, float ax, float ay, float az
 	qa = q0;
 	qb = q1;
 	qc = q2;
-	q0 += (-qb * gx - qc * gy - q3 * gz);
-	q1 += (qa * gx + qc * gz - q3 * gy);
-	q2 += (qa * gy - qb * gz + q3 * gx);
-	q3 += (qa * gz + qb * gy - qc * gx); 
+	q0 = q0 +(-qb * gx - qc * gy - q3 * gz);
+	q1 = q1 + (qa * gx + qc * gz - q3 * gy);
+	q2 = q2 + (qa * gy - qb * gz + q3 * gx);
+	q3 = q3 + (qa * gz + qb * gy - qc * gx); 
 	
 	// Normalise quaternion
 	recipNorm = invSqrt(q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3);
-	q0 *= recipNorm;
-	q1 *= recipNorm;
-	q2 *= recipNorm;
-	q3 *= recipNorm;
+	q0 = q0 * recipNorm;
+	q1 = q1 * recipNorm;
+	q2 = q2 * recipNorm;
+	q3 = q3 * recipNorm;
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -175,12 +175,12 @@ void MahonyAHRSupdateIMU(float gx, float gy, float gz, float ax, float ay, float
 
 		// Compute and apply integral feedback if enabled
 		if(twoKi > 0.0f) {
-			integralFBx += twoKi * halfex * (1.0f / sampleFreq);	// integral error scaled by Ki
-			integralFBy += twoKi * halfey * (1.0f / sampleFreq);
-			integralFBz += twoKi * halfez * (1.0f / sampleFreq);
-			gx += integralFBx;	// apply integral feedback
-			gy += integralFBy;
-			gz += integralFBz;
+			integralFBx = integralFBx + twoKi * halfex * (1.0f / sampleFreq);	// integral error scaled by Ki
+			integralFBy = integralFBy + twoKi * halfey * (1.0f / sampleFreq);
+			integralFBz = integralFBz + twoKi * halfez * (1.0f / sampleFreq);
+			gx = gx + integralFBx;	// apply integral feedback
+			gy = gy + integralFBy;
+			gz = gz + integralFBz;
 		}
 		else {
 			integralFBx = 0.0f;	// prevent integral windup
@@ -189,29 +189,29 @@ void MahonyAHRSupdateIMU(float gx, float gy, float gz, float ax, float ay, float
 		}
 
 		// Apply proportional feedback
-		gx += twoKp * halfex;
-		gy += twoKp * halfey;
-		gz += twoKp * halfez;
+		gx = gx + twoKp * halfex;
+		gy = gy + twoKp * halfey;
+		gz = gz + twoKp * halfez;
 	}
 	
 	// Integrate rate of change of quaternion
-	gx *= (0.5f * (1.0f / sampleFreq));		// pre-multiply common factors
-	gy *= (0.5f * (1.0f / sampleFreq));
-	gz *= (0.5f * (1.0f / sampleFreq));
+	gx = gx * (0.5f * (1.0f / sampleFreq));		// pre-multiply common factors
+	gy = gy * (0.5f * (1.0f / sampleFreq));
+	gz = gz * (0.5f * (1.0f / sampleFreq));
 	qa = q0;
 	qb = q1;
 	qc = q2;
-	q0 += (-qb * gx - qc * gy - q3 * gz);
-	q1 += (qa * gx + qc * gz - q3 * gy);
-	q2 += (qa * gy - qb * gz + q3 * gx);
-	q3 += (qa * gz + qb * gy - qc * gx); 
+	q0 = q0 + (-qb * gx - qc * gy - q3 * gz);
+	q1 = q1 + (qa * gx + qc * gz - q3 * gy);
+	q2 = q2 +(qa * gy - qb * gz + q3 * gx);
+	q3 = q3 + (qa * gz + qb * gy - qc * gx); 
 	
 	// Normalise quaternion
 	recipNorm = invSqrt(q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3);
-	q0 *= recipNorm;
-	q1 *= recipNorm;
-	q2 *= recipNorm;
-	q3 *= recipNorm;
+	q0 = q0 * recipNorm;
+	q1 = q1 * recipNorm;
+	q2 = q2 * recipNorm;
+	q3 = q3 * recipNorm;
 }
 
 //---------------------------------------------------------------------------------------------------
