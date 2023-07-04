@@ -31,8 +31,6 @@
 #include "usb.h"
 #include "gpio.h"
 #include "FreeRTOS.h"
-#include "task.h"
-#include "sensor_fusion_interface.hpp"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -62,9 +60,6 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-void StartSensorFusion(void *argument);
-void StartAM(void *argument);
-void StartPM(void *argument);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -122,16 +117,6 @@ int main(void)
   MX_ADC1_Init();
   MX_ICACHE_Init();
   /* USER CODE BEGIN 2 */
-
-  TaskHandle_t SFHandle = NULL;
-  xTaskCreate(StartSensorFusion, "SF", 500U, NULL, osPriorityNormal1, &SFHandle);
-
-  TaskHandle_t AMHandle = NULL;
-  xTaskCreate(StartAM, "AM", 500U, NULL, osPriorityNormal, &AMHandle);
-
-  TaskHandle_t PMHandle = NULL;
-  xTaskCreate(StartPM, "PM", 500U, NULL, osPriorityNormal, &PMHandle);
-
 
   /* USER CODE END 2 */
 
@@ -210,53 +195,6 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
-void StartSensorFusion(void *argument)
-{
-
-	SensorFusionInterfaceInit();
-	SFError_t	SF_Error_ret;
-
-  /* Infinite loop */
-  for(;;)
-  {
-	SF_Error_ret = SensorFusionInterfaceExecute();
-    HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_7);
-    osDelay(500);
-  }
-
-}
-
-void StartAM(void *argument)
-{
-
-	SFOutput_t testing_SF_output;
-	SFError_t	SF_Error_ret;
-  /* Infinite loop */
-  for(;;)
-  {
-	SF_Error_ret = SensorFusionInterfaceOutput(&testing_SF_output);
-    HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_9);
-    osDelay(600);
-  }
-
-}
-
-
-void StartPM(void *argument)
-{
-
-	SFOutput_t testing_SF_output;
-	SFError_t	SF_Error_ret;
-  /* Infinite loop */
-  for(;;)
-  {
-	SF_Error_ret = SensorFusionInterfaceOutput(&testing_SF_output);
-    HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
-    osDelay(800);
-  }
-
-}
 
 /* USER CODE END 4 */
 
