@@ -46,47 +46,46 @@ struct ControlRef
 /*  a struct for control signal channel mapping and attribute values*/
 /*  for now, the value range is 0 to 100 float*/
 struct RCControl{
-    union{
-        float ControlSignals[16];
-        ControlRef<0, float> roll;
-        ControlRef<1, float> pitch;
-        ControlRef<2, float> throttle;
-        ControlRef<3, float> yaw;
-        ControlRef<4, float> arm;
-        ControlRef<5, float> vtx;
-        ControlRef<6, float> led;
-        ControlRef<7, float> mode;
-        ControlRef<8, float> nonconfigch9;
-        ControlRef<9, float> nonconfigch10;
-        ControlRef<10, float> nonconfigch11;
-        ControlRef<11, float> nonconfigch12;
-        ControlRef<12, float> nonconfigch13;
-        ControlRef<13, float> nonconfigch14;
-        ControlRef<14, float> nonconfigch15;
-        ControlRef<15, float> nonconfigch16;
-    };
+    float ControlSignals[16];
+    
+    float &roll = ControlSignals[0];
+    float &pitch = ControlSignals[1];
+    float &throttle = ControlSignals[2];
+    float &yaw = ControlSignals[3];
+    float &arm = ControlSignals[4];
+    float &aux1 = ControlSignals[5];
+    float &aux2 = ControlSignals[6];
+    float &aux3 = ControlSignals[7];
+    float &aux4 =  ControlSignals[8];
+    float &aux5 = ControlSignals[9];
+    float &aux6 = ControlSignals[10];
+    float &aux7 = ControlSignals[11];
+    float &aux8 = ControlSignals[12];
+    float &aux9 = ControlSignals[13];
+    float &aux10 = ControlSignals[14];
+    float &aux11 = ControlSignals[15];
 
     float &operator[] (int i) { return ControlSignals[i]; }
 
     /*  initial values*/
     RCControl()
     {
-        ControlSignals[0] = 50.0f;
-        ControlSignals[1] = 50.0f;
-        ControlSignals[2] = 0.0f;
-        ControlSignals[3] = 50.0f;
-        ControlSignals[4] = 0.0f;
-        ControlSignals[5] = 0.0f;
-        ControlSignals[6] = 0.0f;
-        ControlSignals[7] = 0.0f;
-        ControlSignals[8] = 0.0f;
-        ControlSignals[9] = 0.0f;
-        ControlSignals[10] = 0.0f;
-        ControlSignals[11] = 0.0f;
-        ControlSignals[12] = 0.0f;
-        ControlSignals[13] = 0.0f;
-        ControlSignals[14] = 0.0f;
-        ControlSignals[15] = 0.0f;
+        roll = 50.0f;
+        pitch = 50.0f;
+        throttle = 0.0f;
+        yaw = 50.0f;
+        arm = 0.0f;
+        aux1 = 0.0f;
+        aux2 = 0.0f;
+        aux3 = 0.0f;
+        aux4 = 0.0f;
+        aux5 = 0.0f;
+        aux6 = 0.0f;
+        aux7 = 0.0f;
+        aux8 = 0.0f;
+        aux9 = 0.0f;
+        aux10 = 0.0f;
+        aux11 = 0.0f;
     }
 };
 

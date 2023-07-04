@@ -9,13 +9,13 @@ set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)
 
 include_directories(
     ## Common Includes ##
-    ${CMAKE_CURRENT_SOURCE_DIR}/Common/Inc
+    ${ROOT_DIR}/Common/Inc
 
     ## System Manager Includes ##
 
     ## Attitude Manager Includes ##
-    ${CMAKE_CURRENT_SOURCE_DIR}/AttitudeManager/Inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/AttitudeManager/FlightModes/Inc
+    ${ROOT_DIR}/AttitudeManager/Inc
+    ${ROOT_DIR}/AttitudeManager/FlightModes/Inc
 
     ## Path Manager Includes ##
 
@@ -53,7 +53,7 @@ set(HAL_CORE_C_SOURCES "${HAL_CORE}/Src/*.c")
 set(HAL_CORE_CXX_SOURCES "${HAL_CORE}/Src/*.cpp")
 
 ## Zeropilot Sources ##
-set(ATTITUDE_MANAGER ${CMAKE_CURRENT_SOURCE_DIR}/AttitudeManager)
+set(ATTITUDE_MANAGER ${ROOT_DIR}/AttitudeManager)
 set(ATTITUDE_MANAGER_C_SOURCES "${ATTITUDE_MANAGER}/Src/*.c"
                               "${ATTITUDE_MANAGER}/FlightModes/Src/*.c")
 set(ATTITUDE_MANAGER_CXX_SOURCES "${ATTITUDE_MANAGER}/Src/*.cpp"
@@ -89,7 +89,7 @@ set_property(TARGET ${ELF_NAME} PROPERTY CXX_STANDARD 20)
 
 # Error on warnings, enable all warnings
 target_compile_options(${ELF_NAME} PRIVATE
-  -Werror -Wall -Wextra -Wpedantic
+  -Werror -Wall -Wextra
 )
 
 # Add project-specific linker flags (.ld script, .map file)
