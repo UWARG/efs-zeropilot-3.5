@@ -7,27 +7,20 @@
 
 class PWMChannel : public MotorChannel {
     public:
-        PWMChannel(uint16_t pin_num, GPIO_TypeDef* port, TIM_HandleTypeDef* timer,
-					uint16_t timer_channel,uint32_t clock_frequency);
+        PWMChannel(TIM_HandleTypeDef* timer,
+					uint16_t timer_channel);
 
-        void setup(void);
         void set(uint8_t percent);
     private:
-        uint16_t pin_num_;
-        GPIO_TypeDef* port_;
-        TIM_HandleTypeDef *timer_;     //handle to the timer
-        uint16_t timer_channel_;       //channel of the timer
-        uint32_t clock_frequency_;     //system clock frequency
-        uint32_t period_ticks_;
+    	//set to minimum and max amount of counts in a duty cycle
+        uint32_t MIN_SIGNAL;
+        uint32_t MAX_SIGNAL;
+        uint32_t PERIOD_TICKS_;  
+        TIM_HandleTypeDef *TIMER_;     //handle to the timer
+        const uint16_t TIMER_CHANNEL_;   //channel of the timer
 
-        //set to min and max amount of counts in a duty cycle
-        uint32_t min_signal;
-        uint32_t max_signal;
-
-        //values in microseconds(us)
-        const uint16_t DESIRED_FREQUENCY = 50;
-
-
+        const uint32_t CLOCK_FREQUENCY_ = SystemCoreClock;    //system clock frequency
+        const uint16_t DESIRED_FREQUENCY = 50; //PWM frequency in hz
 };
 
 #endif // ZP_D_PWM_CHANNEL_HPP_
