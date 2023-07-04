@@ -13,9 +13,6 @@ typedef struct SBus{
     bool new_data;
 } SBus_t;
 
-//the background work that allows a variable name refer to the same memory to an array element
-template<uint8_t Index, class T>
-
 /*  a struct for control signal channel mapping and attribute values*/
 /*  for now, the value range is 0 to 100 float*/
 struct RCControl{
