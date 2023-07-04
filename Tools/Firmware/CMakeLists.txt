@@ -7,6 +7,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)
 
+## TODO: Make this configurable via build script
+Set(MODEL_NAME, testmodel1)
+
 include_directories(
     ## Common Includes ##
     ${ROOT_DIR}/Common/Inc
@@ -38,6 +41,10 @@ include_directories(
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_${PORTABLE_NAME}
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/include
+    
+    ## Models Includes ##
+    ${ROOT_DIR}/Models
+    ${ROOT_DIR}/Models/${MODEL_NAME}
 )
 
 ## Boardfile Sources ##
@@ -53,6 +60,13 @@ set(FREE_RTOS_C_SOURCES "${FREE_RTOS_DIR}/*.c"
 set(HAL_CORE ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Core)
 set(HAL_CORE_C_SOURCES "${HAL_CORE}/Src/*.c")
 set(HAL_CORE_CXX_SOURCES "${HAL_CORE}/Src/*.cpp")
+
+## Models Sources ##
+set(MODELS ${ROOT_DIR}/Models)
+set(MODELS_C_SOURCES "${MODELS}/*.c"
+                    "${MODELS}/${MODEL_NAME}/*.c")
+set(MODELS_CXX_SOURCES "${MODELS}/*.cpp"
+                      "${MODELS}/${MODEL_NAME}/*.cpp")
 
 ## Zeropilot Sources ##
 set(ATTITUDE_MANAGER ${ROOT_DIR}/AttitudeManager)
