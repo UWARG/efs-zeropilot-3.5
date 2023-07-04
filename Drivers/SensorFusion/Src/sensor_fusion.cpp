@@ -77,11 +77,14 @@ constexpr int LAT_DIST = 111133;
 //Maximum covariance before a sensor value is discarded
 const int HIGH_COVAR = 10000;
 
-bool SF_Init(void)
+SFError_t SF_Init(void)
 {
+    SFError_t SFError;
+    SFError.errorCode = 0;
 	SF_mutex = xSemaphoreCreateMutex();
     if (SF_mutex == NULL){
-        return false;
+        SFError.errorCode = -1;
+        return SFError;
     }    
     #ifdef Milestone3
         imuObj = &BMX160::getInstance();
@@ -107,7 +110,7 @@ bool SF_Init(void)
         iterData.prevP[4*NUM_KALMAN_VALUES+4] = 100000;
         iterData.prevP[5] = 0;
     #endif 
-    return true;
+    return SFError;
 }
 
 #ifdef SF_Milestone3
@@ -493,7 +496,9 @@ SFError_t SF_GenerateNewResult()
     SFError_t SFError;
     SFError.errorCode = 0;
     SFAttitudeOutput_t attitudeOutput;
+    memset(&attitudeOutput, 0, sizeof(attitudeOutput));
     SFPathOutput_t pathOutput;
+    memset(&pathOutput, 0, sizeof(pathOutput));
 #ifdef   SF_Milestone3
 
     IMUData_t imuData;

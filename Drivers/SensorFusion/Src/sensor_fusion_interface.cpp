@@ -1,8 +1,9 @@
 #include "sensor_fusion_interface.hpp"
 #include "sensor_fusion.hpp"
 
-bool SensorFusionInterfaceInit(void) {
-    SF_Init();
+SFError_t SensorFusionInterfaceInit(void) {
+    SFError_t err = SF_Init();
+    return err;
 }
 
 SFError_t SensorFusionInterfaceExecute(void) {

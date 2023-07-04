@@ -11,7 +11,7 @@ extern "C" {
 /* Give the thread with init function higher priority than */
 /* other threads to make sure everything works properly */
 
-bool SensorFusionInterfaceInit(void);
+SFError_t SensorFusionInterfaceInit(void);
 SFError_t SensorFusionInterfaceExecute(void);
 SFError_t SensorFusionInterfaceOutput(SFOutput_t *SFoutput);
 
