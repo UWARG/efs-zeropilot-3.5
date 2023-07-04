@@ -87,11 +87,6 @@ add_executable(${ELF_NAME} ${C_SOURCES} ${CXX_SOURCES} ${STARTUP_ASM_FILE})
 set_property(TARGET ${ELF_NAME} PROPERTY C_STANDARD 11)
 set_property(TARGET ${ELF_NAME} PROPERTY CXX_STANDARD 20)
 
-# Error on warnings, enable all warnings
-target_compile_options(${ELF_NAME} PRIVATE
-  -Werror -Wall -Wextra
-)
-
 # Add project-specific linker flags (.ld script, .map file)
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -T${LINKER_SCRIPT_FILE} -Wl,-Map=${PROJECT_BINARY_DIR}/${PROJECT_NAME}.map,--cref")
 

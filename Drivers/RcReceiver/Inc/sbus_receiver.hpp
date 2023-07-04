@@ -1,10 +1,9 @@
 #ifndef SBUS_RECEIVER_HPP
 #define SBUS_RECEIVER_HPP
 
-#include "main.h"
 #include "usart.h"
-#include "RCReceiverDataTypes.h"
-#include "SBUSDefines.h"
+#include "rcreceiver_datatypes.h"
+#include "sbus_defines.h"
 
 /*
  * UART Config for this sbus driver

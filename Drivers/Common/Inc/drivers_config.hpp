@@ -1,10 +1,8 @@
 #ifndef DRIVERS_CONFIG_HPP_
 #define DRIVERS_CONFIG_HPP_
 
-//#include <cstdint>
-#include "main.h"
 #include "usart.h"
-#include "SBUSReceiver.hpp"
+#include "sbus_receiver.hpp"
 
 /*
     UART Mapping

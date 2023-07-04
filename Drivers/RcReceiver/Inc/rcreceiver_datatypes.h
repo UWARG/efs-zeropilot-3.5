@@ -1,7 +1,7 @@
 #ifndef RC_RECEIVER_DATA_TYPES_H
 #define RC_RECEIVER_DATA_TYPES_H
 
-#include <stdint.h>
+#include <cstdint>
 
 #define SBUS_INPUT_CHANNELS	16
 
@@ -15,33 +15,6 @@ typedef struct SBus{
 
 //the background work that allows a variable name refer to the same memory to an array element
 template<uint8_t Index, class T>
-struct ControlRef
-{
-    operator T&() // allows: double d = object.Member;
-    {
-        return ((T*)(this))[Index];
-    }
-
-    T &operator=(T const &rhs) // allows: object.member = 1.0;
-    {
-        T &me = ((T*)(this))[Index];
-
-        me = rhs;
-
-        return me;
-    }
-
-    T* operator&() // allows: double *p = &object.Member;
-    {
-        return &((T*)(this))[Index];
-    }
-
-    bool operator<(T const &rhs) // allows: if(object.Member < 1.0)
-    {
-        return ((T*)(this))[Index] < rhs;
-    }
-
-};
 
 /*  a struct for control signal channel mapping and attribute values*/
 /*  for now, the value range is 0 to 100 float*/
