@@ -36,15 +36,19 @@ file(GLOB AM_CODE
 
 # Path Manager
 set(PM_FOLDER "${ROOT_DIR}/PathManager")
-set(PM_INC "{$PM_FOLDER}/Inc")
-set(PM_SRC "{$PM_FOLDER}/Src")
+set(PM_INC "${PM_FOLDER}/Inc")
+set(PM_SRC "${PM_FOLDER}/Src")
 
 include_directories(${PM_INC})
 file(GLOB PM_CODE
-    "${PM_FOLDER}/Tests/*.cpp"
+    "${PM_FOLDER}/tests/*.cpp"
 
     # add necessary PathManager source files below
     # "${PM_SRC}/foo.cpp"
+
+    # "${PM_SRC}/*.cpp"
+    "${PM_SRC}/PM_Waypoint.cpp"
+    # "${PM_SRC}/PM_CruisingStateManager.cpp"
 )
 
 # System Manager

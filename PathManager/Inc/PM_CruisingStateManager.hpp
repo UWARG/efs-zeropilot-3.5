@@ -5,7 +5,7 @@
 
 #include "PM_DataTypes.hpp"
 #include "PM_Waypoint.hpp"
-#include "CommonDataTypes.hpp"
+#include "../../Common/Inc/CommonDataTypes.hpp"
 
 namespace PM {
 

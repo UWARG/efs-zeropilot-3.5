@@ -1,8 +1,8 @@
-#include "PM_Waypoint.hpp"
+#include "../Inc/PM_Waypoint.hpp"
 
 namespace PM::Waypoint {
 
-    float calculate_direction_to_waypoint(float* nextWaypointCoordinates, float* prevWaypointCoordnates, float* waypointDirection)
+    void calculate_direction_to_waypoint(float* nextWaypointCoordinates, float* prevWaypointCoordnates, float* waypointDirection)
     {
         float norm = sqrt(pow(nextWaypointCoordinates[0] - prevWaypointCoordnates[0],2) + pow(nextWaypointCoordinates[1] - prevWaypointCoordnates[1],2) + pow(nextWaypointCoordinates[2] - prevWaypointCoordnates[2],2));
         waypointDirection[0] = (nextWaypointCoordinates[0] - prevWaypointCoordnates[0])/norm;

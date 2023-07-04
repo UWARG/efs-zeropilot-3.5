@@ -2,9 +2,32 @@
 #define PM_WAYPOINT_HPP
 
 #include <math.h>
-#include "MathCOnstants.h"
 
 #include "PM_DataTypes.hpp"
+
+/***********************************************************************************************************************
+ * Constants
+ **********************************************************************************************************************/
+
+#ifndef ZP_PI 
+    constexpr double ZP_PI = 3.14159265358979311599796346854;
+#endif
+
+#ifndef ZP_E 
+    constexpr double ZP_E = 2.71828182845904523536028747135;
+#endif
+
+/***********************************************************************************************************************
+ * Functions
+ **********************************************************************************************************************/
+
+#ifndef DEG_TO_RAD
+    #define DEG_TO_RAD(angleInDegrees) ((angleInDegrees) * ZP_PI / 180.0)
+#endif
+
+#ifndef RAD_TO_DEG
+    #define RAD_TO_DEG(angleInRadians) ((angleInRadians) * 180.0 / ZP_PI)
+#endif
 
 #define MAX_PATH_APPROACH_ANGLE ZP_PI/2
 #define EARTH_RADIUS 6378.137
@@ -21,7 +44,7 @@ namespace PM::Waypoint {
     * @param[in] float* prevWaypointCoordnates -> previous waypoint coordinates
     * @param[out] float* waypointDirection -> waypoint direction vector
     */
-    float calculate_direction_to_waypoint(float* nextWaypointCoordinates, float* prevWaypointCoordnates, float* waypointDirection);
+    void calculate_direction_to_waypoint(float* nextWaypointCoordinates, float* prevWaypointCoordnates, float* waypointDirection);
 
     /**
     * Calculate and returns distance to waypoint in metres

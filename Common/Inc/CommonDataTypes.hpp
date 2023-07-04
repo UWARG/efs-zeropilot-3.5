@@ -6,7 +6,7 @@
 #define ZPSW3_COMMON_DATATYPES_HPP
 
 #include <stdint.h>
-#include "AM_DataTypes.hpp"
+// #include "AM_DataTypes.hpp"
 
 namespace LOS {
 // Struct copied from old code
@@ -112,7 +112,7 @@ struct GroundStationPIDSetResponse {
 
 struct ActuatorConfig {
     uint8_t channel = UINT8_MAX;
-    StateMix state_mix;
+    // StateMix state_mix;
 };
 
 struct AttitudeManagerInput {
