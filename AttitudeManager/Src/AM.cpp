@@ -38,4 +38,8 @@ void AttitudeManager::runControlLoopIteration(const AttitudeManagerInput &instru
     // Write motor outputs
 }
 
+void AttitudeManager::outputToMotor(uint8_t percent) {
+    motorChannel_->set(percent);
+}
+
 }  // namespace AM

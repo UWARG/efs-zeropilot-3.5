@@ -23,6 +23,7 @@ class AttitudeManager {
 
    private:
     AttitudeManager();
+    void outputToMotor(uint8_t percent);
 
     ControlAlgorithm* control_algorithm;
     MotorChannel* motorChannel_;
