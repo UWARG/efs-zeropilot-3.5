@@ -8,6 +8,8 @@
 #include "MahonyAHRS.h"
 #include <cmath>
 #include "MathConstants.hpp"
+#include "FreeRTOS.h"
+#include "semphr.h"
 
 #ifdef   SF_Milestone3
 #include "imu.hpp"

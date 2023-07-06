@@ -16,8 +16,7 @@ extern "C"
 
 #include "common_data_types.hpp"
 #include "SF_config.h"
-#include "FreeRTOS.h"
-#include "semphr.h"
+
 //Frequency of SF calculations in Hz
 const int SF_FREQ = 200;
 
