@@ -14,7 +14,7 @@
 //---------------------------------------------------------------------------------------------------
 // Header files
 
-#include "MahonyAHRS.h"
+#include "manhony_ahrs.h"
 #include "sensor_fusion.hpp"
 #include <math.h>
 

@@ -6,7 +6,7 @@
 extern "C"
 {
 #endif
-    #include "CControlFunctions.h"
+    #include "ccontrol_functions.h"
 #ifdef __cplusplus
 }
 #endif
@@ -15,7 +15,6 @@ extern "C"
 #define SENSORFUSION_HPP
 
 #include "common_data_types.hpp"
-#include "SF_config.h"
 
 //Frequency of SF calculations in Hz
 const int SF_FREQ = 200;
@@ -50,7 +49,7 @@ typedef struct
     float temp;
     
     bool isDataNew; 
-    enum SensorErrorCodes sensorStatus; 
+    enum SensorErrorCodes_e sensorStatus; 
     float utcTime; 
 } IMU_Data_t;
 
@@ -58,7 +57,7 @@ typedef struct
 {
     double airspeed;        
 
-    enum SensorErrorCodes sensorStatus;       
+    enum SensorErrorCodes_e sensorStatus;       
     bool isDataNew;         
     float utcTime;          
 } Airspeed_Data_t;
@@ -74,7 +73,7 @@ typedef struct
     uint8_t numSatellites;    // 1 Byte
     uint8_t fixStatus; //0 = No GPS, 1 = GPS fix, 2 = DGSP Fix, 3 = Estimated/Dead Recoking Fix
 
-    enum SensorErrorCodes sensorStatus; // 0 = no fix, 1 = gps fix, 2 = differential gps fix (DGPS) (other codes are possible)
+    enum SensorErrorCodes_e sensorStatus; // 0 = no fix, 1 = gps fix, 2 = differential gps fix (DGPS) (other codes are possible)
     bool dataIsNew; // true if data has been refreshed since the previous time GetResult was called, false otherwise.
 	bool timeIsNew;
 
@@ -88,7 +87,7 @@ typedef struct  {
     float pressure, altitude, temp;
 
     bool isDataNew; 
-    enum SensorErrorCodes status; //TBD but probably 0 = SUCCESS, -1 = FAIL, 1 = BUSY 
+    enum SensorErrorCodes_e status; //TBD but probably 0 = SUCCESS, -1 = FAIL, 1 = BUSY 
     int utcTime; //Last time GetResult was called
 } Altimeter_Data_t;
 
@@ -125,13 +124,12 @@ Airspeed_Data_t SF_GetRawAirspeed();
 /**
  * Get raw GPS data. Can be called any time raw data is needed.
  * @return GPS struct.
- */ 
-Gps_Data_t SF_GetRawGPS();
+ */ Gps_Data_t SF_GetRawGPS();
 
 /**
  * Get raw Altimeter data. Can be called any time raw data is needed.
  * @return Altimeter struct.
  */ 
-Altimeter_Data_t SF_GetRawAltimeter();
+ Altimeter_Data_t SF_GetRawAltimeter();
 
 #endif

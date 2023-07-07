@@ -5,7 +5,7 @@
  *      Author: Daniel Mårtensson
  */
 
-#include "../Inc/CControlFunctions.h"
+#include "ccontrol_functions.h"
 
 static void solve(float* A, float* x, float* b, int* P, float* LU, uint16_t row);
 

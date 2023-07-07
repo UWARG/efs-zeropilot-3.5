@@ -22,8 +22,8 @@ include_directories(
     ## Telemetry Manager Includes ##
 
     ## Driver Includes ##
-    ${ROOT_DIR}/Drivers/CControl/Inc
-    ${ROOT_DIR}/Drivers/SensorFusion/Inc
+    ${ROOT_DIR}/Drivers/ccontrol/Inc
+    ${ROOT_DIR}/Drivers/sensor_fusion/Inc
 
     ## Boardfiles Includes ##
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Drivers/${FAMILY_NAME}_HAL_Driver/Inc
@@ -58,8 +58,8 @@ set(ATTITUDE_MANAGER_C_SOURCES "${ATTITUDE_MANAGER}/Src/*.c"
 set(ATTITUDE_MANAGER_CXX_SOURCES "${ATTITUDE_MANAGER}/Src/*.cpp"
                                 "${ATTITUDE_MANAGER}/FlightModes/Src/*.cpp")
 set(DRIVERS_DIR ${ROOT_DIR}/Drivers)
-set(DRIVERS_C_SOURCES "${DRIVERS_DIR}/CControl/Src/*.c")
-set(DRIVERS_CXX_SOURCES "${DRIVERS_DIR}/SensorFusion/Src/*.cpp")
+set(DRIVERS_C_SOURCES "${DRIVERS_DIR}/ccontrol/Src/*.c")
+set(DRIVERS_CXX_SOURCES "${DRIVERS_DIR}/sensor_fusion/Src/*.cpp")
 
 ## Actually find the sources, NOTE: if you add a new source above, add it here! ##
 file(GLOB_RECURSE C_SOURCES ${HAL_DRIVERS_C_SOURCES}

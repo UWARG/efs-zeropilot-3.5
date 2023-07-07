@@ -5,17 +5,18 @@
 * Author: Lucy Gong, Dhruv Rawat, Anthony Bertnyk
 */
 #include "sensor_fusion.hpp"
-#include "MahonyAHRS.h"
+#include "manhony_ahrs.h"
 #include <cmath>
-#include "MathConstants.hpp"
+#include "math_constants.hpp"
 #include "FreeRTOS.h"
 #include "semphr.h"
+#include "sf_config.h"
 
-#ifdef   SF_Milestone3
+#ifdef   SF_MILESTONE3
 #include "imu.hpp"
 #endif
 
-#ifdef   SF_Milestone4
+#ifdef   SF_MILESTONE4
 #include "gps.hpp"
 #include "altimeter.hpp"
 #include "airspeed.hpp"
@@ -26,7 +27,7 @@
 extern "C"
 {
 #endif
-    #include "CControlFunctions.h"
+    #include "ccontrol_functions.h"
 #ifdef __cplusplus
 }
 #endif
@@ -58,11 +59,11 @@ static SemaphoreHandle_t SF_mutex;
 
 static SFOutput_t SFOutput;
 
-#ifdef SF_Milestone3
+#ifdef SF_MILESTONE3
 static IMU *imuObj;
 #endif
 
-#ifdef  SF_Milestone4
+#ifdef  SF_MILESTONE4
 static Gps *gpsObj;
 static Altimeter *altimeterObj;
 static airspeed *airspeedObj;
@@ -88,9 +89,9 @@ SFError_t SF_Init(void)
         SFError.errorCode = -1;
         return SFError;
     }    
-    #ifdef Milestone3
+    #ifdef SF_MILESTONE3
         imuObj = &BMX160::getInstance();
-	#elif Milestone4
+	#elif SF_MILESTONE4
         imuObj = &BMX160::getInstance();
         gpsObj = NEOM8::GetInstance();
         altimeterObj = MS5637::GetInstance();
@@ -102,7 +103,7 @@ SFError_t SF_Init(void)
         airspeedObj = TestAirspeed::GetInstance();
     #endif
 
-    #ifdef  Milestone4
+    #ifdef  SF_MILESTONE4
         //Set initial state to be unknown
         for(int i = 0; i < NUM_KALMAN_VALUES; i++) iterData.prevX[0] = 0;
         iterData.prevP[0] = 100000;
@@ -115,7 +116,7 @@ SFError_t SF_Init(void)
     return SFError;
 }
 
-#ifdef SF_Milestone3
+#ifdef SF_MILESTONE3
 void localToGlobalAccel(IMUData_t *imudata, float *u)
 {
     u[0] = imudata->accy; //Vertical acceleration
@@ -228,7 +229,7 @@ double * cartesianToGPS(double x, double y){
     return latLong;
 }
 
-#ifdef   SF_Milestone4
+#ifdef   SF_MILESTONE4
 SFError_t SF_GetPosition(SFPathOutput_t *Output, AltimeterData_t *altimeterdata, GpsData_t *gpsdata, IMUData_t *imudata, SFAttitudeOutput_t *attitudedata,  SFIterationData_t *iterdata)
 {
     //Error output
@@ -501,12 +502,12 @@ SFError_t SF_GenerateNewResult()
     memset(&attitudeOutput, 0, sizeof(attitudeOutput));
     SFPathOutput_t pathOutput;
     memset(&pathOutput, 0, sizeof(pathOutput));
-#ifdef   SF_Milestone3
+#ifdef   SF_MILESTONE3
 
     IMUData_t imuData;
     imuObj->GetResult(imuData);
 
-    #ifdef  SF_Milestone4
+    #ifdef  SF_MILESTONE4
         GpsData_t GpsData;
         AltimeterData_t altimeterData;
         airspeedData_t airspeedData;
@@ -528,7 +529,7 @@ SFError_t SF_GenerateNewResult()
     SFError = SF_GetAttitude(&attitudeOutput, &imuData);
     if(SFError.errorCode != 0) return SFError;
 
-    #ifdef  SF_Milestone4
+    #ifdef  SF_MILESTONE4
         SFError = SF_GetPosition(&pathOutput, &altimeterData, &GpsData, &imuData, &attitudeOutput, &iterData);
         if(SFError.errorCode != 0) return SFError;
     #endif
@@ -565,7 +566,7 @@ SFError_t SF_GetResult(SFOutput_t* output)
     return SFError;
 }
 
-#ifdef   SF_Milestone3
+#ifdef   SF_MILESTONE3
 IMU_Data_t SF_GetRawIMU()
 {
     IMUData_t imuData;
@@ -579,7 +580,7 @@ IMU_Data_t SF_GetRawIMU()
 }
 #endif
 
-#ifdef  SF_Milestone4
+#ifdef  SF_MILESTONE4
 Airspeed_Data_t SF_GetRawAirspeed()
 {
     airspeedData_t airspeedData;
