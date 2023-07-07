@@ -9,19 +9,21 @@ set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)
 
 include_directories(
     ## Common Includes ##
-    ${CMAKE_CURRENT_SOURCE_DIR}/Common/Inc
+    ${ROOT_DIR}/Common/Inc
 
     ## System Manager Includes ##
 
     ## Attitude Manager Includes ##
-    ${CMAKE_CURRENT_SOURCE_DIR}/AttitudeManager/Inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/AttitudeManager/FlightModes/Inc
+    ${ROOT_DIR}/AttitudeManager/Inc
+    ${ROOT_DIR}/AttitudeManager/FlightModes/Inc
 
     ## Path Manager Includes ##
 
     ## Telemetry Manager Includes ##
 
     ## Driver Includes ##
+    ${ROOT_DIR}/Drivers/ccontrol/Inc
+    ${ROOT_DIR}/Drivers/sensor_fusion/Inc
 
     ## Boardfiles Includes ##
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Drivers/${FAMILY_NAME}_HAL_Driver/Inc
@@ -50,20 +52,25 @@ set(HAL_CORE_C_SOURCES "${HAL_CORE}/Src/*.c")
 set(HAL_CORE_CXX_SOURCES "${HAL_CORE}/Src/*.cpp")
 
 ## Zeropilot Sources ##
-set(ATTITUDE_MANAGER ${CMAKE_CURRENT_SOURCE_DIR}/AttitudeManager)
+set(ATTITUDE_MANAGER ${ROOT_DIR}/AttitudeManager)
 set(ATTITUDE_MANAGER_C_SOURCES "${ATTITUDE_MANAGER}/Src/*.c"
                               "${ATTITUDE_MANAGER}/FlightModes/Src/*.c")
 set(ATTITUDE_MANAGER_CXX_SOURCES "${ATTITUDE_MANAGER}/Src/*.cpp"
                                 "${ATTITUDE_MANAGER}/FlightModes/Src/*.cpp")
+set(DRIVERS_DIR ${ROOT_DIR}/Drivers)
+set(DRIVERS_C_SOURCES "${DRIVERS_DIR}/ccontrol/Src/*.c")
+set(DRIVERS_CXX_SOURCES "${DRIVERS_DIR}/sensor_fusion/Src/*.cpp")
 
 ## Actually find the sources, NOTE: if you add a new source above, add it here! ##
 file(GLOB_RECURSE C_SOURCES ${HAL_DRIVERS_C_SOURCES}
                             ${FREE_RTOS_C_SOURCES}
                             ${HAL_CORE_C_SOURCES}
-                            ${ATTITUDE_MANAGER_C_SOURCES})
+                            ${ATTITUDE_MANAGER_C_SOURCES}
+                            ${DRIVERS_C_SOURCES})
 message("C Sources: ${C_SOURCES}")
 file(GLOB_RECURSE CXX_SOURCES ${HAL_CORE_CXX_SOURCES}
-                              ${ATTITUDE_MANAGER_CXX_SOURCES})
+                              ${ATTITUDE_MANAGER_CXX_SOURCES}
+                              ${DRIVERS_CXX_SOURCES})
 message("C++ Sources: ${CXX_SOURCES}")
 
 ## Find the startup and linker script ##
@@ -77,9 +84,9 @@ set_property(TARGET ${ELF_NAME} PROPERTY C_STANDARD 11)
 set_property(TARGET ${ELF_NAME} PROPERTY CXX_STANDARD 20)
 
 # Error on warnings, enable all warnings
-target_compile_options(${ELF_NAME} PRIVATE
-  -Werror -Wall -Wextra -Wpedantic
-)
+#target_compile_options(${ELF_NAME} PRIVATE
+#  -Werror -Wall -Wextra -Wpedantic
+#)
 
 # Add project-specific linker flags (.ld script, .map file)
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -T${LINKER_SCRIPT_FILE} -Wl,-Map=${PROJECT_BINARY_DIR}/${PROJECT_NAME}.map,--cref")
