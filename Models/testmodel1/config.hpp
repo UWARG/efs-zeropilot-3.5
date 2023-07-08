@@ -12,14 +12,14 @@ namespace config
         {   //Yaw servo motor
             .axis = yaw,
             .isInverted = false,
-            .driverConstructor = constructDriver<TempPWMDriver>,
-            .interfaceID = 0
+            .driverConstructor = constructDriver<MotorDriver, TempPWMDriver>,
+            .interfaceID = TempPWMDriver::PWMIID(0,0)
         },
         {   //Roll BLDC motor
             .axis = roll,
             .isInverted = true,
-            .driverConstructor = constructDriver<TempDSHOTDriver>,
-            .interfaceID = 0
+            .driverConstructor = constructDriver<MotorDriver, TempDSHOTDriver>,
+            .interfaceID = TempDSHOTDriver::DSHOTIID()
         }
     };
 
@@ -27,107 +27,97 @@ namespace config
 
 
 
+    /* RC input config */
+
+    //Example array for a model that supports both PPM and SBUS input
+    constexpr RCInput_t RCInputs[] = {
+        {   //PPM input
+            .driverConstructor = constructDriver<RCInputDriver, TempPPMDriver>,
+            .interfaceID = TempPPMDriver::PPMIID()
+        },
+        {   //SBUS input
+            .driverConstructor = constructDriver<RCInputDriver, TempSBusDriver>,
+            .interfaceID = TempSBusDriver::SBusIID()
+        }
+    };
+    
+    constexpr uint8_t NUM_RC_INPUTS = sizeof(RCInputs)/sizeof(Motor_t);
+
+
+
     /* Flightmode 1 Config */
 
-    constexpr ControlPID_t flightmode1Tuning = {
-        .yawPID = {
-            .isEnabled = false,
-            .p = 0.0f,
-            .i = 0.0f,
-            .d = 0.0f
+    constexpr ControlTuning_t flightmode1Tuning = {
+        .PIDValues = {
+            .yawPID = {
+                .isEnabled = true,
+                .p = 1.0f,
+                .i = 1.0f,
+                .d = 1.0f
+            }
         },
-        .pitchPID = {
-            .isEnabled = false,
-            .p = 0.0f,
-            .i = 0.0f,
-            .d = 0.0f
-        },
-        .rollPID = {
-            .isEnabled = false,
-            .p = 0.0f,
-            .i = 0.0f,
-            .d = 0.0f
-        },
-        .thrustPID = {
-            .isEnabled = false,
-            .p = 0.0f,
-            .i = 0.0f,
-            .d = 0.0f
-        },
-    };
-
-    constexpr ControlLimits_t flightmode1Limits = {
-        .yawLimit = {
-            .min = 0.0f,
-            .max = 100.0f
-        },
-        .pitchLimit = {
-            .min = 0.0f,
-            .max = 100.0f
-        },
-        .rollLimit = {
-            .min = 0.0f,
-            .max = 100.0f
-        },
-        .thrustLimit = {
-            .min = 0.0f,
-            .max = 100.0f
+        .controlLimits = {
+            .yawLimit = {
+                .min = 5.0f,
+                .max = 95.0f
+            }
         }
     };
 
-    constexpr Flightmode TempFlightmode1 = Flightmode(flightmode1Tuning, flightmode1Limits);
+    class TempFlightmode1 : public Flightmode{
+        public:
+        constexpr TempFlightmode1() : Flightmode(flightmode1Tuning){}
+        //TODO: Implement control algorithm functions in AM
+        void run();
+        void updatePid();
+    };
+
+    static TempFlightmode1 tempFlightmode1;
 
 
 
     /* Flightmode 2 Config */
 
-    constexpr ControlPID_t flightmode2Tuning = {
-        .yawPID = {
-            .isEnabled = true,
-            .p = 1.0f,
-            .i = 1.0f,
-            .d = 1.0f
+    constexpr ControlTuning_t flightmode2Tuning = {
+        .PIDValues = {
+            .yawPID = {
+                .isEnabled = true,
+                .p = 1.0f,
+                .i = 1.0f,
+                .d = 1.0f
+            },
+            .rollPID = {
+                .isEnabled = true,
+                .p = 1.0f,
+                .i = 1.0f,
+                .d = 1.0f
+            }
         },
-        .pitchPID = {
-            .isEnabled = false,
-            .p = 0.0f,
-            .i = 0.0f,
-            .d = 0.0f
-        },
-        .rollPID = {
-            .isEnabled = true,
-            .p = 1.0f,
-            .i = 1.0f,
-            .d = 1.0f
-        },
-        .thrustPID = {
-            .isEnabled = false,
-            .p = 0.0f,
-            .i = 0.0f,
-            .d = 0.0f
-        },
-    };
-
-    constexpr ControlLimits_t flightmode2Limits = {
-        .yawLimit = {
-            .min = 0.0f,
-            .max = 100.0f
-        },
-        .pitchLimit = {
-            .min = 0.0f,
-            .max = 100.0f
-        },
-        .rollLimit = {
-            .min = 0.0f,
-            .max = 100.0f
-        },
-        .thrustLimit = {
-            .min = 0.0f,
-            .max = 100.0f
+        .controlLimits = {
+            .yawLimit = {
+                .min = 5.0f,
+                .max = 95.0f
+            },
+            .rollLimit = {
+                .min = 0.0f,
+                .max = 100.0f
+            }
         }
     };
     
-    constexpr Flightmode TempFlightmode2 = Flightmode(flightmode2Tuning, flightmode2Limits);
+    class TempFlightmode2 : public Flightmode{
+        public:
+        constexpr TempFlightmode2() : Flightmode(flightmode2Tuning){}
+        void run();
+        void updatePid();
+    };
+    
+    static TempFlightmode2 tempFlightmode2;
+
+    constexpr Flightmode * flightmodes[] = {
+        &tempFlightmode1,
+        &tempFlightmode2
+    };
 
 }
 
