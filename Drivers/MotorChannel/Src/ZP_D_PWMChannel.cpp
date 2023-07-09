@@ -8,14 +8,14 @@ PWMChannel::PWMChannel(TIM_HandleTypeDef* timer,
                         MAX_SIGNAL(timer->Init.Period * 0.10)  // sets counts for 10% duty cycle
 {
 	// Calculate new pre-scaler
-	uint16_t prescaler = (CLOCK_FREQUENCY / DESIRED_FREQUENCY
+	uint16_t prescaler = (SystemCoreClock / DESIRED_FREQUENCY
 			/ timer->Init.Period) - 1;
 	__HAL_TIM_SET_PRESCALER(timer, prescaler);
 	HAL_TIM_PWM_Start(timer, TIMER_CHANNEL);
 }
 
 void PWMChannel::set(uint8_t percent) {
-	/*Sets the duty cycle as a percent between 5 and 10%.
+	/* Sets the duty cycle as a percent between 5 and 10%.
 	 *
 	 * Usage:
 	 * 0% corresponds to a duty cycle of 5%
