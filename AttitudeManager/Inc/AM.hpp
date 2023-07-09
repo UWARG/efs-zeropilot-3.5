@@ -11,6 +11,8 @@
 
 #include "AM_ControlAlgorithm.hpp"
 #include "CommonDataTypes.hpp"
+
+#include "FreeRTOS.h"
 #include "semphr.h"
 
 namespace AM {

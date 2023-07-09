@@ -18,21 +18,42 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 enable_testing()
 
 set(ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../..")
+set(FOLDER_NAME nucleol552zeq)
+set(FAMILY_NAME STM32L5xx)
+set(PORTABLE_NAME CM33_NTZ/non_secure)
 
 # --- ZeroPilot File Indexing Begin ---
-include_directories(${ROOT_DIR}/Common/Inc)
+include_directories(
+    ${ROOT_DIR}/Common/Inc
+
+    ## Boardfiles Includes ##
+    ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Drivers/${FAMILY_NAME}_HAL_Driver/Inc
+    ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Core/Inc
+    ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Drivers/CMSIS/Device/ST/${FAMILY_NAME}/Include
+    ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Drivers/CMSIS/Include
+    ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source
+    ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS
+    ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2
+    ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_${PORTABLE_NAME}
+    ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/include
+)
 
 # Attitude Manager
 set(AM_FOLDER "${ROOT_DIR}/AttitudeManager")
 set(AM_INC "${AM_FOLDER}/Inc" "${AM_FOLDER}/FlightModes/Inc")
 set(AM_SRC "${AM_FOLDER}/Src")
 
-include_directories(${AM_INC})
+include_directories(
+    ${AM_INC}
+    ${AM_SRC}
+)
 file(GLOB AM_CODE
     "${AM_FOLDER}/Tests/*.cpp"
 
     # add necessary AttitudeManager source files below
     # "${AM_SRC}/foo.cpp"
+    "${AM_INC}/AM.hpp"
+    "${AM_SRC}/AM.cpp"
 )
 
 # Path Manager

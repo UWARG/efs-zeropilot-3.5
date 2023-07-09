@@ -2,15 +2,17 @@
 // Created by Anthony Luo on 2022-10-12.
 //
 #include "AM.hpp"
+
+#include "FreeRTOS.h"
 #include "semphr.h"
 
 #include <array>
 #include <cstdlib>
 
 namespace AM {
-AttitudeManager::control_inputs_mutex = xSemaphoreCreateMutex();
+SemaphoreHandle_t AttitudeManager::control_inputs_mutex = xSemaphoreCreateMutex();
 
-AttitudeManager::control_inputs = {
+AttitudeManagerInput AttitudeManager::control_inputs = {
     .roll = 0.0f,
     .pitch = 0.0f,
     .yaw = 0.0f,
@@ -18,14 +20,14 @@ AttitudeManager::control_inputs = {
 };
 
 void AttitudeManager::setControlInputs(const AttitudeManagerInput& new_control_inputs) {
-    xSemaphoreTake( control_inputs_mutex );
+    xSemaphoreTake( control_inputs_mutex, (TickType_t) 10);
     control_inputs = new_control_inputs;
     xSemaphoreGive( control_inputs_mutex );
 }
 
-AttitudeManagerInput getControlInputs() {
+AttitudeManagerInput AttitudeManager::getControlInputs() {
     struct AttitudeManagerInput temp;
-    xSemaphoreTake( control_inputs_mutex );
+    xSemaphoreTake( control_inputs_mutex, (TickType_t) 10);
     temp = control_inputs;
     xSemaphoreGive( control_inputs_mutex );
     return temp;
