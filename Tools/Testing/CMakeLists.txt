@@ -75,7 +75,7 @@ file(GLOB TM_CODE
 
 # Drivers
 set(DRIVERS_FOLDER "${ROOT_DIR}/Drivers")
-set(DRIVERS_INC "{$DRIVERS_FOLDER}/Inc")
+set(DRIVERS_INC "${DRIVERS_FOLDER}/Common/Inc")
 set(DRIVERS_SRC "{$DRIVERS_FOLDER}/Src")
 
 include_directories(${DRIVERS_INC})
@@ -84,6 +84,7 @@ file(GLOB DRIVERS_CODE
 
     # add necessary Drivers source files below
     # "${DRIVERS_SRC}/foo.cpp"
+    "${DRIVERS_FOLDER}/Common/Src/circular_buffer.cpp"
 )
 
 # --- ZeroPilot File Indexing End ---
