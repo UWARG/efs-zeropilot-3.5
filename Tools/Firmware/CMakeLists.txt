@@ -80,7 +80,7 @@ message("C Sources: ${C_SOURCES}")
 file(GLOB_RECURSE CXX_SOURCES ${HAL_CORE_CXX_SOURCES}
                               ${ATTITUDE_MANAGER_CXX_SOURCES}
                               ${DRIVERS_RcReceiver_CXX_SOURCES}
-                              ${DRIVERS_Common_CXX_SOURCES})
+                              ${DRIVERS_Common_CXX_SOURCES}
                               ${DRIVERS_CXX_SOURCES})
 message("C++ Sources: ${CXX_SOURCES}")
 
