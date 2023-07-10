@@ -16,7 +16,7 @@ IWDG_t::IWDG_t(IWDG_HandleTypeDef *watchdog) {
  * @brief Initalize the driver using custom IWDG_Prescaler and realod values.
  *
  */
-IWDG_t::IWDG_t(uint8_t iwdg_prescaler, uint32_t iwdg_reload) {
+IWDG_t::IWDG_t(uint8_t iwdg_prescaler, uint16_t iwdg_reload) {
   // assert(IS_IWDG_PRESCALER(iwdg_prescaler)) Should this be added since it is needed when reinitialzing the watchdog
   // assert(IS_IWDG_RELOAD(iwdg_reload))
 	this->iwdg_prescaler = iwdg_prescaler;

@@ -19,7 +19,7 @@ class IWDG_t {
 
 	public:
 		IWDG_t(IWDG_HandleTypeDef* watchdog);
-		IWDG_t(uint8_t iwdg_prescaler, uint32_t iwdg_reload);
+		IWDG_t(uint8_t iwdg_prescaler, uint16_t iwdg_reload);
 		HAL_StatusTypeDef InitWatchdog(IWDG_HandleTypeDef* watchdog);
 		static HAL_StatusTypeDef RefreshWatchdog(IWDG_HandleTypeDef* watchdog);
 };
