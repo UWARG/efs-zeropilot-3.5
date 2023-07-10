@@ -22,8 +22,8 @@ include_directories(
     ## Telemetry Manager Includes ##
 
     ## Driver Includes ##
-    ${ROOT_DIR}/Drivers/RcReceiver/Inc
-    ${ROOT_DIR}/Drivers/Common/Inc
+    ${ROOT_DIR}/Drivers/rc_receiver/Inc
+    ${ROOT_DIR}/Drivers/common/Inc
 
 
     ## Boardfiles Includes ##
@@ -60,9 +60,9 @@ set(ATTITUDE_MANAGER_CXX_SOURCES "${ATTITUDE_MANAGER}/Src/*.cpp"
                                 "${ATTITUDE_MANAGER}/FlightModes/Src/*.cpp")
 
 ## Drivers Sources ##
-set(DRIVERS_RcReceiver_DIR ${ROOT_DIR}/Drivers/RcReceiver/Src)
+set(DRIVERS_RcReceiver_DIR ${ROOT_DIR}/Drivers/rc_receiver/Src)
 set(DRIVERS_RcReceiver_CXX_SOURCES "${DRIVERS_RcReceiver_DIR}/*.cpp")
-set(DRIVERS_Common_DIR ${ROOT_DIR}/Drivers/Common/Src)
+set(DRIVERS_Common_DIR ${ROOT_DIR}/Drivers/common/Src)
 set(DRIVERS_Common_CXX_SOURCES "${DRIVERS_Common_DIR}/*.cpp")
 
 ## Actually find the sources, NOTE: if you add a new source above, add it here! ##
