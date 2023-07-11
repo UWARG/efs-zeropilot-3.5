@@ -22,6 +22,9 @@ include_directories(
     ## Telemetry Manager Includes ##
 
     ## Driver Includes ##
+    ${ROOT_DIR}/Drivers/rc_receiver/Inc
+    ${ROOT_DIR}/Drivers/Common/Inc
+
     ${ROOT_DIR}/Drivers/ccontrol/Inc
     ${ROOT_DIR}/Drivers/sensor_fusion/Inc
 
@@ -61,6 +64,12 @@ set(DRIVERS_DIR ${ROOT_DIR}/Drivers)
 set(DRIVERS_C_SOURCES "${DRIVERS_DIR}/ccontrol/Src/*.c")
 set(DRIVERS_CXX_SOURCES "${DRIVERS_DIR}/sensor_fusion/Src/*.cpp")
 
+## Drivers Sources ##
+set(DRIVERS_RcReceiver_DIR ${ROOT_DIR}/Drivers/rc_receiver/Src)
+set(DRIVERS_RcReceiver_CXX_SOURCES "${DRIVERS_RcReceiver_DIR}/*.cpp")
+set(DRIVERS_Common_DIR ${ROOT_DIR}/Drivers/Common/Src)
+set(DRIVERS_Common_CXX_SOURCES "${DRIVERS_Common_DIR}/*.cpp")
+
 ## Actually find the sources, NOTE: if you add a new source above, add it here! ##
 file(GLOB_RECURSE C_SOURCES ${HAL_DRIVERS_C_SOURCES}
                             ${FREE_RTOS_C_SOURCES}
@@ -70,6 +79,8 @@ file(GLOB_RECURSE C_SOURCES ${HAL_DRIVERS_C_SOURCES}
 message("C Sources: ${C_SOURCES}")
 file(GLOB_RECURSE CXX_SOURCES ${HAL_CORE_CXX_SOURCES}
                               ${ATTITUDE_MANAGER_CXX_SOURCES}
+                              ${DRIVERS_RcReceiver_CXX_SOURCES}
+                              ${DRIVERS_Common_CXX_SOURCES}
                               ${DRIVERS_CXX_SOURCES})
 message("C++ Sources: ${CXX_SOURCES}")
 
