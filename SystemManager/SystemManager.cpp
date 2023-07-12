@@ -5,9 +5,13 @@
 #include "SystemManager.hpp"
 #include "../Models/global_config.hpp"
 #include "../Models/testmodel1/config.hpp"
+#include "../Drivers/rc_receiver/Inc/sbus_reciever.hpp"
+#include "../Drivers/Common/Inc/drivers_config.hpp"
 
 
-SystemManager::SystemManager(): currentFlightMode_(config::flightmodes[0]) {}/* Would need to instantiate SBUS, IWDG, and AM */
+SystemManager::SystemManager():
+    currentFlightMode_(config::flightmodes[0]),
+    {}/* Would need to instantiate SBUS, IWDG, and AM */
 SystemManager::~SystemManager() {}
 
 void SystemManager::flyManually() {
