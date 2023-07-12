@@ -2,61 +2,30 @@
 #define ZPSW3_GLOBAL_CONFIG_HPP
 
 #include <cstdint>
+#include <functional>
 
 namespace config
 {
 
-    typedef enum {
-        yaw,
-        pitch,
-        roll,
-        thrust
-    } ControlAxis_t;
-
     //TODO: Include drivers to replace all of these temporary definitions
-    class MotorDriver
-    {
-        public:
-        struct MotorIID{};
-    };
+    class MotorDriver{};
         class TempPWMDriver : public MotorDriver
         {
-            //TODO: implement an interface identifier (IID) for each driver class
             public:
-            struct PWMIID : public MotorDriver::MotorIID{
-                uint8_t timerID;
-                uint16_t timerChannel;
-                //constexpr constructor allows for compile-time configuration
-                constexpr PWMIID(const uint8_t timerID, const uint16_t timerChannel)
-                : timerID(timerID), timerChannel(timerChannel){}
-            };
+                TempPWMDriver(uint8_t timer, uint16_t timer_channel)
+                : timer_(timer), timerChannel_(timer_channel) {}
+            private:
+                uint8_t timer_;
+                uint16_t timerChannel_;
         };
         class TempDSHOTDriver : public MotorDriver
         {
             public:
-            struct DSHOTIID : public MotorDriver::MotorIID{
-                constexpr DSHOTIID(){}
-            };
+                TempDSHOTDriver() {}
         };
-    class RCInputDriver
-    {
-        public:
-        struct RCInputIID{};
-    };
-        class TempPPMDriver : public RCInputDriver
-        {
-            public:
-            struct PPMIID : public RCInputDriver::RCInputIID{
-                constexpr PPMIID(){};
-            };
-        };
-        class TempSBusDriver : public RCInputDriver
-        {
-            public:
-            struct SBusIID : public RCInputDriver::RCInputIID{
-                constexpr SBusIID(){};
-            };
-        };
+    class RCInputDriver{};
+        class TempPPMDriver : public RCInputDriver{};
+        class TempSBusDriver : public RCInputDriver{};
     class UnifiedSensorDriver{};
         class TempVN300Driver : public UnifiedSensorDriver{};
         class TempVN310Driver : public UnifiedSensorDriver{};
@@ -70,28 +39,52 @@ namespace config
      
     //Define factory function to create motor drivers.
     //The driver class must be copy-constructable as the returned object will be a copy.
-    template <class BaseDriverType, class DerivedDriverType>
-    BaseDriverType constructDriver() {
-        DerivedDriverType driver;
-        return driver;
+    template <class BaseDriverType, class DerivedDriverType, auto... args>
+    BaseDriverType* constructDriver() {
+        return new DerivedDriverType(args...);
     }
 
     //Typedef pointer to factory function
     template <class BaseDriverType>
-    using DriverFactory = BaseDriverType (*)(void);
+    using DriverFactory = BaseDriverType* (*)(void);
+
+
+
+    /* Motor declarations */
+
+    typedef enum {
+        yaw,
+        pitch,
+        roll,
+        thrust
+    } ControlAxis_t;
 
     typedef struct {
         ControlAxis_t axis;
         bool isInverted = false;
         DriverFactory<MotorDriver> driverConstructor;
-        MotorDriver::MotorIID interfaceID;
     } Motor_t;
+
+
+
+    /* RC input declarations */
 
     typedef struct {
         //TODO: determine other config fields relevant to the RC input type
         DriverFactory<RCInputDriver> driverConstructor;
-        RCInputDriver::RCInputIID interfaceID;
     } RCInput_t;
+
+
+
+    /* GPS declarations */
+
+    typedef struct {
+        DriverFactory<GPSDriver> driverConstructor;
+    } GPS_t;
+
+
+
+    /* Flightmode declarations */
 
     typedef struct {
         bool isEnabled = false;

@@ -6,20 +6,19 @@
 namespace config
 {
 
-    /* Motor Config */
+    /* Motor config */
 
     constexpr Motor_t motors[] = {
         {   //Yaw servo motor
             .axis = yaw,
             .isInverted = false,
-            .driverConstructor = constructDriver<MotorDriver, TempPWMDriver>,
-            .interfaceID = TempPWMDriver::PWMIID(0,0)
+            .driverConstructor = constructDriver<MotorDriver, TempPWMDriver,
+                                                 /*timer*/ 0, /*timer_channel*/ 0>
         },
         {   //Roll BLDC motor
             .axis = roll,
             .isInverted = true,
-            .driverConstructor = constructDriver<MotorDriver, TempDSHOTDriver>,
-            .interfaceID = TempDSHOTDriver::DSHOTIID()
+            .driverConstructor = constructDriver<MotorDriver, TempDSHOTDriver>
         }
     };
 
@@ -32,16 +31,30 @@ namespace config
     //Example array for a model that supports both PPM and SBUS input
     constexpr RCInput_t RCInputs[] = {
         {   //PPM input
-            .driverConstructor = constructDriver<RCInputDriver, TempPPMDriver>,
-            .interfaceID = TempPPMDriver::PPMIID()
+            .driverConstructor = constructDriver<RCInputDriver, TempPPMDriver>
         },
         {   //SBUS input
-            .driverConstructor = constructDriver<RCInputDriver, TempSBusDriver>,
-            .interfaceID = TempSBusDriver::SBusIID()
+            .driverConstructor = constructDriver<RCInputDriver, TempSBusDriver>
         }
     };
     
-    constexpr uint8_t NUM_RC_INPUTS = sizeof(RCInputs)/sizeof(Motor_t);
+    constexpr uint8_t NUM_RC_INPUTS = sizeof(RCInputs)/sizeof(RCInput_t);
+
+
+
+    /* GPS config */
+
+    //Example array for a model with two GPS modules
+    constexpr GPS_t GPSArray[] = {
+        {   //NEOM8
+            .driverConstructor = constructDriver<GPSDriver, TempNEOM8Driver>
+        },
+        {   //Other GPS
+            .driverConstructor = constructDriver<GPSDriver, otherGPSDriver>
+        }
+    };
+    
+    constexpr uint8_t NUM_GPS = sizeof(GPSArray)/sizeof(GPS_t);
 
 
 
