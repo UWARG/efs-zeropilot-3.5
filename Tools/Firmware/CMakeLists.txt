@@ -100,11 +100,13 @@ file(GLOB_RECURSE C_SOURCES ${HAL_DRIVERS_C_SOURCES}
                             ${FREE_RTOS_C_SOURCES}
                             ${HAL_CORE_C_SOURCES}
                             ${ATTITUDE_MANAGER_C_SOURCES}
-                            ${DRIVERS_C_SOURCES}
                             ${DRIVERS_IWDGDriver_DIR})
+                            ${SYSTEM_MANAGER_C_SOURCES}
+                            ${DRIVERS_C_SOURCES})
 message("C Sources: ${C_SOURCES}")
 file(GLOB_RECURSE CXX_SOURCES ${HAL_CORE_CXX_SOURCES}
                               ${ATTITUDE_MANAGER_CXX_SOURCES}
+                              ${SYSTEM_MANAGER_CXX_SOURCES}
                               ${DRIVERS_RcReceiver_CXX_SOURCES}
                               ${DRIVERS_Common_CXX_SOURCES}
                               ${DRIVERS_CXX_SOURCES}
