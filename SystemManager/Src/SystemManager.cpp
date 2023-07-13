@@ -2,32 +2,29 @@
 // Created by Gagan Deep Singh on 2023-07-08.
 //
 
-#include "SystemManager.hpp"
-#include "global_config.hpp"
-#include "config.hpp"
-#include "sbus_reciever.hpp"
-#include "drivers_config.hpp"
-
+#include "../Inc/SystemManager.hpp"
+#include "../../Models/testmodel1/config.hpp"
+#include "../../Models/global_config.hpp"
+#include "../../Drivers/rc_receiver/Inc/sbus_receiver.hpp"
+#include "../../Drivers/rc_receiver/Inc/sbus_defines.h"
+#include "../../Drivers/rc_receiver/Inc/rcreceiver_datatypes.h"
+#include "../../Drivers/Common/Inc/drivers_config.hpp"
 
 SystemManager::SystemManager():
     currentFlightMode_(config::flightmodes[0]),
+    rcController_(sbus_uart)
     {}/* Would need to instantiate SBUS, IWDG, and AM */
 SystemManager::~SystemManager() {}
 
 void SystemManager::flyManually() {
     for(;;){
-        try{
             updateRCInputs();
             executeInputs();
-        }
-        catch{
-            break;
-        }
     }
 }
 
 void SystemManager::updateRCInputs() {
-    /* Get Inputs from SBUS and update corresponding private variable (also monitors Watchdog) */
+    this->rcInputs_.assignValues(rcController_.GetRCControl());
     return;
 }
 
@@ -36,11 +33,11 @@ void SystemManager::executeInputs() {
     return;
 }
 
-Flightmode SystemManager::getCurrentFlightMode() {
+config::Flightmode* SystemManager::getCurrentFlightMode() {
     return this->currentFlightMode_;
 }
 
-void SystemManager::setCurrentFlightMode(config::Flightmode flightmode) {
+void SystemManager::setCurrentFlightMode(config::Flightmode *flightmode) {
     this->currentFlightMode_ = flightmode;
 }
 

@@ -5,9 +5,9 @@
 #ifndef ZEROPILOT_3_5_SYSTEMMANAGER_HPP
 #define ZEROPILOT_3_5_SYSTEMMANAGER_HPP
 
-#include "global_config.hpp"
-#include "sbus_reciever.hpp"
-#include "rcreceiver_datatypes.h"
+#include "../../Models/global_config.hpp"
+#include "../../Drivers/rc_receiver/Inc/sbus_receiver.hpp"
+#include "../../Drivers/rc_receiver/Inc/rcreceiver_datatypes.h"
 
 
 class SystemManager {
@@ -20,8 +20,8 @@ public:
     void flyManually();
 
     /* Getters and Setters */
-    Flightmode getCurrentFlightMode();
-    void setCurrentFlightMode(Flightmode flightmode);
+    config::Flightmode* getCurrentFlightMode();
+    void setCurrentFlightMode(config::Flightmode *flightmode);
 private:
     /* Private helper functions */
     void updateRCInputs();
@@ -30,7 +30,7 @@ private:
     /* SBUS and AM variables to follow */
     
     /* State-keeping variables to follow */
-    Flightmode *currentFlightMode_;
+    config::Flightmode *currentFlightMode_;
     SBUSReceiver rcController_;
     RCControl rcInputs_;
 
