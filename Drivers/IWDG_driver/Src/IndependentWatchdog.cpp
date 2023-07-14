@@ -1,4 +1,4 @@
-#include "IndependentWatchdog.h";
+#include "IndependentWatchdog.h"
 #include "main.h"
 
 /**
@@ -7,39 +7,54 @@
  *
  */
 IWDG_t::IWDG_t(IWDG_HandleTypeDef *watchdog) {
+	this->watchdog = watchdog;
 	IWDG_InitTypeDef initDef = watchdog->Init;
 	this->iwdg_prescaler = initDef.Prescaler;
 	this->iwdg_reload = initDef.Reload;
 }
 
-/**
- * @brief Initalize the driver using custom IWDG_Prescaler and realod values.
- *
- */
-IWDG_t::IWDG_t(uint8_t iwdg_prescaler, uint16_t iwdg_reload) {
-  // assert(IS_IWDG_PRESCALER(iwdg_prescaler)) Should this be added since it is needed when reinitialzing the watchdog
-  // assert(IS_IWDG_RELOAD(iwdg_reload))
-	this->iwdg_prescaler = iwdg_prescaler;
-	this->iwdg_reload = iwdg_reload;
-}
 
 /**
  * @brief Reset the reload and counter values inside a watchdog
  * using the member variables of IWDG_t
  *
  */
-HAL_StatusTypeDef IWDG_t::InitWatchdog(IWDG_HandleTypeDef *watchdog) {
-	watchdog->Init.Reload = this->iwdg_reload;
-	watchdog->Init.Prescaler = this->iwdg_prescaler;
+bool IWDG_t::SetWatchdogParameters(uint8_t prescaler, uint16_t reload) {
+	this->iwdg_prescaler = prescaler;
+	this->iwdg_reload = reload;
+
+	if (!IS_IWDG_PRESCALER(prescaler) || !IS_IWDG_RELOAD(reload)) return false;
+	watchdog->Init.Reload = reload;
+	watchdog->Init.Prescaler = prescaler;
 	HAL_StatusTypeDef refresh = HAL_IWDG_Init(watchdog);
-	return refresh;
+	return (refresh==HAL_OK);
+}
+
+
+/**
+ * @brief Refreshes the watchdog that is a member variable of the class
+ *
+ */
+
+bool IWDG_t::RefreshWatchdog() {
+	if (!this->watchdog) {
+		return false;
+	}
+	return (HAL_IWDG_Refresh(watchdog) == HAL_OK);
 }
 
 /**
- * @brief Refresh the watchdog in the parameter. It will reset the downcounter
- * to the value within the reload register.
+ * @brief Setter function for the watchdog
  *
  */
-HAL_StatusTypeDef IWDG_t::RefreshWatchdog(IWDG_HandleTypeDef *watchdog) {
-	return HAL_IWDG_Refresh(watchdog);
+void IWDG_t::SetIWDGWatchdog(IWDG_HandleTypeDef* watchdog) {
+	this->watchdog = watchdog;
+}
+
+/**
+ * @brief Getter function for the watchdog
+ *
+ */
+IWDG_HandleTypeDef* IWDG_t::GetIWDGWatchdog(IWDG_HandleTypeDef* watchdog) {
+	return this->watchdog;
 }
