@@ -23,7 +23,7 @@ class AttitudeManager {
 
     static AttitudeManagerInput getControlInputs();
 
-    AttitudeManager(ControlAlgorithm* control_algorithm) : control_algorithm(control_algorithm){};
+    AttitudeManager(Flightmode* control_algorithm) : control_algorithm(control_algorithm){};
 
     void runControlLoopIteration(const AttitudeManagerInput& instructions);
 
@@ -34,7 +34,7 @@ class AttitudeManager {
 
     static struct AttitudeManagerInput control_inputs;
 
-    ControlAlgorithm* control_algorithm;
+    Flightmode* control_algorithm;
 };
 
 }  // namespace AM

@@ -2,26 +2,19 @@
 #define ZPSW3_GLOBAL_CONFIG_HPP
 
 #include <cstdint>
-#include <functional>
+
+#include "AM_ControlAlgorithm.hpp"
+#include "ZP_D_PWMChannel.hpp"
 
 namespace config
 {
+    using percentage_t = float;
 
-    //TODO: Include drivers to replace all of these temporary definitions
-    class MotorDriver{};
-        class TempPWMDriver : public MotorDriver
-        {
-            public:
-                TempPWMDriver(uint8_t timer, uint16_t timer_channel)
-                : timer_(timer), timerChannel_(timer_channel) {}
-            private:
-                uint8_t timer_;
-                uint16_t timerChannel_;
-        };
-        class TempDSHOTDriver : public MotorDriver
+        class TempDSHOTDriver : public MotorChannel
         {
             public:
                 TempDSHOTDriver() {}
+                void set(uint8_t percent){}
         };
     class RCInputDriver{};
         class TempPPMDriver : public RCInputDriver{};
@@ -37,8 +30,7 @@ namespace config
     class AirspeedDriver{};
         class someAirspeedDriver : public AirspeedDriver{};
      
-    //Define factory function to create motor drivers.
-    //The driver class must be copy-constructable as the returned object will be a copy.
+    //Define factory function to create drivers
     template <class BaseDriverType, class DerivedDriverType, auto... args>
     BaseDriverType* constructDriver() {
         return new DerivedDriverType(args...);
@@ -62,7 +54,7 @@ namespace config
     typedef struct {
         ControlAxis_t axis;
         bool isInverted = false;
-        DriverFactory<MotorDriver> driverConstructor;
+        DriverFactory<MotorChannel> driverConstructor;
     } Motor_t;
 
 
@@ -86,6 +78,15 @@ namespace config
 
     /* Flightmode declarations */
 
+    //Define factory function to create flightmodes
+    template <class FlightmodeType, auto... args>
+    AM::Flightmode* constructFlightmode() {
+        return new FlightmodeType(args...);
+    }
+
+    //Typedef pointer to factory function
+    using FlightmodeFactory = AM::Flightmode* (*)(void);
+
     typedef struct {
         bool isEnabled = false;
         float p = 0.0f;
@@ -101,8 +102,8 @@ namespace config
     } ControlPID_t;
 
     typedef struct {
-        float min = 0.0f;
-        float max = 100.0f;
+        percentage_t min = 0.0f;
+        percentage_t max = 100.0f;
     } AxisLimits_t;
 
     typedef struct {
@@ -117,17 +118,10 @@ namespace config
         ControlLimits_t controlLimits = {};
     } ControlTuning_t;
     
-
-    //TODO: Combine flightmode classes with AM control algorithms
-    class Flightmode{
-        public:
-        ControlTuning_t tuningData_;
-        constexpr Flightmode(ControlTuning_t tuningData) : tuningData_(tuningData){}
-        
-        virtual void run() = 0;
-
-        virtual void updatePid() = 0;
-    };
+    typedef struct {
+        ControlTuning_t tuningData;
+        FlightmodeFactory flightmodeConstructor;
+    } Flightmode_t;
 
 }
 

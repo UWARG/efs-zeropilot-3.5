@@ -8,7 +8,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)
 
 ## TODO: Make this configurable via build script
-Set(MODEL_NAME, testmodel1)
+Set(MODEL_NAME testmodel1)
 
 include_directories(
     ## Common Includes ##
@@ -31,6 +31,9 @@ include_directories(
     ${ROOT_DIR}/Drivers/ccontrol/Inc
     ${ROOT_DIR}/Drivers/sensor_fusion/Inc
     ${ROOT_DIR}/Drivers/IWDG_Driver/Inc
+
+    ${ROOT_DIR}/Drivers/MotorChannel/Inc
+
     ## Boardfiles Includes ##
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Drivers/${FAMILY_NAME}_HAL_Driver/Inc
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Core/Inc
@@ -60,13 +63,6 @@ set(FREE_RTOS_C_SOURCES "${FREE_RTOS_DIR}/*.c"
 set(HAL_CORE ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Core)
 set(HAL_CORE_C_SOURCES "${HAL_CORE}/Src/*.c")
 set(HAL_CORE_CXX_SOURCES "${HAL_CORE}/Src/*.cpp")
-
-## Models Sources ##
-set(MODELS ${ROOT_DIR}/Models)
-set(MODELS_C_SOURCES "${MODELS}/*.c"
-                    "${MODELS}/${MODEL_NAME}/*.c")
-set(MODELS_CXX_SOURCES "${MODELS}/*.cpp"
-                      "${MODELS}/${MODEL_NAME}/*.cpp")
 
 ## Zeropilot Sources ##
 set(ATTITUDE_MANAGER ${ROOT_DIR}/AttitudeManager)

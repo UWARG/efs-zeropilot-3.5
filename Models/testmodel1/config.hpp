@@ -2,6 +2,7 @@
 #define ZPSW3_CONFIG_HPP
 
 #include "global_config.hpp"
+#include "tim.h"
 
 namespace config
 {
@@ -12,13 +13,13 @@ namespace config
         {   //Yaw servo motor
             .axis = yaw,
             .isInverted = false,
-            .driverConstructor = constructDriver<MotorDriver, TempPWMDriver,
-                                                 /*timer*/ 0, /*timer_channel*/ 0>
+            .driverConstructor = constructDriver<MotorChannel, PWMChannel,
+                                                 /*timer*/ &htim1, /*timer_channel*/ 0>
         },
         {   //Roll BLDC motor
             .axis = roll,
             .isInverted = true,
-            .driverConstructor = constructDriver<MotorDriver, TempDSHOTDriver>
+            .driverConstructor = constructDriver<MotorChannel, TempDSHOTDriver>
         }
     };
 
@@ -58,78 +59,73 @@ namespace config
 
 
 
-    /* Flightmode 1 Config */
+    /* Flightmode Config */
 
-    constexpr ControlTuning_t flightmode1Tuning = {
-        .PIDValues = {
-            .yawPID = {
-                .isEnabled = true,
-                .p = 1.0f,
-                .i = 1.0f,
-                .d = 1.0f
-            }
-        },
-        .controlLimits = {
-            .yawLimit = {
-                .min = 5.0f,
-                .max = 95.0f
-            }
-        }
-    };
-
-    class TempFlightmode1 : public Flightmode{
+    class TempFlightmode1 : public AM::Flightmode{
+        volatile uint8_t asdf_;
         public:
-        constexpr TempFlightmode1() : Flightmode(flightmode1Tuning){}
+        TempFlightmode1(){}
         //TODO: Implement control algorithm functions in AM
         void run();
         void updatePid();
     };
 
-    static TempFlightmode1 tempFlightmode1;
-
-
-
-    /* Flightmode 2 Config */
-
-    constexpr ControlTuning_t flightmode2Tuning = {
-        .PIDValues = {
-            .yawPID = {
-                .isEnabled = true,
-                .p = 1.0f,
-                .i = 1.0f,
-                .d = 1.0f
-            },
-            .rollPID = {
-                .isEnabled = true,
-                .p = 1.0f,
-                .i = 1.0f,
-                .d = 1.0f
-            }
-        },
-        .controlLimits = {
-            .yawLimit = {
-                .min = 5.0f,
-                .max = 95.0f
-            },
-            .rollLimit = {
-                .min = 0.0f,
-                .max = 100.0f
-            }
-        }
-    };
-    
-    class TempFlightmode2 : public Flightmode{
+    class TempFlightmode2 : public AM::Flightmode{
         public:
-        constexpr TempFlightmode2() : Flightmode(flightmode2Tuning){}
+        TempFlightmode2(){}
         void run();
         void updatePid();
     };
-    
-    static TempFlightmode2 tempFlightmode2;
 
-    constexpr Flightmode * flightmodes[] = {
-        &tempFlightmode1,
-        &tempFlightmode2
+    constexpr Flightmode_t flightmodes[] = {
+        {
+            .tuningData{
+                .PIDValues = {
+                    .yawPID = {
+                        .isEnabled = true,
+                        .p = 1.0f,
+                        .i = 1.0f,
+                        .d = 1.0f
+                    }
+                },
+                .controlLimits = {
+                    .yawLimit = {
+                        .min = 5.0f,
+                        .max = 95.0f
+                    }
+                }
+            },
+            .flightmodeConstructor = constructFlightmode<TempFlightmode1>
+        },
+        {
+            .tuningData{
+                .PIDValues = {
+                    .yawPID = {
+                        .isEnabled = true,
+                        .p = 1.0f,
+                        .i = 1.0f,
+                        .d = 1.0f
+                    },
+                    .rollPID = {
+                        .isEnabled = true,
+                        .p = 1.0f,
+                        .i = 1.0f,
+                        .d = 1.0f
+                    }
+                },
+                .controlLimits = {
+                    .yawLimit = {
+                        .min = 5.0f,
+                        .max = 95.0f
+                    },
+                    .rollLimit = {
+                        .min = 0.0f,
+                        .max = 100.0f
+                    }
+                }
+            },
+            .flightmodeConstructor = constructFlightmode<TempFlightmode2>
+        }
     };
 
 }
