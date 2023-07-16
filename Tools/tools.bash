@@ -51,7 +51,7 @@ if [[ $# -eq 0 ]]; then
 elif [[ $1 == "compile" ]]; then
     RUN_TEST=false
     CLEAN=false   
-    shift 1 && while getopts :t:p:c opt
+    shift 1 && while getopts :t:p:m:c opt
     do
         case ${opt} in
             t) 
@@ -59,6 +59,9 @@ elif [[ $1 == "compile" ]]; then
                 ;;
             p) 
                 PLATFORM=${OPTARG}
+                ;;
+            m) 
+                MODEL_NAME=${OPTARG}
                 ;;
             c) 
             CLEAN=true
@@ -114,7 +117,7 @@ if [[ $RUN_TEST == false ]]; then
     echo "Building ZeroPilot for $(echo $COMPILE_TYPE | tr '[:upper:]' '[:lower:]')."  
     COMPILE_DIR="$SCRIPT_PATH/$COMPILE_TYPE/build" 
     if [[ $COMPILE_TYPE == "Firmware" ]]; then
-        echo "Building for $PLATFORM."
+        echo "Building for platform $PLATFORM and model $MODEL_NAME."
     fi 
     if [[ $CLEAN == true ]]; then
         echo "Cleaning old $(echo $COMPILE_TYPE | tr '[:upper:]' '[:lower:]') build environment."
@@ -131,6 +134,7 @@ if [[ $RUN_TEST == false ]]; then
                 -G "${GENERATOR}" \
                 -DCMAKE_BUILD_TYPE="Debug" \
                 -DCMAKE_TOOLCHAIN_FILE="../../../Boardfiles/$PLATFORM/$PLATFORM.cmake" \
+                -DMODEL_NAME="$MODEL_NAME" \
                 -Wdev \
                 -Wdeprecated \
                 ../

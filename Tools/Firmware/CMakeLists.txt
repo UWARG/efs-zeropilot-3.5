@@ -7,9 +7,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)
 
-## TODO: Make this configurable via build script
-Set(MODEL_NAME testmodel1)
-
 include_directories(
     ## Common Includes ##
     ${ROOT_DIR}/Common/Inc
