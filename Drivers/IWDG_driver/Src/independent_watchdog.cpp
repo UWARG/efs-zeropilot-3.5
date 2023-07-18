@@ -8,9 +8,6 @@
  */
 IndependentWatchdog::IndependentWatchdog(IWDG_HandleTypeDef *watchdog) {
 	this->watchdog = watchdog;
-	IWDG_InitTypeDef initDef = watchdog->Init;
-	this->iwdg_prescaler = initDef.Prescaler;
-	this->iwdg_reload = initDef.Reload;
 }
 
 
