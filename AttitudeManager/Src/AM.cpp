@@ -43,7 +43,7 @@ AttitudeManager::AttitudeManager(Flightmode* control_algorithm):
     control_algorithm_(control_algorithm)
 {
     for (uint8_t i{0}; i < config::NUM_MOTORS; i++) {
-        motorChannel_[i] = config::motors[i].driverConstructor();   
+        motorChannels_[i] = config::motors[i].driverConstructor();   
     }
 };
 
@@ -57,7 +57,7 @@ void AttitudeManager::runControlLoopIteration(const AttitudeManagerInput& instru
 }
 
 void AttitudeManager::outputToMotor(uint8_t percent, uint8_t motorIndex) {
-    motorChannel_[motorIndex]->set(percent);
+    motorChannels_[motorIndex]->set(percent);
 }
 
 }  // namespace AM

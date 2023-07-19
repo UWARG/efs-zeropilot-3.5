@@ -33,7 +33,7 @@ class AttitudeManager {
     static struct AttitudeManagerInput control_inputs;
 
     Flightmode* control_algorithm_;
-    MotorChannel *motorChannel_[config::NUM_MOTORS];
+    MotorChannel *motorChannels_[config::NUM_MOTORS];
 };
 
 
