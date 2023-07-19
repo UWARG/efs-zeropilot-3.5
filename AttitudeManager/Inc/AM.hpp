@@ -12,9 +12,6 @@
 #include "AM_ControlAlgorithm.hpp"
 #include "CommonDataTypes.hpp"
 
-#include "FreeRTOS.h"
-#include "semphr.h"
-
 namespace AM {
 
 class AttitudeManager {
@@ -23,19 +20,22 @@ class AttitudeManager {
 
     static AttitudeManagerInput getControlInputs();
 
-    AttitudeManager(Flightmode* control_algorithm) : control_algorithm(control_algorithm){};
+    AttitudeManager(Flightmode* control_algorithm);
 
     void runControlLoopIteration(const AttitudeManagerInput& instructions);
 
    private:
     AttitudeManager();
+    void outputToMotor(uint8_t percent, uint8_t motorIndex);
 
     static SemaphoreHandle_t control_inputs_mutex;
 
     static struct AttitudeManagerInput control_inputs;
 
-    Flightmode* control_algorithm;
+    Flightmode* control_algorithm_;
+    MotorChannel *motorChannel_[config::NUM_MOTORS];
 };
+
 
 }  // namespace AM
 
