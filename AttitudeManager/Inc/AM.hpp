@@ -12,6 +12,8 @@
 #include "AM_ControlAlgorithm.hpp"
 #include "CommonDataTypes.hpp"
 
+#include <vector>
+
 namespace AM {
 
 class AttitudeManager {
@@ -26,16 +28,23 @@ class AttitudeManager {
 
    private:
     AttitudeManager();
-    void outputToMotor(uint8_t percent, uint8_t motorIndex);
+    void outputToMotor(config::ControlAxis_t axis, uint8_t percent);
 
     static SemaphoreHandle_t control_inputs_mutex;
 
     static struct AttitudeManagerInput control_inputs;
 
     Flightmode* control_algorithm_;
-    MotorChannel *motorChannels_[config::NUM_MOTORS];
+
+    std::vector<MotorInstance_t> motorInstances_[4]; // 4 is the size of config::ControlAxis_t enum
+    
 };
 
+typedef struct {
+        config::ControlAxis_t axis;
+        bool isInverted;
+        MotorChannel *motorInstance;
+    } MotorInstance_t;
 
 }  // namespace AM
 

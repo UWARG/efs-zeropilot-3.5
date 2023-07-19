@@ -43,7 +43,15 @@ AttitudeManager::AttitudeManager(Flightmode* control_algorithm):
     control_algorithm_(control_algorithm)
 {
     for (uint8_t i{0}; i < config::NUM_MOTORS; i++) {
-        motorChannels_[i] = config::motors[i].driverConstructor();   
+        
+        motorInstances_[config::motors[i].axis].push_back(
+            {
+                .axis = config::motors[i].axis,
+                .isInverted = config::motors[i].isInverted,
+                .motorInstance = config::motors[i].driverConstructor()
+            }
+        );
+
     }
 };
 
@@ -56,8 +64,11 @@ void AttitudeManager::runControlLoopIteration(const AttitudeManagerInput& instru
     // Write motor outputs
 }
 
-void AttitudeManager::outputToMotor(uint8_t percent, uint8_t motorIndex) {
-    motorChannels_[motorIndex]->set(percent);
+void AttitudeManager::outputToMotor(config::ControlAxis_t axis, uint8_t percent) {
+    for (auto i = motorInstances_[axis].cbegin(); i != motorInstances_[axis].cend(); ++i) {
+        i->motorInstance->set(percent);
+    }
+    
 }
 
 }  // namespace AM
