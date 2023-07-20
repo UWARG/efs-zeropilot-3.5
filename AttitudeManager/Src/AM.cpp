@@ -42,16 +42,47 @@ AttitudeManagerInput AttitudeManager::getControlInputs() {
 AttitudeManager::AttitudeManager(Flightmode* control_algorithm):
     control_algorithm_(control_algorithm)
 {
+    uint8_t yawCount{0}, pitchCount{0}, rollCount{0}, thrustCount{0};
     for (uint8_t i{0}; i < config::NUM_MOTORS; i++) {
-        
-        motorInstances_[config::motors[i].axis].push_back(
-            {
-                .axis = config::motors[i].axis,
-                .isInverted = config::motors[i].isInverted,
-                .motorInstance = config::motors[i].driverConstructor()
-            }
-        );
+        switch (config::motors[i].axis) {
+            case config::yaw: 
+                yawCount++;
+                break;
+            case config::pitch: 
+                pitchCount++;
+                break;
+            case config::roll: 
+                rollCount++;
+                break;
+        }
+    }
 
+    motorReferences_[config::yaw] = &motorInstances_[0];
+    motorReferences_[config::pitch] = &motorInstances_[yawCount];
+    motorReferences_[config::roll] = &motorInstances_[yawCount + pitchCount];
+    motorReferences_[config::thrust] = &motorInstances_[yawCount + pitchCount + rollCount];
+    motorReferences_[4] = &motorInstances_[config::NUM_MOTORS]; // out of bounds reference, useful for outputToMotor to know the end of the array
+
+    yawCount = 0, pitchCount = 0, rollCount = 0, thrustCount = 0;
+    for (uint8_t i{0}; i < config::NUM_MOTORS; i++) {
+        switch (config::motors[i].axis) {
+            case config::yaw:
+                (motorReferences_[config::yaw] + yawCount)->motorInstance = config::motors[i].driverConstructor();
+                (motorReferences_[config::yaw] + yawCount)->isInverted = config::motors[i].isInverted;
+                yawCount++;
+            case config::pitch:
+                (motorReferences_[config::pitch] + pitchCount)->motorInstance = config::motors[i].driverConstructor();
+                (motorReferences_[config::pitch] + pitchCount)->isInverted = config::motors[i].isInverted;
+                pitchCount++;
+            case config::roll:
+                (motorReferences_[config::roll] + rollCount)->motorInstance = config::motors[i].driverConstructor();
+                (motorReferences_[config::roll] + rollCount)->isInverted = config::motors[i].isInverted;
+                rollCount++;
+            case config::thrust:
+                (motorReferences_[4] + thrustCount)->motorInstance = config::motors[i].driverConstructor();
+                (motorReferences_[4] + thrustCount)->isInverted = config::motors[i].isInverted;
+                thrustCount++;
+        }
     }
 };
 
@@ -65,7 +96,7 @@ void AttitudeManager::runControlLoopIteration(const AttitudeManagerInput& instru
 }
 
 void AttitudeManager::outputToMotor(config::ControlAxis_t axis, uint8_t percent) {
-    for (auto i = motorInstances_[axis].cbegin(); i != motorInstances_[axis].cend(); ++i) {
+    for (MotorInstance_t *i{motorReferences_[axis]}; i != motorReferences_[axis + 1]; i++) {
         i->motorInstance->set(percent);
     }
     
