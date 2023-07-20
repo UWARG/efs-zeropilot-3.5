@@ -36,14 +36,14 @@ class AttitudeManager {
 
     Flightmode* control_algorithm_;
 
-    std::vector<MotorInstance_t> motorInstances_[4]; // 4 is the size of config::ControlAxis_t enum
+    MotorInstance_t motorInstances_[config::NUM_MOTORS]{};
+    MotorInstance_t *motorReferences_[5]{nullptr};
     
 };
 
 typedef struct {
-        config::ControlAxis_t axis;
-        bool isInverted;
         MotorChannel *motorInstance;
+        bool isInverted;
     } MotorInstance_t;
 
 }  // namespace AM
