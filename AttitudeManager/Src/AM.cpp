@@ -67,20 +67,20 @@ AttitudeManager::AttitudeManager(Flightmode* control_algorithm):
     for (uint8_t i{0}; i < config::NUM_MOTORS; i++) {
         switch (config::motors[i].axis) {
             case config::yaw:
-                (motorReferences_[config::yaw] + yawCount)->motorInstance = config::motors[i].driverConstructor();
-                (motorReferences_[config::yaw] + yawCount)->isInverted = config::motors[i].isInverted;
+                motorReferences_[config::yaw][yawCount].motorInstance = config::motors[i].driverConstructor();
+                motorReferences_[config::yaw][yawCount].isInverted = config::motors[i].isInverted;
                 yawCount++;
             case config::pitch:
-                (motorReferences_[config::pitch] + pitchCount)->motorInstance = config::motors[i].driverConstructor();
-                (motorReferences_[config::pitch] + pitchCount)->isInverted = config::motors[i].isInverted;
+                motorReferences_[config::pitch][pitchCount].motorInstance = config::motors[i].driverConstructor();
+                motorReferences_[config::pitch][pitchCount].isInverted = config::motors[i].isInverted;
                 pitchCount++;
             case config::roll:
-                (motorReferences_[config::roll] + rollCount)->motorInstance = config::motors[i].driverConstructor();
-                (motorReferences_[config::roll] + rollCount)->isInverted = config::motors[i].isInverted;
+                motorReferences_[config::roll][rollCount].motorInstance = config::motors[i].driverConstructor();
+                motorReferences_[config::roll][rollCount].isInverted = config::motors[i].isInverted;
                 rollCount++;
             case config::thrust:
-                (motorReferences_[4] + thrustCount)->motorInstance = config::motors[i].driverConstructor();
-                (motorReferences_[4] + thrustCount)->isInverted = config::motors[i].isInverted;
+                motorReferences_[config::thrust][thrustCount].motorInstance = config::motors[i].driverConstructor();
+                motorReferences_[config::thrust][thrustCount].isInverted = config::motors[i].isInverted;
                 thrustCount++;
         }
     }
