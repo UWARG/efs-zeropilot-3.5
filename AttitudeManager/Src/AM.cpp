@@ -97,7 +97,11 @@ void AttitudeManager::runControlLoopIteration(const AttitudeManagerInput& instru
 
 void AttitudeManager::outputToMotor(config::ControlAxis_t axis, uint8_t percent) {
     for (MotorInstance_t *i{motorReferences_[axis]}; i != motorReferences_[axis + 1]; i++) {
-        i->motorInstance->set(percent);
+        if (i->isInverted) {
+            i->motorInstance->set(100-percent);
+        } else {
+            i->motorInstance->set(percent);
+        }
     }
     
 }
