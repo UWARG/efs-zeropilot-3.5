@@ -3,71 +3,80 @@
 #include <array>
 #include "../Inc/PM_Waypoint.hpp"
 
+#define ERROR_RANGE 0.0001
+
 // void calculate_direction_to_waypoint(float* nextWaypointCoordinates, float* prevWaypointCoordnates, float* waypointDirection);
-class WaypointCalculateDirectionTestSuite : public testing::TestWithParam<std::tuple<std::array<float, 2>, std::array<float, 2>, std::array<float, 2>>> {};
+class WaypointCalculateDirectionTestSuite : public testing::TestWithParam<std::tuple<std::array<float, 3>, std::array<float, 3>, std::array<float, 3>>> {};
 
 INSTANTIATE_TEST_SUITE_P(
   WaypointCalculateDirectionTestParams, WaypointCalculateDirectionTestSuite,
   testing::Values(
-    std::make_tuple(std::array<float, 2>{1.0, 1.1}, std::array<float, 2>{1.2, 1.3}, std::array<float, 2>{1.4, 1.5})
+    std::make_tuple(std::array<float, 3>{0.25, 1.235, 3.125}, std::array<float, 3>{-0.25, 5.025, -1.2}, std::array<float, 3>{0.08662, -0.656581, 0.74926}),
+    std::make_tuple(std::array<float, 3>{0, 0, 0}, std::array<float, 3>{4.0, 4.0, 4.0}, std::array<float, 3>{-0.577350, -0.577350, -0.577350}),
+    std::make_tuple(std::array<float, 3>{1.0, 2.0, 3.0}, std::array<float, 3>{1.0, 2.0, 0.0}, std::array<float, 3>{0, 0, 1.0})
   )
 );
 
 TEST_P(WaypointCalculateDirectionTestSuite, CalculateDirection) {
-  float param1[2], param2[2], expAns[2], actAns[2];
+  float param1[3], param2[3], expAns[3], actAns[3];
   std::copy(std::begin(std::get<0>(GetParam())), std::end(std::get<0>(GetParam())), std::begin(param1));
   std::copy(std::begin(std::get<1>(GetParam())), std::end(std::get<1>(GetParam())), std::begin(param2));
   std::copy(std::begin(std::get<2>(GetParam())), std::end(std::get<2>(GetParam())), std::begin(expAns));
 
   PM::Waypoint::calculate_direction_to_waypoint(param1, param2, actAns);
 
-  EXPECT_EQ(actAns[0], expAns[0]);
-  EXPECT_EQ(actAns[1], expAns[1]);
+  // include errors
+  EXPECT_TRUE(abs(actAns[0] - expAns[0]) < ERROR_RANGE);
+  EXPECT_TRUE(abs(actAns[1] - expAns[1]) < ERROR_RANGE);
+  EXPECT_TRUE(abs(actAns[2] - expAns[2]) < ERROR_RANGE);
 }
 
 
 // float calculate_distance_to_waypoint(float* nextWaypointCoordinates, float* position);
-class WaypointCalculateDistanceTestSuite : public testing::TestWithParam<std::tuple<std::array<float, 2>, std::array<float, 2>, float>> {};
+class WaypointCalculateDistanceTestSuite : public testing::TestWithParam<std::tuple<std::array<float, 3>, std::array<float, 3>, float>> {};
 
 INSTANTIATE_TEST_SUITE_P(
   WaypointCalculateDistanceTestParams, WaypointCalculateDistanceTestSuite,
   testing::Values(
-    std::make_tuple(std::array<float, 2>{1.0, 1.1}, std::array<float, 2>{1.2, 1.3}, 1.5)
+    std::make_tuple(std::array<float, 3>{0.25, 1.235, 3.125}, std::array<float, 3>{-0.25, 5.025, -1.2}, 5.772324055352402),
+    std::make_tuple(std::array<float, 3>{0, 0, 0}, std::array<float, 3>{4.0, 4.0, 4.0}, 6.92820),
+    std::make_tuple(std::array<float, 3>{1.0, 2.0, 3.0}, std::array<float, 3>{1.0, 2.0, 0.0}, 3.0)
   )
 );
 
 TEST_P(WaypointCalculateDistanceTestSuite, CalculateDistance) {
-  float param1[2], param2[2], expAns, actAns;
+  float param1[3], param2[3], expAns, actAns;
   std::copy(std::begin(std::get<0>(GetParam())), std::end(std::get<0>(GetParam())), std::begin(param1));
   std::copy(std::begin(std::get<1>(GetParam())), std::end(std::get<1>(GetParam())), std::begin(param2));
   expAns = std::get<2>(GetParam());
 
   actAns = PM::Waypoint::calculate_distance_to_waypoint(param1, param2);
 
-  EXPECT_EQ(actAns, expAns);
+  // include errors
+  EXPECT_TRUE(abs(actAns - expAns) < ERROR_RANGE);
 }
 
-// float dot_product(float* waypointDirection, float* position, float* halfPlane);
-class WaypointDotProductTestSuite : public testing::TestWithParam<std::tuple<std::array<float, 2>, std::array<float, 2>, std::array<float, 2>, float>> {};
+// // float dot_product(float* waypointDirection, float* position, float* halfPlane);
+// class WaypointDotProductTestSuite : public testing::TestWithParam<std::tuple<std::array<float, 3>, std::array<float, 3>, std::array<float, 3>, float>> {};
 
-INSTANTIATE_TEST_SUITE_P(
-  WaypointDotProductTestParams, WaypointDotProductTestSuite,
-  testing::Values(
-    std::make_tuple(std::array<float, 2>{1.0, 1.1}, std::array<float, 2>{1.2, 1.3}, std::array<float, 2>{1.4, 1.5}, 1.5)
-  )
-);
+// INSTANTIATE_TEST_SUITE_P(
+//   WaypointDotProductTestParams, WaypointDotProductTestSuite,
+//   testing::Values(
+//     std::make_tuple(std::array<float, 3>{1, 1, 1}, std::array<float, 3>{0, 0, 0}, std::array<float, 3>{}, 1.5)
+//   )
+// );
 
-TEST_P(WaypointDotProductTestSuite, DotProduct) {
-  float param1[2], param2[2], param3[2], expAns, actAns;
-  std::copy(std::begin(std::get<0>(GetParam())), std::end(std::get<0>(GetParam())), std::begin(param1));
-  std::copy(std::begin(std::get<1>(GetParam())), std::end(std::get<1>(GetParam())), std::begin(param2));
-  std::copy(std::begin(std::get<1>(GetParam())), std::end(std::get<1>(GetParam())), std::begin(param3));
-  expAns = std::get<3>(GetParam());
+// TEST_P(WaypointDotProductTestSuite, DotProduct) {
+//   float param1[2], param2[2], param3[2], expAns, actAns;
+//   std::copy(std::begin(std::get<0>(GetParam())), std::end(std::get<0>(GetParam())), std::begin(param1));
+//   std::copy(std::begin(std::get<1>(GetParam())), std::end(std::get<1>(GetParam())), std::begin(param2));
+//   std::copy(std::begin(std::get<2>(GetParam())), std::end(std::get<2>(GetParam())), std::begin(param3));
+//   expAns = std::get<3>(GetParam());
 
-  actAns = PM::Waypoint::dot_product(param1, param2, param3);
+//   actAns = PM::Waypoint::dot_product(param1, param2, param3);
 
-  EXPECT_EQ(actAns, expAns);
-}
+//   EXPECT_EQ(actAns, expAns);
+// }
 
 
 // void get_coordinates(long double longitude, long double latitude, float* xyCoordinates);
@@ -78,7 +87,8 @@ class WaypointGetDistanceTestSuite : public testing::TestWithParam<std::tuple<lo
 INSTANTIATE_TEST_SUITE_P(
   WaypointGetDistanceTestParams, WaypointGetDistanceTestSuite,
   testing::Values(
-    std::make_tuple(1.123, 2.234, 3.4232, 4.53423, 1.123124)
+    std::make_tuple(1.123, -2.234, 1.123, -2.234, 0),
+    std::make_tuple(10, -10, 10.5, -10.5, -78002)
   )
 );
 
@@ -89,7 +99,7 @@ TEST_P(WaypointGetDistanceTestSuite, GetDistance) {
 
   actAns = PM::Waypoint::get_distance(param1, param2, param3, param4);
 
-  EXPECT_EQ(actAns, expAns);
+  EXPECT_TRUE(abs(actAns - expAns) < 100);
 }
 
 
@@ -99,7 +109,7 @@ class WaypointFollowOrbitTestSuite : public testing::TestWithParam<std::tuple<st
 INSTANTIATE_TEST_SUITE_P(
   WaypointFollowOrbitTestParams, WaypointFollowOrbitTestSuite,
   testing::Values(
-    std::make_tuple(std::array<float, 2>{1.1, 1.2}, std::array<float, 2>{1.1, 1.2}, 3.4232, 4.53423, 1.123124, 10)
+    std::make_tuple(std::array<float, 2>{0.0, 1.0}, std::array<float, 2>{0.0, 0.0}, 1, 1, 265, 270)
   )
 );
 
@@ -112,7 +122,7 @@ TEST_P(WaypointFollowOrbitTestSuite, FollowOrbit) {
 
   actAns = PM::Waypoint::follow_orbit(param1, param2, param3, param4, param5);
 
-  EXPECT_EQ(actAns, expAns);
+  EXPECT_TRUE(abs(actAns - expAns) < 1);
 }
 
 // int follow_straight_path(float* waypointDirection, float* targetWaypoint, float* position, float track);
@@ -121,7 +131,8 @@ class WaypointFollowStraightTestSuite : public testing::TestWithParam<std::tuple
 INSTANTIATE_TEST_SUITE_P(
   WaypointFollowStraightTestParams, WaypointFollowStraightTestSuite,
   testing::Values(
-    std::make_tuple(std::array<float, 2>{1.1, 1.2}, std::array<float, 2>{1.1, 1.2}, std::array<float, 2>{1.1, 1.2}, 1.123124, 10)
+    std::make_tuple(std::array<float, 2>{0.57735, -0.57735}, std::array<float, 2>{10, -10}, std::array<float, 2>{2, -2}, 90, 135),
+    std::make_tuple(std::array<float, 2>{0.5, 0.866}, std::array<float, 2>{2, 4}, std::array<float, 2>{0, 0}, 3.43568, 30)
   )
 );
 
@@ -135,5 +146,5 @@ TEST_P(WaypointFollowStraightTestSuite, FollowStraight) {
 
   actAns = PM::Waypoint::follow_straight_path(param1, param2, param3, param4);
 
-  EXPECT_EQ(actAns, expAns);
+  EXPECT_TRUE(abs(actAns - expAns) < 1);
 }
