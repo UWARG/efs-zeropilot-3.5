@@ -2,7 +2,7 @@
 
 COMPILE_TYPE="Firmware"
 PLATFORM="nucleol552zeq"
-MODEL_NAME="testmodel1"
+MODEL_NAME="example_model"
 
 # --- Compile settings end ---
 

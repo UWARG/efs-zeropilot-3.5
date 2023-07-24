@@ -1,7 +1,7 @@
 #ifndef ZPSW3_CONFIG_HPP
 #define ZPSW3_CONFIG_HPP
 
-#include "global_config.hpp"
+#include "config_foundation.hpp"
 #include "tim.h"
 
 namespace config
@@ -13,13 +13,13 @@ namespace config
         {   //Yaw servo motor
             .axis = yaw,
             .isInverted = false,
-            .driverConstructor = constructDriver<MotorChannel, PWMChannel,
+            .driverConstructor = constructObject<MotorChannel, PWMChannel,
                                                  /*timer*/ &htim1, /*timer_channel*/ 0>
         },
         {   //Roll BLDC motor
             .axis = roll,
             .isInverted = true,
-            .driverConstructor = constructDriver<MotorChannel, TempDSHOTDriver>
+            .driverConstructor = constructObject<MotorChannel, TempDSHOTDriver>
         }
     };
 
@@ -32,10 +32,10 @@ namespace config
     //Example array for a model that supports both PPM and SBUS input
     constexpr RCInput_t RCInputs[] = {
         {   //PPM input
-            .driverConstructor = constructDriver<RCInputDriver, TempPPMDriver>
+            .driverConstructor = constructObject<RCInputDriver, TempPPMDriver>
         },
         {   //SBUS input
-            .driverConstructor = constructDriver<RCInputDriver, TempSBusDriver>
+            .driverConstructor = constructObject<RCInputDriver, TempSBusDriver>
         }
     };
     
@@ -48,10 +48,10 @@ namespace config
     //Example array for a model with two GPS modules
     constexpr GPS_t GPSArray[] = {
         {   //NEOM8
-            .driverConstructor = constructDriver<GPSDriver, TempNEOM8Driver>
+            .driverConstructor = constructObject<GPSDriver, TempNEOM8Driver>
         },
         {   //Other GPS
-            .driverConstructor = constructDriver<GPSDriver, otherGPSDriver>
+            .driverConstructor = constructObject<GPSDriver, otherGPSDriver>
         }
     };
     
@@ -61,24 +61,23 @@ namespace config
 
     /* Flightmode Config */
 
-    class TempFlightmode1 : public AM::Flightmode{
-        volatile uint8_t asdf_;
+    class ExampleFlightmode1 : public AM::Flightmode{
         public:
-        TempFlightmode1(){}
+        ExampleFlightmode1(){}
         //TODO: Implement control algorithm functions in AM
         void run();
         void updatePid();
     };
 
-    class TempFlightmode2 : public AM::Flightmode{
+    class ExampleFlightmode2 : public AM::Flightmode{
         public:
-        TempFlightmode2(){}
+        ExampleFlightmode2(){}
         void run();
         void updatePid();
     };
 
     constexpr Flightmode_t flightmodes[] = {
-        {
+        {   //Flightmode1
             .tuningData{
                 .PIDValues = {
                     .yawPID = {
@@ -95,9 +94,9 @@ namespace config
                     }
                 }
             },
-            .flightmodeConstructor = constructFlightmode<TempFlightmode1>
+            .flightmodeConstructor = constructObject<AM::Flightmode, ExampleFlightmode1>
         },
-        {
+        {   //Flightmode2
             .tuningData{
                 .PIDValues = {
                     .yawPID = {
@@ -124,10 +123,10 @@ namespace config
                     }
                 }
             },
-            .flightmodeConstructor = constructFlightmode<TempFlightmode2>
+            .flightmodeConstructor = constructObject<AM::Flightmode, ExampleFlightmode2>
         }
     };
 
 }
 
-#endif // ZPSW3_GLOBAL_CONFIG_HPP
+#endif // ZPSW3_CONFIG_HPP
