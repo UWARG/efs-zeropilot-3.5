@@ -8,7 +8,7 @@
 #include "../../Models/global_config.hpp"
 #include "../../Drivers/rc_receiver/Inc/sbus_receiver.hpp"
 #include "../../Drivers/rc_receiver/Inc/rcreceiver_datatypes.h"
-
+#include "../../Drivers/MotorChannel/Inc/ZP_D_PWMChannel.hpp"
 
 class SystemManager {
 public:
@@ -33,7 +33,10 @@ private:
     config::Flightmode *currentFlightMode_;
     SBUSReceiver rcController_;
     RCControl rcInputs_;
-
+    PWMChannel throttleMotorChannel_;
+    PWMChannel yawMotorChannel_;
+    PWMChannel rollMotorChannel_;
+    PWMChannel pitchtMotorChannel_;
 };
 
 
