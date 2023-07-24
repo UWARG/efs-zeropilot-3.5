@@ -3,7 +3,8 @@
 #define INDEPENDENT_WATCHDOG_H
 
 #include <stdint.h>
-#include "main.h"
+#include "iwdg.h"
+
 
 class IndependentWatchdog : public Watchdog {
 	private:
