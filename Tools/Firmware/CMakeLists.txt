@@ -24,6 +24,7 @@ include_directories(
     ## Driver Includes ##
 
     ## Boardfiles Includes ##
+    ${ROOT_DIR}/Drivers/IWDG_driver/Inc
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Drivers/${FAMILY_NAME}_HAL_Driver/Inc
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Core/Inc
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Drivers/CMSIS/Device/ST/${FAMILY_NAME}/Include
@@ -56,11 +57,14 @@ set(ATTITUDE_MANAGER_C_SOURCES "${ATTITUDE_MANAGER}/Src/*.c"
 set(ATTITUDE_MANAGER_CXX_SOURCES "${ATTITUDE_MANAGER}/Src/*.cpp"
                                 "${ATTITUDE_MANAGER}/FlightModes/Src/*.cpp")
 
+set(DRIVERS_IWDGDriver_DIR ${ROOT_DIR}/Drivers/IWDG_Driver/Src)
+set(DRIVERS_IWDGDriver_CXX_SOURCES "${DRIVERS_IWDGDriver_DIR}/*.cpp")
 ## Actually find the sources, NOTE: if you add a new source above, add it here! ##
 file(GLOB_RECURSE C_SOURCES ${HAL_DRIVERS_C_SOURCES}
                             ${FREE_RTOS_C_SOURCES}
                             ${HAL_CORE_C_SOURCES}
-                            ${ATTITUDE_MANAGER_C_SOURCES})
+                            ${ATTITUDE_MANAGER_C_SOURCES}
+                            ${DRIVERS_IWDGDriver_CXX_SOURCES})
 message("C Sources: ${C_SOURCES}")
 file(GLOB_RECURSE CXX_SOURCES ${HAL_CORE_CXX_SOURCES}
                               ${ATTITUDE_MANAGER_CXX_SOURCES})
