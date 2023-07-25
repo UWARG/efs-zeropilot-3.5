@@ -3,15 +3,15 @@
 #define INDEPENDENT_WATCHDOG_H
 
 #include <stdint.h>
-#include "main.h"
+#include "watchdog.h"
 
-class IndependentWatchdog : public Watchdog {
+class IndependentWatchdog: public Watchdog {
 	private:
 		IWDG_HandleTypeDef* watchdog;
 
 	public:
 		IndependentWatchdog(IWDG_HandleTypeDef* watchdog);
-		bool refreshWatchdog() override ;
+		bool refreshWatchdog() override;
 };
 
 

@@ -8,6 +8,7 @@
 #include "../../Models/global_config.hpp"
 #include "../../Drivers/rc_receiver/Inc/sbus_receiver.hpp"
 #include "../../Drivers/rc_receiver/Inc/rcreceiver_datatypes.h"
+#include "../../Drivers/IWDG_driver/Inc/independent_watchdog.h"
 
 
 class SystemManager {
@@ -19,9 +20,6 @@ public:
     /* Class Functions */
     void flyManually();
 
-    /* Getters and Setters */
-    config::Flightmode* getCurrentFlightMode();
-    void setCurrentFlightMode(config::Flightmode *flightmode);
 private:
     /* Private helper functions */
     void updateRCInputs();
@@ -30,9 +28,9 @@ private:
     /* SBUS and AM variables to follow */
     
     /* State-keeping variables to follow */
-    config::Flightmode *currentFlightMode_;
     SBUSReceiver rcController_;
     RCControl rcInputs_;
+    IndependentWatchdog watchdog_;
 
 };
 
