@@ -20,16 +20,18 @@ AttitudeManagerInput AttitudeManager::control_inputs = {
 };
 
 void AttitudeManager::setControlInputs(const AttitudeManagerInput& new_control_inputs) {
-    xSemaphoreTake( control_inputs_mutex, (TickType_t) 10);
-    control_inputs = new_control_inputs;
-    xSemaphoreGive( control_inputs_mutex );
+    if (xSemaphoreTake(control_inputs_mutex, (TickType_t) portMAX_DELAY) == pdPASS) {
+        control_inputs = new_control_inputs;
+        xSemaphoreGive(control_inputs_mutex);
+    }
 }
 
 AttitudeManagerInput AttitudeManager::getControlInputs() {
     struct AttitudeManagerInput temp;
-    xSemaphoreTake( control_inputs_mutex, (TickType_t) 10);
-    temp = control_inputs;
-    xSemaphoreGive( control_inputs_mutex );
+    if (xSemaphoreTake(control_inputs_mutex, (TickType_t) portMAX_DELAY) == pdPASS) {
+        temp = control_inputs;
+        xSemaphoreGive(control_inputs_mutex);
+    }
     return temp;
 }
 
