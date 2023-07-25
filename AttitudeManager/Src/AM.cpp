@@ -27,7 +27,7 @@ void AttitudeManager::setControlInputs(const AttitudeManagerInput& new_control_i
 }
 
 AttitudeManagerInput AttitudeManager::getControlInputs() {
-    struct AttitudeManagerInput temp;
+    AttitudeManagerInput temp {};
     if (xSemaphoreTake(control_inputs_mutex, (TickType_t) portMAX_DELAY) == pdPASS) {
         temp = control_inputs;
         xSemaphoreGive(control_inputs_mutex);
