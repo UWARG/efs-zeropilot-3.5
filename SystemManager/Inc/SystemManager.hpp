@@ -5,10 +5,10 @@
 #ifndef ZEROPILOT_3_5_SYSTEMMANAGER_HPP
 #define ZEROPILOT_3_5_SYSTEMMANAGER_HPP
 
-#include "../../Models/global_config.hpp"
-#include "../../Drivers/rc_receiver/Inc/sbus_receiver.hpp"
-#include "../../Drivers/rc_receiver/Inc/rcreceiver_datatypes.h"
-#include "../../Drivers/MotorChannel/Inc/ZP_D_PWMChannel.hpp"
+#include "sbus_receiver.hpp"
+#include "rcreceiver_datatypes.h"
+#include "independent_watchdog.h"
+#include "ZP_D_PWMChannel.hpp"
 
 class SystemManager {
 public:
@@ -19,24 +19,18 @@ public:
     /* Class Functions */
     void flyManually();
 
-    /* Getters and Setters */
-    config::Flightmode* getCurrentFlightMode();
-    void setCurrentFlightMode(config::Flightmode *flightmode);
 private:
     /* Private helper functions */
     void updateRCInputs();
     void executeInputs();
-
-    /* SBUS and AM variables to follow */
     
-    /* State-keeping variables to follow */
-    config::Flightmode *currentFlightMode_;
     SBUSReceiver rcController_;
     RCControl rcInputs_;
     PWMChannel throttleMotorChannel_;
     PWMChannel yawMotorChannel_;
     PWMChannel rollMotorChannel_;
-    PWMChannel pitchtMotorChannel_;
+    PWMChannel pitchMotorChannel_;
+    IndependentWatchdog watchdog_;
 };
 
 

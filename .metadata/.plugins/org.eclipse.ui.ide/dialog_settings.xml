@@ -9,6 +9,8 @@
 		<item key="SmartImportRootWizardPage.STORE_NESTED_PROJECTS" value="true"/>
 		<item key="SmartImportRootWizardPage.STORE_CONFIGURE_NATURES" value="true"/>
 		<list key="org.eclipse.ui.internal.wizards.datatransfer.SmartImportRootWizardPage.knownSources">
+			<item value="/Users/gagan/Desktop/ZeroPilot-3.5"/>
+			<item value="/Users/gagan/Desktop/ZeroPilot-SW-3.5-UWARG"/>
 			<item value="C:\Users\navta\Documents\warg\ZeroPilot-SW-3.5"/>
 		</list>
 	</section>
