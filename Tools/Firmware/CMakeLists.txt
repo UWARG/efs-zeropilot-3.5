@@ -33,7 +33,6 @@ include_directories(
     ${ROOT_DIR}/Drivers/ccontrol/Inc
     ${ROOT_DIR}/Drivers/sensor_fusion/Inc
     ${ROOT_DIR}/Drivers/IWDG_Driver/Inc
-
     ${ROOT_DIR}/Drivers/MotorChannel/Inc
 
     ${ROOT_DIR}/Drivers/UARTDevice/Inc
@@ -96,6 +95,8 @@ set(DRIVERS_CXX_SOURCES "${DRIVERS_DIR}/sensor_fusion/Src/*.cpp")
 set(DRIVERS_RcReceiver_DIR ${ROOT_DIR}/Drivers/rc_receiver/Src)
 set(DRIVERS_RcReceiver_CXX_SOURCES "${DRIVERS_RcReceiver_DIR}/*.cpp")
 set(DRIVERS_Common_DIR ${ROOT_DIR}/Drivers/Common/Src)
+set(DRIVERS_MotorChannel_DIR ${ROOT_DIR}/Drivers/MotorChannel/Src)
+set(DRIVERS_MotorChannel_CXX_SOURCES "${DRIVERS_MotorChannel_DIR}/*.cpp")
 set(DRIVERS_Common_CXX_SOURCES "${DRIVERS_Common_DIR}/*.cpp")
 set(DRIVERS_IWDGDriver_DIR ${ROOT_DIR}/Drivers/IWDG_Driver/Src)
 set(DRIVERS_IWDGDriver_CXX_SOURCES "${DRIVERS_IWDGDriver_DIR}/*.cpp")
@@ -109,7 +110,7 @@ file(GLOB_RECURSE C_SOURCES ${HAL_DRIVERS_C_SOURCES}
                             ${FREE_RTOS_C_SOURCES}
                             ${HAL_CORE_C_SOURCES}
                             ${ATTITUDE_MANAGER_C_SOURCES}
-                            ${DRIVERS_IWDGDriver_DIR})
+                            ${DRIVERS_IWDGDriver_DIR}
                             ${SYSTEM_MANAGER_C_SOURCES}
                             ${DRIVERS_C_SOURCES})
 message("C Sources: ${C_SOURCES}")
