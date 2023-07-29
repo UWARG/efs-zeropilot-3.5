@@ -21,7 +21,7 @@ include_directories(
     ${ROOT_DIR}/AttitudeManager/Inc
     ${ROOT_DIR}/AttitudeManager/FlightModes/Inc
 
-    ## Path Manager Includes ##
+    ## Path Manager Includes #
 
     ## Telemetry Manager Includes ##
     ${ROOT_DIR}/TelemetryManager/Inc
