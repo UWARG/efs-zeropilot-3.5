@@ -10,6 +10,10 @@
 #include "independent_watchdog.h"
 #include "ZP_D_PWMChannel.hpp"
 
+#define SBUS_THRESHOLD 25
+#define SBUS_MIN 0
+#define SBUS_MAX 100
+
 class SystemManager {
 public:
     /* Constructors and Destructors */
@@ -20,10 +24,6 @@ public:
     void flyManually();
 
 private:
-    /* Private helper functions */
-    void updateRCInputs();
-    void executeInputs();
-    
     SBUSReceiver rcController_;
     RCControl rcInputs_;
     PWMChannel throttleMotorChannel_;
