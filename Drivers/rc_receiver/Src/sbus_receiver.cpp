@@ -12,6 +12,7 @@ SBUSReceiver::SBUSReceiver(UART_HandleTypeDef* uart) : uart_(uart)
     received_sbus_.failsafe = false;
     received_sbus_.lost_frame = false;
     received_sbus_.new_data = false;
+    this->setIsDataNew(false);
 
     HAL_UART_Receive_DMA (uart_, raw_sbus_, SBUS_FRAME_SIZE);
 }
@@ -97,4 +98,12 @@ void SBUSReceiver::cast_rccontrol()
     if(channel_value > SBUS_RANGE_MAX)
         channel_value = SBUS_RANGE_MAX;
     return static_cast<float>((channel_value - SBUS_RANGE_MIN) * (100.0f / SBUS_RANGE_RANGE));
+ }
+
+ bool SBUSReceiver::getIsDataNew(){
+    return is_data_new_;
+ }
+
+ void SBUSReceiver::setIsDataNew(bool newVal){
+    this->is_data_new_ = newVal;
  }

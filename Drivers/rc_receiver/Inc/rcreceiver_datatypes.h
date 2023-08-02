@@ -2,6 +2,7 @@
 #define RC_RECEIVER_DATA_TYPES_H
 
 #include <cstdint>
+#include <iostream>
 
 #define SBUS_INPUT_CHANNELS	16
 
@@ -37,22 +38,9 @@ struct RCControl{
 
     float &operator[] (int i) { return ControlSignals[i]; }
 
-    void assignValues(RCControl const  &original){
-        this->roll = original.roll;
-        this->pitch = original.pitch;
-        this->throttle = original.throttle;
-        this->yaw = original.yaw;
-        this->aux1 = original.aux1;
-        this->aux2 = original.aux2;
-        this->aux3 = original.aux3;
-        this->aux4 =  original.aux4;
-        this->aux5 = original.aux5;
-        this->aux6 = original.aux6;
-        this->aux7 = original.aux7;
-        this->aux8 = original.aux8;
-        this->aux9 = original.aux9;
-        this->aux10 = original.aux10;
-        this->aux11 = original.aux11;
+    RCControl operator=(const RCControl& other){
+        std::copy(other.ControlSignals, other.ControlSignals + SBUS_INPUT_CHANNELS, this->ControlSignals);
+        return *this;
     }
 
     /*  initial values*/
