@@ -19,25 +19,26 @@ SystemManager::SystemManager():
     pitchMotorChannel_(&htim2, TIM_CHANNEL_4),
     watchdog_(&hiwdg)
 {}
+
 SystemManager::~SystemManager() {}
 
 void SystemManager::flyManually() {
     for(;;){
-            updateRCInputs();
-            executeInputs();
+        this->rcInputs_ = rcController_.GetRCControl();
+        if (this->rcController_.getIsDataNew()) watchdog_.refreshWatchdog();
+
+        if(this->rcInputs_.arm >= (SBUS_MAX - SBUS_THRESHOLD)) {
+            this->throttleMotorChannel_.set(rcInputs_.throttle);
+            this->yawMotorChannel_.set(rcInputs_.yaw);
+            this->rollMotorChannel_.set(rcInputs_.roll);
+            this->pitchMotorChannel_.set(rcInputs_.pitch);
+        }
+        else if (this->rcInputs_.arm <= SBUS_THRESHOLD) {
+            this->throttleMotorChannel_.set(0);
+            this->yawMotorChannel_.set(0);
+            this->rollMotorChannel_.set(0);
+            this->pitchMotorChannel_.set(0);
+        }
+        this->rcController_.setIsDataNew(false);
     }
-}
-
-void SystemManager::updateRCInputs() {
-    this->rcInputs_.assignValues(rcController_.GetRCControl());
-    watchdog_.refreshWatchdog();
-    return;
-}
-
-void SystemManager::executeInputs() {
-    this->throttleMotorChannel_.set(rcInputs_.throttle);
-    this->yawMotorChannel_.set(rcInputs_.yaw);
-    this->rollMotorChannel_.set(rcInputs_.roll);
-    this->pitchMotorChannel_.set(rcInputs_.pitch);
-    return;
 }
