@@ -35,11 +35,11 @@ AttitudeManagerInput AttitudeManager::getControlInputs() {
     return temp;
 }
 
-void AttitudeManager::runControlLoopIteration(const AttitudeManagerInput& instructions) {
+void AttitudeManager::runControlLoopIteration() {
     // Process Instructions
 
     // Run Control Algorithms
-    control_algorithm->run();
+    control_algorithm->run(getControlInputs());
 
     // Write motor outputs
 }

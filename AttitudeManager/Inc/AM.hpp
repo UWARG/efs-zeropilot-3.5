@@ -9,32 +9,31 @@
 #ifndef ZPSW3_AM_HPP
 #define ZPSW3_AM_HPP
 
-#include "AM_ControlAlgorithm.hpp"
 #include "CommonDataTypes.hpp"
-
 #include "FreeRTOS.h"
+#include "flightmode.hpp"
 #include "semphr.h"
 
 namespace AM {
 
 class AttitudeManager {
    public:
-    static void setControlInputs(const AttitudeManagerInput& new_control_inputs);
-
-    static AttitudeManagerInput getControlInputs();
-
     AttitudeManager(Flightmode* control_algorithm) : control_algorithm(control_algorithm){};
 
-    void runControlLoopIteration(const AttitudeManagerInput& instructions);
+    static void setControlInputs(const AttitudeManagerInput& new_control_inputs);
+    static AttitudeManagerInput getControlInputs();
+
+    void runControlLoopIteration();
 
    private:
-    AttitudeManager();
+    AttitudeManager() = delete;
 
     static SemaphoreHandle_t control_inputs_mutex;
-
     static struct AttitudeManagerInput control_inputs;
 
     Flightmode* control_algorithm;
+
+    void outputToMotor(ControlAxis_t axis, uint8_t percent){};
 };
 
 }  // namespace AM

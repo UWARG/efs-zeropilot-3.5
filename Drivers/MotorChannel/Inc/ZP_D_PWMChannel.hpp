@@ -3,8 +3,6 @@
 
 #include "main.h"
 
-#include "ZP_D_MotorChannel.hpp"
-
 class PWMChannel : public MotorChannel {
     public:
         PWMChannel(TIM_HandleTypeDef* timer,

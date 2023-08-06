@@ -18,4 +18,10 @@ struct AttitudeManagerInput {
 
 }  // Namespace AM
 
+typedef enum {
+    yaw,
+    pitch,
+    roll,
+    thrust
+} ControlAxis_t;
 #endif  // ZPSW3_COMMON_DATATYPES_HPP
