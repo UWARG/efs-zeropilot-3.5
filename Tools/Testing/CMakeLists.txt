@@ -129,6 +129,32 @@ include_directories("${ROOT_DIR}/Config_Models")
 file(GLOB MODELS_CODE
 )
 
+# Common
+set(COMMON_FOLDER "${ROOT_DIR}/Common")
+set(COMMON_INC "${COMMON_FOLDER}/Inc")
+set(COMMON_SRC "${COMMON_FOLDER}/Src")
+
+include_directories(${COMMON_INC})
+file(GLOB COMMON_CODE
+    "${COMMON_FOLDER}/Tests/*.cpp"
+
+    # add necessary TelemetryManager source files below
+    # "${COMMON_SRC}/foo.cpp"
+)
+
+
+# Testing stubs
+set(STUBS_FOLDER "${ROOT_DIR}/Testing/Stubs")
+set(STUBS_INC "${STUBS_FOLDER}/Inc")
+set(STUBS_SRC "${STUBS_FOLDER}/Src")
+
+include_directories(${STUBS_INC})
+file(GLOB STUBS_CODE
+    "${STUBS_SRC}/*.cpp"
+)
+
+include_directories("${ROOT_DIR}/Models")
+
 # --- ZeroPilot File Indexing End ---
 
 add_executable(${PROJECT_NAME}

@@ -15,14 +15,13 @@ namespace AM {
 
 class Flightmode {
    public:
-    Flightmode(){};
+    virtual ~Flightmode() = default;
 
-    /// @brief Run the controls algorithm for the given flight model.
-    /// @param
-    /// @returns
-    virtual void run() = 0;
-
+    virtual AttitudeManagerInput run(const AttitudeManagerInput& input) = 0;
     virtual void updatePid() = 0;
+
+   protected:
+    Flightmode() = default;
 };
 
 }  // namespace AM

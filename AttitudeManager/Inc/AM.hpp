@@ -9,10 +9,10 @@
 #ifndef ZPSW3_AM_HPP
 #define ZPSW3_AM_HPP
 
-#include "AM_ControlAlgorithm.hpp"
 #include "CommonDataTypes.hpp"
 #include "config_foundation.hpp"
 #include "FreeRTOS.h"
+#include "flightmode.hpp"
 #include "semphr.h"
 #ifdef TESTING
 #include <gtest/gtest_prod.h>
@@ -51,13 +51,12 @@ class AttitudeManager {
     void outputToMotor(config::ControlAxis_t axis, uint8_t percent);
 
     static SemaphoreHandle_t control_inputs_mutex;
-
     static struct AttitudeManagerInput control_inputs;
 
     Flightmode *controlAlgorithm_;
     MotorInstance_t *(&motorInstances_)[];
     uint8_t (&numMotorsPerAxis_)[];
-    
+
 };
 
 }  // namespace AM

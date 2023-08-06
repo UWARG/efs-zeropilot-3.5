@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-#include "AM_ControlAlgorithm.hpp"
+#include "flightmode.hpp"
 #include "temp_drivers.hpp"
 
 namespace config

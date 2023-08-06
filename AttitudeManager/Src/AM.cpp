@@ -41,14 +41,14 @@ AttitudeManager::AttitudeManager(Flightmode* controlAlgorithm,  MotorInstance_t 
     numMotorsPerAxis_(numMotorsPerAxis)
 {};
 
-AttitudeManager::~AttitudeManager() 
+AttitudeManager::~AttitudeManager()
 {}
 
 void AttitudeManager::runControlLoopIteration(const AttitudeManagerInput& instructions) {
     // Process Instructions
 
     // Run Control Algorithms
-    controlAlgorithm_->run();
+    controlAlgorithm_->run(getControlInputs());
 
     // Write motor outputs
 }
@@ -63,7 +63,7 @@ void AttitudeManager::outputToMotor(config::ControlAxis_t axis, uint8_t percent)
             motorInstances_[axis][motorCount].motorInstance->set(percent);
         }
     }
-    
+
 }
 
 }  // namespace AM
