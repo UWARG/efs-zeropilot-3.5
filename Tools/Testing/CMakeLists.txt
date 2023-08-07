@@ -17,6 +17,8 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 enable_testing()
 
+add_compile_definitions(UNIT_TEST)
+
 set(ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../..")
 
 # --- ZeroPilot File Indexing Begin ---
@@ -104,7 +106,7 @@ include_directories(${DRIVERS_INC})
 
 file(GLOB DRIVERS_CODE
     ${DRIVERS_TESTS}
-    #${DRIVERS_CXX_SOURCE}
+    ${DRIVERS_CXX_SOURCE}
 )
 
 # --- ZeroPilot File Indexing End ---
