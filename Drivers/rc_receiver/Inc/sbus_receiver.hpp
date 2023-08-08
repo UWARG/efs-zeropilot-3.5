@@ -1,21 +1,9 @@
 #ifndef SBUS_RECEIVER_HPP
 #define SBUS_RECEIVER_HPP
 
+#include "usart.h"
 #include "rcreceiver_datatypes.h"
 #include "sbus_defines.h"
-
-#ifdef UNIT_TEST
-    typedef struct __UART_HandleTypeDef{
-    }UART_HandleTypeDef;
-
-    typedef enum
-    {
-    } HAL_StatusTypeDef;
-    
-    HAL_StatusTypeDef HAL_UART_Receive_DMA(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
-#else
-    #include "usart.h"
-#endif
 
 /*
  * UART Config for this sbus driver

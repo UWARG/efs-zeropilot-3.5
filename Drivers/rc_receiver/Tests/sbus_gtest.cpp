@@ -10,6 +10,9 @@ DEFINE_FFF_GLOBALS;
 */
 FAKE_VALUE_FUNC(HAL_StatusTypeDef, HAL_UART_Receive_DMA, UART_HandleTypeDef*, uint8_t*, uint16_t );
 
+/*
+    TEST1: Preliminary sanity check to the sbus parser
+*/
 TEST (SBUS_Receiver_Test, RawDataToSBus){
     const uint8_t in_bytes[SBUS_FRAME_SIZE] = {
         HEADER_, 0x80, 0x08, 0x84,
@@ -43,55 +46,132 @@ TEST (SBUS_Receiver_Test, RawDataToSBus){
     memcpy(sbus_test.raw_sbus_, in_bytes, sizeof(in_bytes));
     sbus_test.parse();
 
-    for(int i = 0; i < SBUS_INPUT_CHANNELS; i ++){
-        EXPECT_TRUE(sbus_test.GetSBUS().ch[i] == packet.ch[i]);
-    }
+    EXPECT_TRUE(sbus_test.GetSBUS().new_data);
 
     for(int i = 0; i < SBUS_INPUT_CHANNELS; i ++){
-        EXPECT_TRUE(sbus_test.GetRCControl().ControlSignals[i] == 0);
+        EXPECT_EQ(sbus_test.GetSBUS().ch[i], packet.ch[i])
+                    << "Error mapping happened at channel " << i <<  ".";
+    }
+
+    /*
+        ControlSignal should all be zero here because the lowest sbus value 
+        aka SBUS_RANGE_MIN is usually below 200
+    */
+    for(int i = 0; i < SBUS_INPUT_CHANNELS; i ++){
+        EXPECT_EQ(sbus_test.GetRCControl().ControlSignals[i], 0)
+                    << "Error mapping happened at channel " << i <<  ".";
     }
 }
 
 /*
-    Expect to prove the operator override and named array element to work
+    TEST2: A more strict sbus parser test
 */
-TEST (RCControlStructTest, NamedArrayElement){
-    RCControl receivedRC;
+TEST (SBUS_Receiver_Test, RawDataToSBusSecond){
+    const uint8_t in_bytes[SBUS_FRAME_SIZE] = {
+        HEADER_, 0xC0, 0x00, 0x38,
+        0x30, 0x00, 0x0E, 0x3E, 0xF0, 0x01,
+        0x03, 0x18, 0x00, 0x07, 0x78, 0xB5,
+        0xAA, 0x05, 0x25, 0x28, 0x01, 0x08,
+        0x40, 0x00, FOOTER_
+    };
+
+    SBus_t packet{
+        packet.ch[0] = SBUS_RANGE_MIN,
+        packet.ch[1] = SBUS_RANGE_MAX,
+        packet.ch[2] = SBUS_RANGE_MIN,
+        packet.ch[3] = SBUS_RANGE_MAX,
+        packet.ch[4] = 992,
+        packet.ch[5] = 992,
+        packet.ch[6] = SBUS_RANGE_MIN,
+        packet.ch[7] = SBUS_RANGE_MIN,
+        packet.ch[8] = SBUS_RANGE_MAX,
+        packet.ch[9] = SBUS_RANGE_MAX,
+        packet.ch[10] = 725,
+        packet.ch[11] = 725,
+        packet.ch[12] = 592,
+        packet.ch[13] = 592,
+        packet.ch[14] = 512,
+        packet.ch[15] = 512
+    };
+
+    RCControl expectedRC;
     {
-        receivedRC.ControlSignals[0] = 0;
-        receivedRC.ControlSignals[1] = 100;
-        receivedRC.ControlSignals[2] = 0;
-        receivedRC.ControlSignals[3] = 100;
-        receivedRC.ControlSignals[4] = 50;
-        receivedRC.ControlSignals[5] = 50;
-        receivedRC.ControlSignals[6] = 0;
-        receivedRC.ControlSignals[7] = 0;
-        receivedRC.ControlSignals[8] = 100;
-        receivedRC.ControlSignals[9] = 100;
-        receivedRC.ControlSignals[10] = 100.0 / 3.0;
-        receivedRC.ControlSignals[11] = 100.0 / 3.0;
-        receivedRC.ControlSignals[12] = 25;
-        receivedRC.ControlSignals[13] = 25;
-        receivedRC.ControlSignals[14] = 20;
-        receivedRC.ControlSignals[15] = 20;
+        expectedRC.ControlSignals[0] = 0;
+        expectedRC.ControlSignals[1] = 100;
+        expectedRC.ControlSignals[2] = 0;
+        expectedRC.ControlSignals[3] = 100;
+        expectedRC.ControlSignals[4] = 50;
+        expectedRC.ControlSignals[5] = 50;
+        expectedRC.ControlSignals[6] = 0;
+        expectedRC.ControlSignals[7] = 0;
+        expectedRC.ControlSignals[8] = 100;
+        expectedRC.ControlSignals[9] = 100;
+        expectedRC.ControlSignals[10] = 33.3125;
+        expectedRC.ControlSignals[11] = 33.3125;
+        expectedRC.ControlSignals[12] = 25;
+        expectedRC.ControlSignals[13] = 25;
+        expectedRC.ControlSignals[14] = 20;
+        expectedRC.ControlSignals[15] = 20;
     }
 
-    EXPECT_TRUE(receivedRC[0] == receivedRC.roll);
-    EXPECT_TRUE(receivedRC[1] == receivedRC.pitch);
-    EXPECT_TRUE(receivedRC[2] == receivedRC.throttle);
-    EXPECT_TRUE(receivedRC[3] == receivedRC.yaw);
-    EXPECT_TRUE(receivedRC[4] == receivedRC.arm);
-    EXPECT_TRUE(receivedRC[5] == receivedRC.aux1);
-    EXPECT_TRUE(receivedRC[6] == receivedRC.aux2);
-    EXPECT_TRUE(receivedRC[7] == receivedRC.aux3);
-    EXPECT_TRUE(receivedRC[8] == receivedRC.aux4);
-    EXPECT_TRUE(receivedRC[9] == receivedRC.aux5);
-    EXPECT_TRUE(receivedRC[10] == receivedRC.aux6);
-    EXPECT_TRUE(receivedRC[11] == receivedRC.aux7);
-    EXPECT_TRUE(receivedRC[12] == receivedRC.aux8);
-    EXPECT_TRUE(receivedRC[13] == receivedRC.aux9);
-    EXPECT_TRUE(receivedRC[14] == receivedRC.aux10);
-    EXPECT_TRUE(receivedRC[15] == receivedRC.aux11);  
+    UART_HandleTypeDef uart_fake;
+    SBUSReceiver sbus_test(&uart_fake);
+    memcpy(sbus_test.raw_sbus_, in_bytes, sizeof(in_bytes));
+    sbus_test.parse();
+
+    EXPECT_TRUE(sbus_test.GetSBUS().new_data);
+
+    for(int i = 0; i < SBUS_INPUT_CHANNELS; i ++){
+        EXPECT_EQ(sbus_test.GetSBUS().ch[i], packet.ch[i])
+                    << "Error mapping happened at channel " << i <<  ".";
+    }
+
+    for(int i = 0; i < SBUS_INPUT_CHANNELS; i ++){
+        EXPECT_EQ(sbus_test.GetRCControl().ControlSignals[i], expectedRC.ControlSignals[i])
+                    << "Error mapping happened at channel " << i <<  ".";
+    }
+}
+
+/*
+    TEST3: Expect to prove the operator override and named array element to work
+*/
+TEST (RCControlStructTest, NamedArrayElement){
+    RCControl expectedRC;
+    {
+        expectedRC.ControlSignals[0] = 0;
+        expectedRC.ControlSignals[1] = 100;
+        expectedRC.ControlSignals[2] = 0;
+        expectedRC.ControlSignals[3] = 100;
+        expectedRC.ControlSignals[4] = 50;
+        expectedRC.ControlSignals[5] = 50;
+        expectedRC.ControlSignals[6] = 0;
+        expectedRC.ControlSignals[7] = 0;
+        expectedRC.ControlSignals[8] = 100;
+        expectedRC.ControlSignals[9] = 100;
+        expectedRC.ControlSignals[10] = 100.0 / 3.0;
+        expectedRC.ControlSignals[11] = 100.0 / 3.0;
+        expectedRC.ControlSignals[12] = 25;
+        expectedRC.ControlSignals[13] = 25;
+        expectedRC.ControlSignals[14] = 20;
+        expectedRC.ControlSignals[15] = 20;
+    }
+
+    EXPECT_TRUE(expectedRC[0] == expectedRC.roll);
+    EXPECT_TRUE(expectedRC[1] == expectedRC.pitch);
+    EXPECT_TRUE(expectedRC[2] == expectedRC.throttle);
+    EXPECT_TRUE(expectedRC[3] == expectedRC.yaw);
+    EXPECT_TRUE(expectedRC[4] == expectedRC.arm);
+    EXPECT_TRUE(expectedRC[5] == expectedRC.aux1);
+    EXPECT_TRUE(expectedRC[6] == expectedRC.aux2);
+    EXPECT_TRUE(expectedRC[7] == expectedRC.aux3);
+    EXPECT_TRUE(expectedRC[8] == expectedRC.aux4);
+    EXPECT_TRUE(expectedRC[9] == expectedRC.aux5);
+    EXPECT_TRUE(expectedRC[10] == expectedRC.aux6);
+    EXPECT_TRUE(expectedRC[11] == expectedRC.aux7);
+    EXPECT_TRUE(expectedRC[12] == expectedRC.aux8);
+    EXPECT_TRUE(expectedRC[13] == expectedRC.aux9);
+    EXPECT_TRUE(expectedRC[14] == expectedRC.aux10);
+    EXPECT_TRUE(expectedRC[15] == expectedRC.aux11);  
 }
 
 

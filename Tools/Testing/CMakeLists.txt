@@ -80,7 +80,7 @@ set(COMMON_INC ${COMMON_FOLDER}/Inc)
 set(COMMON_LIB ${COMMON_FOLDER}/Lib)
 
 include_directories(${COMMON_LIB})
-file(GLOB TM_CODE
+file(GLOB COMMON_CODE
     # add necessary Common source files below
     # "${COMMON_SRC}/foo.cpp"
 )
@@ -109,6 +109,16 @@ file(GLOB DRIVERS_CODE
     ${DRIVERS_CXX_SOURCE}
 )
 
+# Testing
+set(TESTING_FOLDER ${ROOT_DIR}/Testing)
+set(TESTING_INC ${TESTING_FOLDER}/Inc)
+
+include_directories(${TESTING_INC})
+file(GLOB TESTING_CODE
+    # add necessary Testing source files below
+    # "${TESTING_SRC}/foo.cpp"
+)
+
 # --- ZeroPilot File Indexing End ---
 
 add_executable(${PROJECT_NAME}
@@ -116,7 +126,9 @@ add_executable(${PROJECT_NAME}
     ${PM_CODE}
     ${SM_CODE}
     ${TM_CODE}
+    ${COMMON_CODE}
     ${DRIVERS_CODE}
+    ${TESTING_CODE}
 )
 
 target_link_libraries(${PROJECT_NAME}
