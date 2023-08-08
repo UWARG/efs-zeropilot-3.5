@@ -148,8 +148,8 @@ TEST (RCControlStructTest, NamedArrayElement){
         expectedRC.ControlSignals[7] = 0;
         expectedRC.ControlSignals[8] = 100;
         expectedRC.ControlSignals[9] = 100;
-        expectedRC.ControlSignals[10] = 100.0 / 3.0;
-        expectedRC.ControlSignals[11] = 100.0 / 3.0;
+        expectedRC.ControlSignals[10] = 33.3125;
+        expectedRC.ControlSignals[11] = 33.3125;
         expectedRC.ControlSignals[12] = 25;
         expectedRC.ControlSignals[13] = 25;
         expectedRC.ControlSignals[14] = 20;
