@@ -1,5 +1,6 @@
 ﻿---
 BasedOnStyle: Google
+BreakBeforeBraces: Attach
 ColumnLimit: 100
-IndentWidth: '4'
+IndentWidth: 4
 ...

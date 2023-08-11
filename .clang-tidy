@@ -1,0 +1,97 @@
+---
+Checks: >-
+    -*,
+    bugprone-assignment-in-if-condition,
+    bugprone-bool-pointer-implicit-conversion,
+    bugprone-branch-clone,
+    bugprone-empty-catch,
+    bugprone-inc-dec-in-conditions,
+    bugprone-incorrect-roundings,
+    bugprone-infinite-loop,
+    bugprone-integer-division,
+    bugprone-macro-parentheses,
+    bugprone-parent-virtual-call,
+    bugprone-redundant-branch-condition,
+    bugprone-shared-ptr-array-mismatch,
+    bugprone-sizeof-container,
+    bugprone-sizeof-expression,
+    bugprone-swapped-arguments,
+    bugprone-switch-missing-default-case,
+    bugprone-unique-ptr-array-mismatch,
+    bugprone-virtual-near-miss,
+    cppcoreguidelines-avoid-do-while,
+    cppcoreguidelines-avoid-goto,
+    cppcoreguidelines-avoid-non-const-global-variables,
+    cppcoreguidelines-init-variables,
+    cppcoreguidelines-narrowing-conversions,
+    cppcoreguidelines-no-malloc,
+    cppcoreguidelines-prefer-member-initializer,
+    cppcoreguidelines-pro-type-member-init,
+    cppcoreguidelines-virtual-class-destructor,
+    misc-definitions-in-headers,
+    misc-header-include-cycle,
+    misc-include-cleaner,
+    misc-no-recursion,
+    misc-non-private-member-variables-in-classes,
+    misc-redundant-expression,
+    modernize-use-equals-default,
+    modernize-use-equals-delete,
+    modernize-use-nullptr,
+    modernize-use-override,
+    readability-avoid-const-params-in-decls,
+    readability-avoid-unconditional-preprocessor-if,
+    readability-braces-around-statements,
+    readability-const-return-type,
+    readability-delete-null-pointer,
+    readability-duplicate-include,
+    readability-else-after-return,
+    readability-identifier-naming,
+    readability-implicit-bool-conversion,
+    readability-inconsistent-declaration-parameter-name,
+    readability-magic-numbers,
+    readability-misleading-indentation,
+    readability-redundant-access-specifiers,
+    readability-redundant-control-flow,
+    readability-redundant-declaration,
+    readability-redundant-function-ptr-dereference,
+    readability-redundant-member-init,
+    readability-redundant-preprocessor,
+    readability-simplify-boolean-expr,
+    readability-static-accessed-through-instance,
+    readability-static-definition-in-anonymous-namespace
+
+CheckOptions:
+    readability-identifier-naming.ConstantMemberCase: UPPER_CASE
+    readability-identifier-naming.MacroDefinitionCase: UPPER_CASE
+    readability-identifier-naming.ClassCase: CamelCase
+    readability-identifier-naming.FunctionCase: camelBack
+    readability-identifier-naming.MemberCase: camelBack
+    readability-identifier-naming.MemberSuffix: _
+    readability-identifier-naming.StructCase: CamelCase
+    readability-identifier-naming.StructSuffix: _t
+    readability-identifier-naming.EnumCase: CamelCase
+    readability-identifier-naming.EnumSuffix: _t
+    readability-identifier-naming.EnumConstantCase: UPPER_CASE
+
+# header filter regex is set with respect to <build-path> of -p option when running clang-tidy
+# <build-path> is set to 'Tools/Firmware/build', targeting parent dir of 'compile_commands.json'
+HeaderFilterRegex: '../../(AttitudeManager|Common|Drivers|Models|PathManager|SystemManager|TelemetryManager)'
+
+ExtraArgs:
+    - '--target=arm-none-eabi'
+    - '-mcpu=cortex-m33'
+    - '-mfpu=fp-armv8'
+    - '-mfloat-abi=hard'
+    - '-mthumb'
+
+    # system specific arm toolchain headers
+    # find proper paths via cmd line and update as needed
+    # windows:     echo off | arm-none-eabi-gcc -Wp,-v -xc++ -fsyntax-only -
+    # linux/mac:   echo | arm-none-eabi-gcc -Wp,-v -xc++ -fsyntax-only -
+    - '-I/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/12.2 mpacbti-rel1/arm-none-eabi/include/c++/12.2.1'
+    - '-I/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/12.2 mpacbti-rel1/arm-none-eabi/include/c++/12.2.1/arm-none-eabi'
+    - '-I/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/12.2 mpacbti-rel1/arm-none-eabi/include/c++/12.2.1/backward'
+    - '-I/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/12.2 mpacbti-rel1/lib/gcc/arm-none-eabi/12.2.1/include'
+    - '-I/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/12.2 mpacbti-rel1/lib/gcc/arm-none-eabi/12.2.1/include-fixed'
+    - '-I/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/12.2 mpacbti-rel1/arm-none-eabi/include'
+...
