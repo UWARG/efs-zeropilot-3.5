@@ -27,9 +27,10 @@ set(CMAKE_OBJCOPY arm-none-eabi-objcopy CACHE INTERNAL "")
 set(CMAKE_SIZE arm-none-eabi-size CACHE INTERNAL "")
 
 # ARM compiler options    
-set(MCU_CPU cortex-m33)    
+set(MCU_CPU cortex-m33) 
+set(MCU_FPU fp-armv8)   
 set(MCU_FLOAT_ABI hard)   
-set(MCU_FLAGS "-mcpu=${MCU_CPU} -mthumb -mfloat-abi=${MCU_FLOAT_ABI}")    
+set(MCU_FLAGS "-mcpu=${MCU_CPU} -mfpu=${MCU_FPU} -mfloat-abi=${MCU_FLOAT_ABI} -mthumb")    
 
 set(COMMON_FLAGS "${MCU_FLAGS} -g -Wall -Wextra -Wno-unused-parameter -ffunction-sections -fdata-sections")    
     
