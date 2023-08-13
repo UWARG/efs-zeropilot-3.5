@@ -1,0 +1,20 @@
+# --- firmware options ---
+
+# platform to build for
+PLATFORM=nucleol552zeq
+
+# exclude files/folders with path that match regex from clang-tidy and clang-format
+# one entry per line, no comma at line end, keep entries between '>' and '<'
+LINT_EXCLUSION=>
+    Boardfiles
+    Tools
+    Tests
+    Drivers/ccontrol
+    manhony_ahrs.cpp
+<
+
+# --- testing options ---
+
+# run test suites with names that match regex
+# for pattern syntax see http://google.github.io/googletest/advanced.html#running-a-subset-of-the-tests
+TEST_SELECT=*
