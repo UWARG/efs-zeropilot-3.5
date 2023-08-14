@@ -29,6 +29,7 @@ private:
     PWMChannel throttleMotorChannel_;
     PWMChannel yawMotorChannel_;
     PWMChannel rollMotorChannel_;
+    PWMChannel invertedRollMotorChannel_;
     PWMChannel pitchMotorChannel_;
     IndependentWatchdog watchdog_;
 };

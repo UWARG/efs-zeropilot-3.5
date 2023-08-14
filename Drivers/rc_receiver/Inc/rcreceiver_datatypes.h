@@ -2,7 +2,7 @@
 #define RC_RECEIVER_DATA_TYPES_H
 
 #include <cstdint>
-#include <iostream>
+#include <algorithm>
 
 #define SBUS_INPUT_CHANNELS	16
 
@@ -18,6 +18,7 @@ typedef struct SBus{
 /*  for now, the value range is 0 to 100 float*/
 struct RCControl{
     float ControlSignals[16];
+    bool isDataNew;
     
     float &roll = ControlSignals[0];
     float &pitch = ControlSignals[1];
@@ -46,6 +47,7 @@ struct RCControl{
     /*  initial values*/
     RCControl()
     {
+        isDataNew = false;
         roll = 50.0f;
         pitch = 50.0f;
         throttle = 0.0f;
