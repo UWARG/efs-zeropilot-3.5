@@ -37,8 +37,7 @@ class SBUSReceiver{
         public variable
     */
         uint8_t raw_sbus_[SBUS_FRAME_SIZE];
-        bool getIsDataNew();
-        void setIsDataNew(bool newVal);
+        bool is_data_new_;
 
     private:
 
@@ -49,7 +48,6 @@ class SBUSReceiver{
 
     // member variables
         UART_HandleTypeDef* uart_;
-        bool is_data_new_;
         SBus_t received_sbus_;
         RCControl received_rccontrol_;
 
