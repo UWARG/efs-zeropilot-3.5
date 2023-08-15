@@ -46,6 +46,7 @@ for /f "tokens=*" %%A in (%~dp0config.txt) do (
         )
     )
 )
+call :clean_vars is_multiline raw_input char0 clean_input key value
 
 
 @rem read mode
@@ -80,9 +81,32 @@ for %%A in (%operations%) do (
     )
     if [!is_valid!]==[0] call :throw_err "invalid operation '%%A'" & goto :exit_err
 )
+call :clean_vars operations is_valid
 
 
 @rem read options
+for /f "tokens=1-2*" %%A in ("%*") do set opts=%%C
+if "%opts%"=="" goto :start_work
+
+set /a is_key=1
+for %%A in (%opts%) do (
+    if [!is_key!]==[1] (
+        set key=
+        if "%%A"=="-p" call :set_options PLATFORM firmware "redundant option '-p' - platform select is only supported in firmware mode"
+        if "%%A"=="-e" call :set_options LINT_EXCLUSION firmware "redundant option '-e' - lint exclusion is only supported in firmware mode"
+        if "%%A"=="-t" call :set_options TEST_SELECT testing "redundant option '-t' - test select is only supported in testing mode"
+        if "!key!"=="" call :throw_err "invalid option '%%A'" & goto :exit_err
+        set /a is_key=0
+    ) else (
+        set !key!=%%A
+        set /a is_key=1
+    )
+)
+call :clean_vars opts is_key key
+
+
+:start_work
+@rem do the things
 
 
 
@@ -95,6 +119,15 @@ exit /b 0
 :set_operations
 set /a is_valid=1
 for %%A in (%*) do set /a %%A=1
+exit /b 0
+
+:set_options
+set key=%~1
+if not "%mode%"=="%~2" call :throw_warn "%~3"
+exit /b 0
+
+:clean_vars
+for %%A in (%*) do set %%A=
 exit /b 0
 
 :throw_warn
