@@ -136,7 +136,7 @@ if "%mode%"=="firmware" (
         echo Creating %generator:"=% build system...
         cmake -E chdir %bin_dir%^
          cmake -G %generator% -DCMAKE_BUILD_TYPE="Debug" -DCMAKE_TOOLCHAIN_FILE="../../../Boardfiles/%PLATFORM%/%PLATFORM%.cmake" ..
-        if not %ERRORLEVEL% equ 0 call :throw_err "Failed to create %generator:"=% build system" & goto :exit_err
+        if not !ERRORLEVEL! equ 0 call :throw_err "Failed to create %generator:"=% build system" & goto :exit_err
     )
 
     @rem compile
@@ -144,7 +144,7 @@ if "%mode%"=="firmware" (
         echo\
         echo Compiling project...
         cmake -E chdir %bin_dir% cmake --build .
-        if %ERRORLEVEL% equ 0 (
+        if !ERRORLEVEL! equ 0 (
             echo Successfully compiled Zeropilot for firmware
         ) else (
             call :throw_err "Failed to compile ZeroPilot firmware project" & goto :exit_err
