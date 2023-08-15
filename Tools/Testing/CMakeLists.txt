@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.18)
-project(unit_testing)
 
 set(CMAKE_C_COMPILER "gcc")
 set(CMAKE_CXX_COMPILER "g++")
+
+project(unit_testing)
 
 # GoogleTest requires at least C++14
 set(CMAKE_CXX_STANDARD 14)
