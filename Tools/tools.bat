@@ -1,10 +1,9 @@
 @echo off
+setlocal enabledelayedexpansion
 
 @rem ==================
 @rem --- get inputs ---
 @rem ==================
-
-setlocal enabledelayedexpansion
 
 @rem read config.txt
 set /a is_multiline=0
@@ -123,31 +122,36 @@ set bin_dir=%~dp0%mode%/build
 @rem clean build artifacts
 if %do_clean% equ 1 (
     echo Cleaning old %mode% build environment.
-    cmake -E rm -rf "%bin_dir%" 
+    cmake -E rm -rf "%bin_dir%"
+    if not !ERRORLEVEL! equ 0 call :throw_err "failed to clean build artifacts." & goto :exit_err
 ) 
+cmake -E make_directory %bin_dir%
 
 @rem core operations
-cmake -E make_directory %bin_dir%
 if "%mode%"=="firmware" (
     @rem create build system if it does not exist
     if not exist "%bin_dir%/cmakecache.txt" (
         echo\
         echo Configuring for %PLATFORM%.
         echo Creating %generator:"=% build system...
+
         cmake -E chdir %bin_dir%^
          cmake -G %generator% -DCMAKE_BUILD_TYPE="Debug" -DCMAKE_TOOLCHAIN_FILE="../../../Boardfiles/%PLATFORM%/%PLATFORM%.cmake" ..
-        if not !ERRORLEVEL! equ 0 call :throw_err "Failed to create %generator:"=% build system." & goto :exit_err
+        
+        if not !ERRORLEVEL! equ 0 call :throw_err "failed to create %generator:"=% build system." & goto :exit_err
     )
 
     @rem compile
     if %do_compile% equ 1 (
         echo\
         echo Compiling project...
+
         cmake -E chdir %bin_dir% cmake --build .
+        
         if !ERRORLEVEL! equ 0 (
             echo Successfully compiled Zeropilot for firmware.
         ) else (
-            call :throw_err "Failed to compile ZeroPilot firmware project." & goto :exit_err
+            call :throw_err "failed to compile ZeroPilot firmware project." & goto :exit_err
         )
     )
     
@@ -155,7 +159,6 @@ if "%mode%"=="firmware" (
     if %do_lint% equ 1 (
         echo\
         echo Scanning project with clang-tidy and clang-format...
-        echo\
         
         @rem build exclusion string
         for %%A in (%LINT_EXCLUSION%) do (
@@ -166,11 +169,9 @@ if "%mode%"=="firmware" (
             set exclusion_str=!exclusion_str! /c:"!entry!"
         )
         
-        @rem define output files
+        @rem define output files, and make files / clean old details
         set tidy_out=%~dp0/firmware/clang_tidy_results.txt
-        set format_out=%~dp0/firmware/clang_format_results.txt    
-        
-        @rem make file / clean old details
+        set format_out=%~dp0/firmware/clang_format_results.txt
         echo\ > !tidy_out! & echo\ > !format_out!
         
         for /f %%A in ('dir %~dp0.. /b /s ^| findstr /i /r /c:"^.*\.cpp$" /c:"^.*\.c$" ^| findstr /i /r /v !exclusion_str:~1!') do (
@@ -192,25 +193,41 @@ if "%mode%"=="firmware" (
     @rem build
     if %do_compile% equ 1 (
         @rem make generator
-        echo\
-        echo Creating %generator:"=% build system...
-        cmake -E chdir %bin_dir% cmake -G %generator% ..
-        if not !ERRORLEVEL! equ 0 call :throw_err "Failed to create %generator:"=% build system." & goto :exit_err
+        if not exist "%bin_dir%/cmakecache.txt" (
+            echo\
+            echo Creating %generator:"=% build system...
 
+            cmake -E chdir %bin_dir% cmake -G %generator% ..
+            
+            if not !ERRORLEVEL! equ 0 call :throw_err "failed to create %generator:"=% build system." & goto :exit_err 
+        )
+        
         @rem call compiler
         echo\
         echo Compiling project...
+
         cmake -E chdir %bin_dir% cmake --build .
+        
         if !ERRORLEVEL! equ 0 (
             echo Successfully compiled Zeropilot for testing.
         ) else (
-            call :throw_err "Failed to compile ZeroPilot testing project." & goto :exit_err
+            call :throw_err "failed to compile ZeroPilot testing project." & goto :exit_err
         )
     )
 
     @rem run
     if %do_run% equ 1 (
         echo\
+        echo Running unit tests...
+
+        if not exist "%bin_dir%/unit_testing.exe" call :throw_err "no executable - compile testing project first." & goto :exit_err
+        "%bin_dir%/unit_testing.exe" --gtest_filter=%TEST_SELECT%
+        
+        if !ERRORLEVEL! equ 0 (
+            echo Unit tests for ZeroPilot passed.
+        ) else (
+            call :throw_err "Unit tests for ZeroPilot failed." & goto :exit_err
+        )
     )
 )
 
