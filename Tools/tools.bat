@@ -52,15 +52,15 @@ for /f "tokens=*" %%A in (%~dp0config.txt) do (
 call :clean_vars is_multiline raw_input char0 clean_input key value
 
 @rem read mode
-if "%~1"=="" call :throw_err "missing mode" & goto :exit_err
+if "%~1"=="" call :throw_err "missing mode." & goto :exit_err
 if "%~1"=="frm" set mode=firmware
 if "%~1"=="firmware" set mode=firmware
 if "%~1"=="tst" set mode=testing
 if "%~1"=="testing" set mode=testing
-if "%mode%"=="" call :throw_err "unknown mode '%~1'" & goto :exit_err
+if "%mode%"=="" call :throw_err "unknown mode '%~1'." & goto :exit_err
 
 @rem read operations
-if "%~2"=="" call :throw_err "missing operations" & goto :exit_err
+if "%~2"=="" call :throw_err "missing operations." & goto :exit_err
 set operations=%~2
 set operations=%operations:-=;%
 
@@ -74,13 +74,13 @@ for %%A in (%operations%) do (
     if "%%A"=="c" call :set_operations do_compile
     if "%%A"=="l" (
         call :set_operations do_lint 
-        if not "%mode%"=="firmware" call :throw_warn "redundant operation 'l' - linting is only supported in firmware mode"
+        if not "%mode%"=="firmware" call :throw_warn "redundant operation 'l' - linting is only supported in firmware mode."
     )
     if "%%A"=="r" (
        call :set_operations do_run
-       if not "%mode%"=="testing" call :throw_warn "redundant operation 'r' - running is only supported in testing mode"
+       if not "%mode%"=="testing" call :throw_warn "redundant operation 'r' - running is only supported in testing mode."
     )
-    if !is_valid! equ 0 call :throw_err "invalid operation '%%A'" & goto :exit_err
+    if !is_valid! equ 0 call :throw_err "invalid operation '%%A'." & goto :exit_err
 )
 call :clean_vars operations is_valid
 
@@ -92,10 +92,10 @@ set /a is_key=1
 for %%A in (%opts%) do (
     if !is_key! equ 1 (
         set key=
-        if "%%A"=="-p" call :set_options PLATFORM firmware "redundant option '-p' - platform select is only supported in firmware mode"
-        if "%%A"=="-e" call :set_options LINT_EXCLUSION firmware "redundant option '-e' - lint exclusion is only supported in firmware mode"
-        if "%%A"=="-t" call :set_options TEST_SELECT testing "redundant option '-t' - test select is only supported in testing mode"
-        if "!key!"=="" call :throw_err "invalid option '%%A'" & goto :exit_err
+        if "%%A"=="-p" call :set_options PLATFORM firmware "redundant option '-p' - platform select is only supported in firmware mode."
+        if "%%A"=="-e" call :set_options LINT_EXCLUSION firmware "redundant option '-e' - lint exclusion is only supported in firmware mode."
+        if "%%A"=="-t" call :set_options TEST_SELECT testing "redundant option '-t' - test select is only supported in testing mode."
+        if "!key!"=="" call :throw_err "invalid option '%%A'." & goto :exit_err
         set /a is_key=0
     ) else (
         set !key!=%%A
@@ -113,16 +113,16 @@ call :clean_vars opts is_key key
 where ninja >nul 2>nul && set generator="Ninja" && goto :generator_found
 where make >nul 2>nul && set generator="Unix Makefiles" && goto :generator_found
 where mingw32-make >nul 2>nul && set generator="MinGW Makefiles" && goto :generator_found
-call :throw_err "no cmake generator found" & goto :exit_err
+call :throw_err "no CMake generator found." & goto :exit_err
 :generator_found
 set "generator=%generator:~0,-1%"
 
-echo Script is running in %mode% mode
+echo Script is running in %mode% mode.
 set bin_dir=%~dp0%mode%/build
 
 @rem clean build artifacts
 if %do_clean% equ 1 (
-    echo Cleaning old %mode% build environment
+    echo Cleaning old %mode% build environment.
     cmake -E rm -rf "%bin_dir%" 
 ) 
 
@@ -132,11 +132,11 @@ if "%mode%"=="firmware" (
     @rem create build system if it does not exist
     if not exist "%bin_dir%/cmakecache.txt" (
         echo\
-        echo Configuring for %PLATFORM%
+        echo Configuring for %PLATFORM%.
         echo Creating %generator:"=% build system...
         cmake -E chdir %bin_dir%^
          cmake -G %generator% -DCMAKE_BUILD_TYPE="Debug" -DCMAKE_TOOLCHAIN_FILE="../../../Boardfiles/%PLATFORM%/%PLATFORM%.cmake" ..
-        if not !ERRORLEVEL! equ 0 call :throw_err "Failed to create %generator:"=% build system" & goto :exit_err
+        if not !ERRORLEVEL! equ 0 call :throw_err "Failed to create %generator:"=% build system." & goto :exit_err
     )
 
     @rem compile
@@ -145,35 +145,66 @@ if "%mode%"=="firmware" (
         echo Compiling project...
         cmake -E chdir %bin_dir% cmake --build .
         if !ERRORLEVEL! equ 0 (
-            echo Successfully compiled Zeropilot for firmware
+            echo Successfully compiled Zeropilot for firmware.
         ) else (
-            call :throw_err "Failed to compile ZeroPilot firmware project" & goto :exit_err
+            call :throw_err "Failed to compile ZeroPilot firmware project." & goto :exit_err
         )
     )
     
     @rem lint
     if %do_lint% equ 1 (
         echo\
-        echo Linting project with clang-tidy...
-
+        echo Scanning project with clang-tidy and clang-format...
         echo\
-        echo Checking project format with clang-format...
+        
+        @rem build exclusion string
+        for %%A in (%LINT_EXCLUSION%) do (
+            set entry=%%A
+            set entry=!entry:/=\\!
+            set entry=!entry:.=\.!
+            set entry=!entry:"=!
+            set exclusion_str=!exclusion_str! /c:"!entry!"
+        )
+        
+        @rem define output files
+        set tidy_out=%~dp0/firmware/clang_tidy_results.txt
+        set format_out=%~dp0/firmware/clang_format_results.txt    
+        
+        @rem make file / clean old details
+        echo\ > !tidy_out! & echo\ > !format_out!
+        
+        for /f %%A in ('dir %~dp0.. /b /s ^| findstr /i /r /c:"^.*\.cpp$" /c:"^.*\.c$" ^| findstr /i /r /v !exclusion_str:~1!') do (
+            echo Processing %%A.
+            echo ### Linting %%A ### >> !tidy_out! & echo\ >> !tidy_out!
+            echo ### Format Checking %%A ### >> !format_out! & echo\ >> !format_out!
+            
+            clang-tidy -p %~dp0/firmware/build %%A >> !tidy_out!
+            clang-format --dry-run %%A 2>>!format_out!
+            
+            echo\
+            for /l %%i in (1,1,3) do echo\ >> !tidy_out!
+            for /l %%i in (1,1,3) do echo\ >> !format_out!
+        )
+
+        echo Scanning done - see Tools/Firmware for clang_format_results.txt and clang_tidy_results.txt.
     )
 ) else (
-    @rem compile
+    @rem build
     if %do_compile% equ 1 (
+        @rem make generator
         echo\
         echo Creating %generator:"=% build system...
         cmake -E chdir %bin_dir% cmake -G %generator% ..
-        if not !ERRORLEVEL! equ 0 call :throw_err "Failed to create %generator:"=% build system" & goto :exit_err
+        if not !ERRORLEVEL! equ 0 call :throw_err "Failed to create %generator:"=% build system." & goto :exit_err
 
+        @rem call compiler
         echo\
         echo Compiling project...
         cmake -E chdir %bin_dir% cmake --build .
         if !ERRORLEVEL! equ 0 (
-            echo Successfully compiled Zeropilot for testing
+            echo Successfully compiled Zeropilot for testing.
         ) else (
-            call :throw_err "Failed to compile ZeroPilot testing project" & goto :exit_err
+            call :throw_err "Failed to compile ZeroPilot testing project." & goto :exit_err
         )
     )
 
