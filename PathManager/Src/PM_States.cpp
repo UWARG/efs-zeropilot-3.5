@@ -31,6 +31,17 @@ constexpr int LANDING_TIME_THRESHOLD {5};
  * Code
  **********************************************************************************************************************/
 
+void CommsWithTelemetry::execute(PathManager* pathMgr)
+{
+    // Get info from telemetry 
+}
+
+PathManagerState& CommsWithTelemetry::getInstance()
+{
+    static CommsWithTelemetry singleton;
+    return singleton;
+}
+
 
 PathManagerState& CommsWithSystemManager::getInstance()
 {

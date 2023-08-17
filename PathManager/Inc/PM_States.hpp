@@ -24,6 +24,21 @@ class CommsWithAttitude : public PathManagerState
         static AM::AttitudeManagerInput receivedData;
 };
 
+class CommsWithTelemetry : public PathManagerState
+{
+    public:
+        void enter(PathManager* pathMgr) {(void) pathMgr;}
+        void execute(PathManager* pathMgr);
+        void exit(PathManager* pathMgr) {(void) pathMgr;}
+        static PathManagerState& getInstance();
+        //static AM::AttitudeManagerInput* GetCommFromAttitude(void) { return &receivedData; }
+    private:
+        CommsWithTelemetry() {  } // Initializes module
+        CommsWithTelemetry(const CommsWithTelemetry& other);
+        CommsWithTelemetry& operator =(const CommsWithTelemetry& other);
+        //static AM::AttitudeManagerInput receivedData;
+};
+
 class CommsWithSystemManager : public PathManagerState
 {
     public:
