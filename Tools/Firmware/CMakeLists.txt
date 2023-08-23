@@ -8,36 +8,40 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)
 
 include_directories(
-    ## Common Includes ##
-    ${ROOT_DIR}/Common/Inc
+        ## Common Includes ##
+        ${ROOT_DIR}/Common/Inc
 
-    ## System Manager Includes ##
+        ## System Manager Includes ##
 
-    ## Attitude Manager Includes ##
-    ${ROOT_DIR}/AttitudeManager/Inc
-    ${ROOT_DIR}/AttitudeManager/FlightModes/Inc
+        ## Attitude Manager Includes ##
+#        ${ROOT_DIR}/AttitudeManager/Inc
+#        ${ROOT_DIR}/AttitudeManager/FlightModes/Inc
 
-    ## Path Manager Includes ##
+        ## Path Manager Includes ##
 
-    ## Telemetry Manager Includes ##
+        ## Telemetry Manager Includes ##
+        ${ROOT_DIR}/TelemetryManager/Inc
+        ${ROOT_DIR}/TelemetryManager/Src
+        ${ROOT_DIR}/TelemetryManager/Tests
 
-    ## Driver Includes ##
-    ${ROOT_DIR}/Drivers/rc_receiver/Inc
-    ${ROOT_DIR}/Drivers/Common/Inc
 
-    ${ROOT_DIR}/Drivers/ccontrol/Inc
-    ${ROOT_DIR}/Drivers/sensor_fusion/Inc
-    ${ROOT_DIR}/Drivers/IWDG_Driver/Inc
-    ## Boardfiles Includes ##
-    ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Drivers/${FAMILY_NAME}_HAL_Driver/Inc
-    ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Core/Inc
-    ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Drivers/CMSIS/Device/ST/${FAMILY_NAME}/Include
-    ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Drivers/CMSIS/Include
-    ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source
-    ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS
-    ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2
-    ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_${PORTABLE_NAME}
-    ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/include
+        ## Driver Includes ##
+#        ${ROOT_DIR}/Drivers/rc_receiver/Inc
+        ${ROOT_DIR}/Drivers/Common/Inc
+
+        ${ROOT_DIR}/Drivers/ccontrol/Inc
+        ${ROOT_DIR}/Drivers/sensor_fusion/Inc
+        ${ROOT_DIR}/Drivers/IWDG_Driver/Inc
+        ## Boardfiles Includes ##
+        ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Drivers/${FAMILY_NAME}_HAL_Driver/Inc
+        ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Core/Inc
+        ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Drivers/CMSIS/Device/ST/${FAMILY_NAME}/Include
+        ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Drivers/CMSIS/Include
+        ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source
+        ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS
+        ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2
+        ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_${PORTABLE_NAME}
+        ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/include
 )
 
 ## Boardfile Sources ##
@@ -46,26 +50,26 @@ set(HAL_DRIVERS_C_SOURCES "${HAL_DRIVERS_DIR}/${FAMILY_NAME}_HAL_Driver/Src/*.c"
 
 set(FREE_RTOS_DIR ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source)
 set(FREE_RTOS_C_SOURCES "${FREE_RTOS_DIR}/*.c"
-                        "${FREE_RTOS_DIR}/CMSIS_RTOS_V2/*.c"
-                        "${FREE_RTOS_DIR}/portable/GCC/ARM_${PORTABLE_NAME}/*.c"
-                        "${FREE_RTOS_DIR}/portable/MemMang/*.c")
+        "${FREE_RTOS_DIR}/CMSIS_RTOS_V2/*.c"
+        "${FREE_RTOS_DIR}/portable/GCC/ARM_${PORTABLE_NAME}/*.c"
+        "${FREE_RTOS_DIR}/portable/MemMang/*.c")
 
 set(HAL_CORE ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Core)
 set(HAL_CORE_C_SOURCES "${HAL_CORE}/Src/*.c")
 set(HAL_CORE_CXX_SOURCES "${HAL_CORE}/Src/*.cpp")
 
 ## Zeropilot Sources ##
-set(ATTITUDE_MANAGER ${ROOT_DIR}/AttitudeManager)
+#[[set(ATTITUDE_MANAGER ${ROOT_DIR}/AttitudeManager)
 set(ATTITUDE_MANAGER_C_SOURCES "${ATTITUDE_MANAGER}/Src/*.c"
-                              "${ATTITUDE_MANAGER}/FlightModes/Src/*.c")
+        "${ATTITUDE_MANAGER}/FlightModes/Src/*.c")
 set(ATTITUDE_MANAGER_CXX_SOURCES "${ATTITUDE_MANAGER}/Src/*.cpp"
-                                "${ATTITUDE_MANAGER}/FlightModes/Src/*.cpp")
+        "${ATTITUDE_MANAGER}/FlightModes/Src/*.cpp")]]
 set(DRIVERS_DIR ${ROOT_DIR}/Drivers)
 set(DRIVERS_C_SOURCES "${DRIVERS_DIR}/ccontrol/Src/*.c")
-set(DRIVERS_CXX_SOURCES "${DRIVERS_DIR}/sensor_fusion/Src/*.cpp")
+#set(DRIVERS_CXX_SOURCES "${DRIVERS_DIR}/sensor_fusion/Src/*.cpp")
 
 ## Drivers Sources ##
-set(DRIVERS_RcReceiver_DIR ${ROOT_DIR}/Drivers/rc_receiver/Src)
+#set(DRIVERS_RcReceiver_DIR ${ROOT_DIR}/Drivers/rc_receiver/Src)
 set(DRIVERS_RcReceiver_CXX_SOURCES "${DRIVERS_RcReceiver_DIR}/*.cpp")
 set(DRIVERS_Common_DIR ${ROOT_DIR}/Drivers/Common/Src)
 set(DRIVERS_Common_CXX_SOURCES "${DRIVERS_Common_DIR}/*.cpp")
@@ -74,25 +78,25 @@ set(DRIVERS_IWDGDriver_CXX_SOURCES "${DRIVERS_IWDGDriver_DIR}/*.cpp")
 
 ## Actually find the sources, NOTE: if you add a new source above, add it here! ##
 file(GLOB_RECURSE C_SOURCES ${HAL_DRIVERS_C_SOURCES}
-                            ${FREE_RTOS_C_SOURCES}
-                            ${HAL_CORE_C_SOURCES}
-                            ${ATTITUDE_MANAGER_C_SOURCES}
-                            ${DRIVERS_C_SOURCES}
-                            ${DRIVERS_IWDGDriver_DIR})
+        ${FREE_RTOS_C_SOURCES}
+        ${HAL_CORE_C_SOURCES}
+        ${ATTITUDE_MANAGER_C_SOURCES}
+        ${DRIVERS_C_SOURCES}
+        ${DRIVERS_IWDGDriver_DIR})
 message("C Sources: ${C_SOURCES}")
 file(GLOB_RECURSE CXX_SOURCES ${HAL_CORE_CXX_SOURCES}
-                              ${ATTITUDE_MANAGER_CXX_SOURCES}
-                              ${DRIVERS_RcReceiver_CXX_SOURCES}
-                              ${DRIVERS_Common_CXX_SOURCES}
-                              ${DRIVERS_CXX_SOURCES}
-                              ${DRIVERS_IWDGDriver_CXX_SOURCES})
+        ${ATTITUDE_MANAGER_CXX_SOURCES}
+        ${DRIVERS_RcReceiver_CXX_SOURCES}
+        ${DRIVERS_Common_CXX_SOURCES}
+        ${DRIVERS_CXX_SOURCES}
+        ${DRIVERS_IWDGDriver_CXX_SOURCES})
 message("C++ Sources: ${CXX_SOURCES}")
 
 ## Find the startup and linker script ##
-set(STARTUP_ASM_FILE ${ROOT_DIR}/Boardfiles/${STARTUP_ASM})
+set(STARTUP_ASM_FILE ${ROOT_DIR}/Boardfiles/${STARTUP_ASM} #[[../../TelemetryManager/Inc/BasicMavlinkEncoder.h ../../TelemetryManager/Tests/main.cpp ../../TelemetryManager/Src/BasicMavlinkEncoder.cpp]])
 set(LINKER_SCRIPT_FILE ${ROOT_DIR}/Boardfiles/${LINKER_SCRIPT})
 
-add_executable(${ELF_NAME} ${C_SOURCES} ${CXX_SOURCES} ${STARTUP_ASM_FILE})
+add_executable(${ELF_NAME} ${C_SOURCES} ${CXX_SOURCES} ${STARTUP_ASM_FILE}#[[ ../../TelemetryManager/Inc/BasicMavlinkEncoder.h ../../TelemetryManager/Tests/main.cpp ../../TelemetryManager/Src/BasicMavlinkEncoder.cpp]])
 
 # Specify C standard we use
 set_property(TARGET ${ELF_NAME} PROPERTY C_STANDARD 11)
@@ -110,22 +114,22 @@ set(BIN_FILE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.bin)
 
 # objcopy the .elf file to .bin file for programming
 add_custom_target("${PROJECT_NAME}.bin" ALL
-  COMMAND ${CMAKE_OBJCOPY} -Obinary $<TARGET_FILE:${ELF_NAME}> ${BIN_FILE}
-  DEPENDS ${ELF_NAME}
-)
+        COMMAND ${CMAKE_OBJCOPY} -Obinary $<TARGET_FILE:${ELF_NAME}> ${BIN_FILE}
+        DEPENDS ${ELF_NAME}
+        )
 
 # Print build type
-IF(CMAKE_BUILD_TYPE MATCHES Debug)
+IF (CMAKE_BUILD_TYPE MATCHES Debug)
     message("Debug build.")
-ELSEIF(CMAKE_BUILD_TYPE MATCHES Release)
+ELSEIF (CMAKE_BUILD_TYPE MATCHES Release)
     message("Release build.")
-ELSE()
+ELSE ()
     message("Some other build type.")
-ENDIF()
+ENDIF ()
 
 # Print size information after compiling
 add_custom_command(TARGET ${ELF_NAME}
-  POST_BUILD
-  COMMENT "Binary size information:"
-  COMMAND ${CMAKE_SIZE} $<TARGET_FILE:${ELF_NAME}>
-)
+        POST_BUILD
+        COMMENT "Binary size information:"
+        COMMAND ${CMAKE_SIZE} $<TARGET_FILE:${ELF_NAME}>
+        )
