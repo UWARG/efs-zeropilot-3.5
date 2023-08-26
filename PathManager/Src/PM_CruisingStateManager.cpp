@@ -34,7 +34,7 @@ namespace PM {
         outputType = PATH_FOLLOW;
         turnDesiredAltitude = 0;
         turnDirection = 0; // 1 for CW, 2 for CCW
-        turnRadius = 0.0;
+        turnRadius = TURN_RADIUS;
 
         // Sets empty elements to null to prevent segmentation faults
         for(int i = 0; i < MAX_PATH_BUFFER_SIZE; i++) {
@@ -271,70 +271,68 @@ namespace PM {
         PM::Waypoint::calculate_direction_to_waypoint(waypointAfterTargetCoordinates, targetCoordinates, waypointDirection);
 
 
-        // // Required turning angle
-        // float turningAngle = acos(-DEG_TO_RAD(waypointDirection[0] * nextWaypointDirection[0] + waypointDirection[1] * nextWaypointDirection[1] + waypointDirection[2] * nextWaypointDirection[2]));
-        // // Calculates tangent factor that helps determine centre of turn 
-        // float tangentFactor = targetWaypoint->turnRadius/tan(turningAngle/2);
+        // Required turning angle
+        float turningAngle = acos(-DEG_TO_RAD(waypointDirection[0] * nextWaypointDirection[0] + waypointDirection[1] * nextWaypointDirection[1] + waypointDirection[2] * nextWaypointDirection[2]));
+        // Calculates tangent factor that helps determine centre of turn 
+        float tangentFactor = turnRadius/tan(turningAngle/2);
 
-        // float halfPlane[3];
-        // halfPlane[0] = targetCoordinates[0] - tangentFactor * waypointDirection[0];
-        // halfPlane[1] = targetCoordinates[1] - tangentFactor * waypointDirection[1];
-        // halfPlane[2] = targetCoordinates[2] - tangentFactor * waypointDirection[2];
+        float halfPlane[3];
+        halfPlane[0] = targetCoordinates[0] - tangentFactor * waypointDirection[0];
+        halfPlane[1] = targetCoordinates[1] - tangentFactor * waypointDirection[1];
+        halfPlane[2] = targetCoordinates[2] - tangentFactor * waypointDirection[2];
 
-        // // Calculates distance to next waypoint
-        // float distanceToWaypoint = sqrt(pow(targetCoordinates[0] - position[0],2) + pow(targetCoordinates[1] - position[1],2) + pow(targetCoordinates[2] - position[2],2));
-        // distanceToNextWaypoint = distanceToWaypoint; 
+        // Calculates distance to next waypoint
+        distanceToNextWaypoint = PM::Waypoint::calculate_distance_to_waypoint(targetCoordinates, position);
 
-        // // Checks if plane is orbiting or flying in a straight line
-        // if (orbitPathStatus == PATH_FOLLOW) {
-        //     float dotProduct = waypointDirection[0] * (position[0] - halfPlane[0]) + waypointDirection[1] * (position[1] - halfPlane[1]) + waypointDirection[2] * (position[2] - halfPlane[2]);
+        // Checks if plane is orbiting or flying in a straight line
+        if (orbitPathStatus == PATH_FOLLOW) {
+            float dotProduct = PM::Waypoint::dot_product(waypointDirection, position, halfPlane);
+            if (dotProduct > 0){
+                orbitPathStatus = ORBIT_FOLLOW;
+                // if (targetWaypoint->waypointType == HOLD_WAYPOINT) {
+                //     inHold = true;
+                //     turnDirection = 1; // Automatically turn CCW
+                //     turnRadius = targetWaypoint->turnRadius;
+                //     turnDesiredAltitude = targetWaypoint->altitude;
+                //     turnCenter[0] = targetWaypoint->longitude;
+                //     turnCenter[1] = targetWaypoint->latitude;
+                //     turnCenter[2] = turnDesiredAltitude;
+                //     currentIndex++; 
+                // }
+            }
+
+            track = PM::Waypoint::follow_straight_path(waypointDirection, targetCoordinates, position, track);
+        } else {
+            // Determines turn direction (CCW returns 2; CW returns 1)
+            turnDirection = waypointDirection[0] * nextWaypointDirection[1] - waypointDirection[1] * nextWaypointDirection[0]>0?1:-1;
             
-        //     if (dotProduct > 0){
-        //         orbitPathStatus = ORBIT_FOLLOW;
-        //         if (targetWaypoint->waypointType == HOLD_WAYPOINT) {
-        //             inHold = true;
-        //             turnDirection = 1; // Automatically turn CCW
-        //             turnRadius = targetWaypoint->turnRadius;
-        //             turnDesiredAltitude = targetWaypoint->altitude;
-        //             turnCenter[0] = targetWaypoint->longitude;
-        //             turnCenter[1] = targetWaypoint->latitude;
-        //             turnCenter[2] = turnDesiredAltitude;
-        //             currentIndex++; 
-        //         }
-        //     }
+            // Since the Earth is not flat *waits for the uproar to die down* we need to do some fancy geometry. Introducing!!!!!!!!!! EUCLIDIAN GEOMETRY! (translation: I have no idea what this line does but it should work)
+            float euclideanWaypointDirection = sqrt(pow(nextWaypointDirection[0] - waypointDirection[0],2) + pow(nextWaypointDirection[1] - waypointDirection[1],2) + pow(nextWaypointDirection[2] - waypointDirection[2],2)) * ((nextWaypointDirection[0] - waypointDirection[0]) < 0?-1:1) * ((nextWaypointDirection[1] - waypointDirection[1]) < 0?-1:1) * ((nextWaypointDirection[2] - waypointDirection[2]) < 0?-1:1);
 
-        //     follow_straight_path(waypointDirection, targetCoordinates, position, track);
-        // } else {
-        //     // Determines turn direction (CCW returns 2; CW returns 1)
-        //     turnDirection = waypointDirection[0] * nextWaypointDirection[1] - waypointDirection[1] * nextWaypointDirection[0]>0?1:-1;
-            
-        //     // Since the Earth is not flat *waits for the uproar to die down* we need to do some fancy geometry. Introducing!!!!!!!!!! EUCLIDIAN GEOMETRY! (translation: I have no idea what this line does but it should work)
-        //     float euclideanWaypointDirection = sqrt(pow(nextWaypointDirection[0] - waypointDirection[0],2) + pow(nextWaypointDirection[1] - waypointDirection[1],2) + pow(nextWaypointDirection[2] - waypointDirection[2],2)) * ((nextWaypointDirection[0] - waypointDirection[0]) < 0?-1:1) * ((nextWaypointDirection[1] - waypointDirection[1]) < 0?-1:1) * ((nextWaypointDirection[2] - waypointDirection[2]) < 0?-1:1);
+            // Determines coordinates of the turn center
+            turnCenter[0] = targetCoordinates[0] + (tangentFactor * (nextWaypointDirection[0] - waypointDirection[0])/euclideanWaypointDirection);
+            turnCenter[1] = targetCoordinates[1] + (tangentFactor * (nextWaypointDirection[1] - waypointDirection[1])/euclideanWaypointDirection);
+            turnCenter[2] = targetCoordinates[2] + (tangentFactor * (nextWaypointDirection[2] - waypointDirection[2])/euclideanWaypointDirection);
 
-        //     // Determines coordinates of the turn center
-        //     turnCenter[0] = targetCoordinates[0] + (tangentFactor * (nextWaypointDirection[0] - waypointDirection[0])/euclideanWaypointDirection);
-        //     turnCenter[1] = targetCoordinates[1] + (tangentFactor * (nextWaypointDirection[1] - waypointDirection[1])/euclideanWaypointDirection);
-        //     turnCenter[2] = targetCoordinates[2] + (tangentFactor * (nextWaypointDirection[2] - waypointDirection[2])/euclideanWaypointDirection);
+            float dotProduct = PM::Waypoint::dot_product(waypointDirection, position, halfPlane); 
 
-        //     float dotProduct = nextWaypointDirection[0] * (position[0] - halfPlane[0]) + nextWaypointDirection[1] * (position[1] - halfPlane[1]) + nextWaypointDirection[2] * (position[2] - halfPlane[2]);
-            
-        //     if (dotProduct > 0){
-        //         currentIndex++; 
-        //         orbitPathStatus = PATH_FOLLOW;
-        //     }
+            if (dotProduct > 0){
+                currentIndex++; 
+                orbitPathStatus = PATH_FOLLOW;
+            }
 
-        //     //If two waypoints are parallel to each other (no turns)
-        //     if (euclideanWaypointDirection == 0){
-        //         // For same reasons above, since the waypoints are parallel, we can switch the current waypoint and target the next one
-        //         currentIndex++;
+            //If two waypoints are parallel to each other (no turns)
+            if (euclideanWaypointDirection == 0){
+                // For same reasons above, since the waypoints are parallel, we can switch the current waypoint and target the next one
+                currentIndex++;
 
-        //         orbitPathStatus = PATH_FOLLOW;
-        //     }
+                orbitPathStatus = PATH_FOLLOW;
+            }
 
-        //     outputType = ORBIT_FOLLOW;
+            outputType = ORBIT_FOLLOW;
 
-        //     follow_orbit(position, track);
-        // }
+            PM::Waypoint::follow_orbit(position, turnCenter, 1, TURN_RADIUS, track);
+        }
 
     }
 
@@ -397,7 +395,7 @@ namespace PM {
             // set circle parameters over last waypoint
             inHold = true;
             turnDirection = 1; // Automatically turn CCW
-            turnRadius = 50;
+            turnRadius = TURN_RADIUS;
             turnDesiredAltitude = targetWaypoint->altitude;
             turnCenter[0] = targetWaypoint->longitude;
             turnCenter[1] = targetWaypoint->latitude;
@@ -430,7 +428,7 @@ namespace PM {
         Data->rotation = 0;
         // Data->radius = turnRadius;
         // Data->turnDirection = turnDirection;
-        Data->errorCode = errorCode;
+        // Data->errorCode = errorCode;
         Data->isDataNew = dataIsNew;
         dataIsNew = false; 
         Data->timeOfData = 0;

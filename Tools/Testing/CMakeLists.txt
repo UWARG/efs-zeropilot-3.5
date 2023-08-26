@@ -48,7 +48,7 @@ file(GLOB PM_CODE
 
     # "${PM_SRC}/*.cpp"
     "${PM_SRC}/PM_Waypoint.cpp"
-    # "${PM_SRC}/PM_CruisingStateManager.cpp"
+    "${PM_SRC}/PM_CruisingStateManager.cpp"
 )
 
 # System Manager

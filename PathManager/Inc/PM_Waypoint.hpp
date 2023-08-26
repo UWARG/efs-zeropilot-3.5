@@ -35,6 +35,9 @@
 // For calculating desired track. This affects the sensitivity of the given desired tracks
 #define K_GAIN(index) (index == 0 ? 0.01 : 1.0f)
 
+// Default Turning Radius
+#define TURN_RADIUS 50
+
 namespace PM::Waypoint {
 
     /**
