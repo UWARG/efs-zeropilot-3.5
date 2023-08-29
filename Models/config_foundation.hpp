@@ -28,7 +28,7 @@ namespace config
         yaw,
         pitch,
         roll,
-        thrust
+        throttle
     } ControlAxis_t;
 
     typedef struct {
@@ -69,7 +69,7 @@ namespace config
         AxisPID_t yawPID = {};
         AxisPID_t pitchPID = {};
         AxisPID_t rollPID = {};
-        AxisPID_t thrustPID = {};
+        AxisPID_t throttlePID = {};
     } ControlPID_t;
 
     typedef struct {
@@ -81,7 +81,7 @@ namespace config
         AxisLimits_t yawLimit = {};
         AxisLimits_t pitchLimit = {};
         AxisLimits_t rollLimit = {};
-        AxisLimits_t thrustLimit = {};
+        AxisLimits_t throttleLimit = {};
     } ControlLimits_t;
 
     typedef struct {

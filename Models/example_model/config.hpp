@@ -61,21 +61,6 @@ namespace config
 
     /* Flightmode Config */
 
-    class ExampleFlightmode1 : public AM::Flightmode{
-        public:
-        ExampleFlightmode1(){}
-        //TODO: Implement control algorithm functions in AM
-        void run();
-        void updatePid();
-    };
-
-    class ExampleFlightmode2 : public AM::Flightmode{
-        public:
-        ExampleFlightmode2(){}
-        void run();
-        void updatePid();
-    };
-
     constexpr Flightmode_t flightmodes[] = {
         {   //Flightmode1
             .tuningData{
