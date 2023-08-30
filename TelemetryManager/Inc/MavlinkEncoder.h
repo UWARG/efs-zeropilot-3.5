@@ -5,39 +5,10 @@
 #ifndef WARGMAVLINKSUPPORT_BASICMAVLINKENCODER_H
 #define WARGMAVLINKSUPPORT_BASICMAVLINKENCODER_H
 
-#include "../c_library_v2/common/mavlink.h"
 #include <iostream>
 
-
-struct IncomingData {
-
-    float latitude = 0;
-    bool isLatitudeInitialized = false;
-
-    float longitude = 0;
-    bool isLongitudeInitialized = false;
-
-    float vx = 0;
-    bool isVxInitialized = false;
-
-    float vy = 0;
-    bool isVyInitialized = false;
-
-    float vz = 0;
-    bool isVzInitialized = false;
-
-    int altitude = 0;
-    bool isAltitudeInitialized = false;
-
-    float pitch = 0;
-    bool isPitchInitialized = false;
-
-    float roll = 0;
-    bool isRollInitialized = false;
-
-    float yaw = 0;
-    bool isYawInitialized = false;
-};
+#include "../c_library_v2/common/mavlink.h"
+#include "IncomingData.h"
 
 /**
  * @brief ENCODE_MESSAGE macro for MAVLink message packing
@@ -72,24 +43,40 @@ struct IncomingData {
     })
 
 
+/**
+ * Setting a predefined buffer size, derived from the maximum packet length allowed by MAVLink.
+ * @note IMPORTANT: IF THE THE MAX_ARRAY_BUFFER_SIZE < SIZE OF BYTES INCOMING MEMORY MAY
+ * BE OVERWRITTEN!
+ */
+#define MAX_ARRAY_BUFFER_SIZE (10 * MAVLINK_MAX_PACKET_LEN)
 
-class BasicMavlinkEncoder {
-public:
-    //The current message being encoded
+/**
+ * @brief Class dedicated to MAVLink message encoding.
+ *
+ * The 'MavlinkEncoder' class provides an interface and underlying functionality for MAVLink message
+ * encoding, using associated parameters and defined message types.
+ */
+class MavlinkEncoder {
+   public:
+    // The message object that's currently targeted for encoding.
     mavlink_message_t currentMessage;
 
-
-    BasicMavlinkEncoder();
-
+    // Default constructor for the MavlinkEncoder class.
+    MavlinkEncoder();
 
     /**
-     * Find the correct combination of mavlink message types and pack the data structure into mavlink format.
-     * @param data - the data structure to pack which contains the data to pack.
-     * @return The packed buffer within a vector.
+     * @brief Identifies the appropriate encoding function based on the incoming data.
+     *
+     * This function seeks the suitable encoding mechanism in line with the data specifics
+     * and subsequently populates the output buffer.
+     *
+     * @param data Incoming data to be encoded.
+     * @param outputBuffer The buffer to store the encoded data.
+     * @param maxBufferSize The maximum size the output buffer can occupy.
+     *
+     * @return Returns the size (in bytes) used in the output buffer.
      */
-    std::vector<uint8_t> findPackingFunction(IncomingData &data);
-
-
+    size_t packIntoMavlinkByteArray(IncomingData& data, uint8_t* outputBuffer, size_t maxBufferSize);
 };
 
 #endif //WARGMAVLINKSUPPORT_BASICMAVLINKENCODER_H

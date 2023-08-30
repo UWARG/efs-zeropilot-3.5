@@ -37,50 +37,34 @@
 };
 
 class MavlinkDecoder {
-
-public:
-
-    //the current message being decoded
-    mavlink_message_t currentMessage;
-    //The decoding status of the current message being decoded
-    mavlink_status_t currentMessageDecodingStatus;
-
+   public:
     std::unordered_map<int, std::function<void(mavlink_message_t &)>> decodingFunctions;
 
-
-public:
+   public:
     /**
-     * Constructor
-     * Any new message type with its decoder and/or custom callback (after decoded)
-     * should be registered here using the REGISTER_DECODER macro. Otherwise, no messages
-     * will be decoded as the unorderedMap which maps Mavlink message ids corresponding
-     * with the corresponding decoder will be empty.
+     * Default constructor.
+     * Register message types with their decoders and post-decoding callbacks here.
+     * Without using REGISTER_DECODER, the decoder map remains unpopulated.
      */
     MavlinkDecoder();
 
     /**
-     * Destructor.
-     * Currently no dynamic memory is being allocated, so no need to do anything here.
+     * Default destructor.
+     * No specific cleanup is required since no dynamic memory is utilized.
      */
     ~MavlinkDecoder();
 
     /**
-     * Decodes the message and calls the corresponding callback function which you
-     * specify within the constructor.
-     * @param msg - the mavlink message (passed by reference) to be decoded.
-     * This message has already been extracted from an array of bytes and
-     * is ready to be decoded using the decoder functions specified in the
-     * constructor.
-     * @param isMessageDecoded - a boolean flag which is set to true if the message
-     * was successfully decoded.
+     * Unpacks the message, triggering the respective callback set during construction.
+     * @param msg - The preformatted mavlink message, ready for decoding.
+     * @param isMessageDecoded - Flag that indicates successful decoding.
      */
     void decodeMsg(mavlink_message_t &msg, bool &isMessageDecoded);
 
     /**
-     * Parses an array of bytes into mavlink messages and calls the corresponding
-     * callback functions for each message.
-     * @param buffer - the array of bytes to be parsed.
-     * @param bufferSize - the size of the buffer.
+     * Transforms a byte sequence into mavlink messages, then activates the respective callbacks.
+     * @param buffer - Byte sequence for parsing.
+     * @param bufferSize - Length of the byte sequence.
      */
     void parseBytesToMavlinkMsgs(u_int8_t *buffer, std::size_t bufferSize);
 };

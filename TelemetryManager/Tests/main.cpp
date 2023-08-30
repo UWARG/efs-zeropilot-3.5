@@ -1,13 +1,14 @@
 #include <iostream>
+#include "MavlinkDecoder.h"
+#include "MavlinkEncoder.h"
+#include "IncomingData.h"
 
-#include "../Inc/BasicMavlinkEncoder.h"
-#include "../Inc/MavlinkDecoder.h"
-
-auto *mavlinkEncoder = new BasicMavlinkEncoder();
-auto *mavlinkDecoder = new MavlinkDecoder();
+// Create instances of MavlinkEncoder and MavlinkDecoder classes.
+MavlinkEncoder mavlinkEncoder;
+MavlinkDecoder mavlinkDecoder;
 
 int main() {
-
+    // Initialize a new IncomingData object with some example data values.
     IncomingData data;
     data.latitude = 1;
     data.longitude = 2;
@@ -22,15 +23,25 @@ int main() {
     data.pitch = 5;
     data.yaw = 6;
 
-    std::vector<uint8_t> buffer = mavlinkEncoder->findPackingFunction(data);
+    std::cout << "Initialized incoming data with sample values." << std::endl;
 
-    //the message has now been parsed into multiple mavlink messages and stored in a buffer
-    //do whatever you would like with that buffer
+    // Define a buffer to store the MAVLink messages.
+    uint8_t buffer[MAX_ARRAY_BUFFER_SIZE];
 
+    // Use the mavlinkEncoder to find the right packing function for the incoming data.
+    // This will encode the data into MAVLink format and store it in the buffer.
+    mavlinkEncoder.packIntoMavlinkByteArray(data, buffer, MAX_ARRAY_BUFFER_SIZE);
 
-    //for example, you can parse the buffer back into mavlink messages, and use the callbacks specified in the
-    // MavlinkDdecoder class to do whatever you would like with the messages.
-    mavlinkDecoder->parseBytesToMavlinkMsgs(buffer.data(), buffer.size());
+    std::cout << "The incoming data has been encoded into MAVLink messages and stored in a buffer." << std::endl;
+
+    // At this point, you can do whatever you want with the buffer.
+    // In this example, we will decode the MAVLink messages back into their original format.
+
+    // Use the mavlinkDecoder to parse the buffer back into MAVLink messages.
+    // This will use the callbacks specified in the MavlinkDecoder class to process the messages.
+    mavlinkDecoder.parseBytesToMavlinkMsgs(buffer, MAX_ARRAY_BUFFER_SIZE);
+
+    std::cout << "Parsed the buffer back into MAVLink messages using MavlinkDecoder." << std::endl;
 
     return 0;
 }
