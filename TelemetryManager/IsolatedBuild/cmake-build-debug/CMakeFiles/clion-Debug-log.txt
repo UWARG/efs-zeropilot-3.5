@@ -1,4 +1,0 @@
-"/Users/yaremadzulynsky/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/231.9011.31/CLion.app/Contents/bin/cmake/mac/bin/cmake" -DCMAKE_BUILD_TYPE=Debug "-DCMAKE_MAKE_PROGRAM=/Users/yaremadzulynsky/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/231.9011.31/CLion.app/Contents/bin/ninja/mac/ninja" -G Ninja -S /Users/yaremadzulynsky/CLionProjects/ydzulyns/UWARG/ZeroPilot-SW-3.5.3/TelemetryManager/IsolatedBuild -B /Users/yaremadzulynsky/CLionProjects/ydzulyns/UWARG/ZeroPilot-SW-3.5.3/TelemetryManager/IsolatedBuild/cmake-build-debug
--- Configuring done
--- Generating done
--- Build files have been written to: /Users/yaremadzulynsky/CLionProjects/ydzulyns/UWARG/ZeroPilot-SW-3.5.3/TelemetryManager/IsolatedBuild/cmake-build-debug
