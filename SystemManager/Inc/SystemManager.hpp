@@ -9,10 +9,12 @@
 #include "rcreceiver_datatypes.h"
 #include "independent_watchdog.h"
 #include "ZP_D_PWMChannel.hpp"
+#include "AM.hpp"
 
 #define SBUS_THRESHOLD 25
 #define SBUS_MIN 0
 #define SBUS_MAX 100
+#define AM_PERIOD_MS 5
 
 class SystemManager {
 public:
@@ -22,6 +24,7 @@ public:
 
     /* Class Functions */
     void flyManually();
+    static void runAM(void* pvParameters);
 
 private:
     SBUSReceiver rcController_;
@@ -32,6 +35,8 @@ private:
     PWMChannel invertedRollMotorChannel_;
     PWMChannel pitchMotorChannel_;
     IndependentWatchdog watchdog_;
+    AM::AttitudeManager am_instance_;
+    TaskHandle_t AM_handle_ = NULL;
 };
 
 
