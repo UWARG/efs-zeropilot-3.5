@@ -6,8 +6,8 @@
 #define WARGMAVLINKSUPPORT_MAVLINKDECODER_H
 
 
-#include "../c_library_v2/common/mavlink.h"
-#include "iostream"
+#include "c_library_v2/common/mavlink.h"
+#include <unordered_map>
 
 /**
  * Macro for registering a decoder function for a specific message type.

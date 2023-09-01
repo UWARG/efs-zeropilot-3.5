@@ -2,7 +2,7 @@
 // Created by Yarema Dzulynsky on 2023-07-10.
 //
 
-#include "../Inc/MavlinkDecoder.h"
+#include "MavlinkDecoder.h"
 
 MavlinkDecoder::MavlinkDecoder() {
     // Existing message types

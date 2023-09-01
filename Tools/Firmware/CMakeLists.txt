@@ -14,19 +14,17 @@ include_directories(
         ## System Manager Includes ##
 
         ## Attitude Manager Includes ##
-#        ${ROOT_DIR}/AttitudeManager/Inc
-#        ${ROOT_DIR}/AttitudeManager/FlightModes/Inc
+        ${ROOT_DIR}/AttitudeManager/Inc
+        ${ROOT_DIR}/AttitudeManager/FlightModes/Inc
 
         ## Path Manager Includes ##
 
         ## Telemetry Manager Includes ##
         ${ROOT_DIR}/TelemetryManager/Inc
-        ${ROOT_DIR}/TelemetryManager/Src
-        ${ROOT_DIR}/TelemetryManager/Tests
 
 
         ## Driver Includes ##
-#        ${ROOT_DIR}/Drivers/rc_receiver/Inc
+        ${ROOT_DIR}/Drivers/rc_receiver/Inc
         ${ROOT_DIR}/Drivers/Common/Inc
 
         ${ROOT_DIR}/Drivers/ccontrol/Inc
@@ -59,17 +57,18 @@ set(HAL_CORE_C_SOURCES "${HAL_CORE}/Src/*.c")
 set(HAL_CORE_CXX_SOURCES "${HAL_CORE}/Src/*.cpp")
 
 ## Zeropilot Sources ##
-#[[set(ATTITUDE_MANAGER ${ROOT_DIR}/AttitudeManager)
+set(ATTITUDE_MANAGER ${ROOT_DIR}/AttitudeManager)
 set(ATTITUDE_MANAGER_C_SOURCES "${ATTITUDE_MANAGER}/Src/*.c"
         "${ATTITUDE_MANAGER}/FlightModes/Src/*.c")
 set(ATTITUDE_MANAGER_CXX_SOURCES "${ATTITUDE_MANAGER}/Src/*.cpp"
-        "${ATTITUDE_MANAGER}/FlightModes/Src/*.cpp")]]
+        "${ATTITUDE_MANAGER}/FlightModes/Src/*.cpp")
 set(DRIVERS_DIR ${ROOT_DIR}/Drivers)
 set(DRIVERS_C_SOURCES "${DRIVERS_DIR}/ccontrol/Src/*.c")
-#set(DRIVERS_CXX_SOURCES "${DRIVERS_DIR}/sensor_fusion/Src/*.cpp")
+set(DRIVERS_CXX_SOURCES "${DRIVERS_DIR}/sensor_fusion/Src/*.cpp")
+set(TELEMETRY_MANAGER ${ROOT_DIR}/TelemetryManager)
 
 ## Drivers Sources ##
-#set(DRIVERS_RcReceiver_DIR ${ROOT_DIR}/Drivers/rc_receiver/Src)
+set(DRIVERS_RcReceiver_DIR ${ROOT_DIR}/Drivers/rc_receiver/Src)
 set(DRIVERS_RcReceiver_CXX_SOURCES "${DRIVERS_RcReceiver_DIR}/*.cpp")
 set(DRIVERS_Common_DIR ${ROOT_DIR}/Drivers/Common/Src)
 set(DRIVERS_Common_CXX_SOURCES "${DRIVERS_Common_DIR}/*.cpp")
@@ -89,14 +88,15 @@ file(GLOB_RECURSE CXX_SOURCES ${HAL_CORE_CXX_SOURCES}
         ${DRIVERS_RcReceiver_CXX_SOURCES}
         ${DRIVERS_Common_CXX_SOURCES}
         ${DRIVERS_CXX_SOURCES}
-        ${DRIVERS_IWDGDriver_CXX_SOURCES})
+        ${DRIVERS_IWDGDriver_CXX_SOURCES}
+        ${TELEMETRY_MANAGER}/Src/*.cpp)
 message("C++ Sources: ${CXX_SOURCES}")
 
 ## Find the startup and linker script ##
-set(STARTUP_ASM_FILE ${ROOT_DIR}/Boardfiles/${STARTUP_ASM} #[[../../TelemetryManager/Inc/BasicMavlinkEncoder.h ../../TelemetryManager/Tests/main.cpp ../../TelemetryManager/Src/BasicMavlinkEncoder.cpp]])
+set(STARTUP_ASM_FILE ${ROOT_DIR}/Boardfiles/${STARTUP_ASM})
 set(LINKER_SCRIPT_FILE ${ROOT_DIR}/Boardfiles/${LINKER_SCRIPT})
 
-add_executable(${ELF_NAME} ${C_SOURCES} ${CXX_SOURCES} ${STARTUP_ASM_FILE}#[[ ../../TelemetryManager/Inc/BasicMavlinkEncoder.h ../../TelemetryManager/Tests/main.cpp ../../TelemetryManager/Src/BasicMavlinkEncoder.cpp]])
+add_executable(${ELF_NAME} ${C_SOURCES} ${CXX_SOURCES} ${STARTUP_ASM_FILE})
 
 # Specify C standard we use
 set_property(TARGET ${ELF_NAME} PROPERTY C_STANDARD 11)
@@ -119,13 +119,13 @@ add_custom_target("${PROJECT_NAME}.bin" ALL
         )
 
 # Print build type
-IF (CMAKE_BUILD_TYPE MATCHES Debug)
+IF(CMAKE_BUILD_TYPE MATCHES Debug)
     message("Debug build.")
-ELSEIF (CMAKE_BUILD_TYPE MATCHES Release)
+ELSEIF(CMAKE_BUILD_TYPE MATCHES Release)
     message("Release build.")
-ELSE ()
+ELSE()
     message("Some other build type.")
-ENDIF ()
+ENDIF()
 
 # Print size information after compiling
 add_custom_command(TARGET ${ELF_NAME}
