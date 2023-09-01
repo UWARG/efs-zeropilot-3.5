@@ -12,8 +12,6 @@
 #include "AM_ControlAlgorithm.hpp"
 #include "CommonDataTypes.hpp"
 
-#include <vector>
-
 namespace AM {
 
 class AttitudeManager {
@@ -30,6 +28,11 @@ class AttitudeManager {
     AttitudeManager();
     void outputToMotor(config::ControlAxis_t axis, uint8_t percent);
 
+    typedef struct {
+        MotorChannel *motorInstance;
+        bool isInverted;
+    } MotorInstance_t;
+
     static SemaphoreHandle_t control_inputs_mutex;
 
     static struct AttitudeManagerInput control_inputs;
@@ -39,12 +42,6 @@ class AttitudeManager {
     MotorInstance_t *motorReferences_[5]{nullptr};
     
 };
-
-// !!unsure if the struct definition should be here, would appreciate feedback
-typedef struct {
-        MotorChannel *motorInstance;
-        bool isInverted;
-    } MotorInstance_t;
 
 }  // namespace AM
 
