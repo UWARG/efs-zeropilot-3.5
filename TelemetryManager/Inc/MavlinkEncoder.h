@@ -6,7 +6,6 @@
 #define WARGMAVLINKSUPPORT_BASICMAVLINKENCODER_H
 
 #include <iostream>
-
 #include "c_library_v2/common/mavlink.h"
 #include "IncomingData.h"
 

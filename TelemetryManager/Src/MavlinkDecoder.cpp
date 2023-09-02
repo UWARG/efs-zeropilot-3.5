@@ -118,7 +118,7 @@ MavlinkDecoder::~MavlinkDecoder() {
     //no cleanup needed
 }
 
-void MavlinkDecoder::parseBytesToMavlinkMsgs(u_int8_t *buffer, std::size_t bufferSize) {
+void MavlinkDecoder::parseBytesToMavlinkMsgs(uint8_t *buffer, std::size_t bufferSize) {
     // Process the bytes in the buffer to construct MAVLink messages
 
     // MAVLink message structure
