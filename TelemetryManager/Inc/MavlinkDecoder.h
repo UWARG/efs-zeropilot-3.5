@@ -68,7 +68,7 @@ class MavlinkDecoder {
      * @param buffer - Byte sequence for parsing.
      * @param bufferSize - Length of the byte sequence.
      */
-    void parseBytesToMavlinkMsgs(u_int8_t *buffer, std::size_t bufferSize);
+    void parseBytesToMavlinkMsgs(uint8_t *buffer, std::size_t bufferSize);
 };
 
 
