@@ -8,6 +8,8 @@
 
 #include "c_library_v2/common/mavlink.h"
 #include <unordered_map>
+#include <functional>
+#include <iostream>
 
 /**
  * Macro for registering a decoder function for a specific message type.
