@@ -4,7 +4,12 @@
 
 #include "MavlinkDecoder.h"
 
+long MavlinkDecoder::decodedMessages = 0;
+
 MavlinkDecoder::MavlinkDecoder() {
+
+
+
     // Existing message types
     REGISTER_DECODER(MAVLINK_MSG_ID_ATTITUDE, attitude, [](mavlink_attitude_t &message) {
         std::cout << "ATTITUDE" << std::endl;

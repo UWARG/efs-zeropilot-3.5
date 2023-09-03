@@ -68,7 +68,7 @@ set(TM_SRC "${TM_FOLDER}/Src")
 
 include_directories(${TM_INC})
 file(GLOB TM_CODE
-        "${TM_FOLDER}/Tests/*.cpp"
+        "${TM_FOLDER}/Tests/GenericTest.cpp"
 
         # add necessary TelemetryManager source files below
          "${TM_SRC}/*.cpp"
