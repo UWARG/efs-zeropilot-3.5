@@ -13,9 +13,9 @@
 
 namespace AM {
 
-class ControlAlgorithm {
+class Flightmode {
    public:
-    ControlAlgorithm(){};
+    Flightmode(){};
 
     /// @brief Run the controls algorithm for the given flight model.
     /// @param

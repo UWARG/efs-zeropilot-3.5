@@ -8,7 +8,8 @@ param(
     [string] $t,
     [string] $p,
     [switch] $c,
-    [string] $f
+    [string] $f,
+    [string] $m
 )
 
 # read defaults from file, and set variable intial value
@@ -29,6 +30,7 @@ foreach($line in Get-Content "$PSScriptRoot/default_config.txt") {
 $COMPILE_TYPE = if ($t) {$t} else {$COMPILE_TYPE}
 $PLATFORM = if ($p) {$p} else {$PLATFORM}
 $TEST_FILTER = if ($f) {$f} else {$TEST_FILTER}
+$MODEL_NAME = if ($m) {$m} else {$MODEL_NAME}
 
 
 # ====================
@@ -61,7 +63,7 @@ if($FUNCTION -eq "compile") {
     Write-Host "Building ZeroPilot for $($COMPILE_TYPE.ToLower())."
     $COMPILE_DIR = "$PSScriptRoot/$COMPILE_TYPE/build"
     if($COMPILE_TYPE -eq "Firmware") {
-        Write-Host "Building for $PLATFORM."
+        Write-Host "Building for platform $PLATFORM and model $MODEL_NAME."
     }
     if($c) {
         Write-Host "Cleaning old $($COMPILE_TYPE.ToLower()) build environment."
@@ -77,6 +79,7 @@ if($FUNCTION -eq "compile") {
                 -G "${GENERATOR}" `
                 -DCMAKE_BUILD_TYPE="Debug" `
                 -DCMAKE_TOOLCHAIN_FILE="../../../Boardfiles/$PLATFORM/$PLATFORM.cmake" `
+                -DMODEL_NAME="$MODEL_NAME" `
                 -Wdev `
                 -Wdeprecated `
                 ..

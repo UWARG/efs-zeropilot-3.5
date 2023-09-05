@@ -28,6 +28,9 @@ include_directories(
     ${ROOT_DIR}/Drivers/ccontrol/Inc
     ${ROOT_DIR}/Drivers/sensor_fusion/Inc
     ${ROOT_DIR}/Drivers/IWDG_Driver/Inc
+
+    ${ROOT_DIR}/Drivers/MotorChannel/Inc
+
     ## Boardfiles Includes ##
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Drivers/${FAMILY_NAME}_HAL_Driver/Inc
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Core/Inc
@@ -38,6 +41,10 @@ include_directories(
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_${PORTABLE_NAME}
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/include
+    
+    ## Models Includes ##
+    ${ROOT_DIR}/Models
+    ${ROOT_DIR}/Models/${MODEL_NAME}
 )
 
 ## Boardfile Sources ##
