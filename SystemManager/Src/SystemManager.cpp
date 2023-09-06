@@ -18,7 +18,6 @@ SystemManager::SystemManager():
     yawMotorChannel_(&htim2, TIM_CHANNEL_2),
     rollMotorChannel_(&htim2, TIM_CHANNEL_3),
     pitchMotorChannel_(&htim2, TIM_CHANNEL_4),
-    invertedRollMotorChannel_(&htim3, TIM_CHANNEL_1),
     watchdog_(&hiwdg),
     am_instance_(nullptr) // TODO: default flight mode? 
 {
@@ -58,10 +57,8 @@ void SystemManager::flyManually() {
             am_input.yaw = rcInputs_.yaw;
             am_input.throttle = rcInputs_.throttle;
             AM::AttitudeManager::setControlInputs(am_input);
-            this->invertedRollMotorChannel_.set(SBUS_MAX - rcInputs_.roll);
         } else {
             AM::AttitudeManager::setControlInputs(am_input);
-            this->invertedRollMotorChannel_.set(0);
         }
     }
 }
