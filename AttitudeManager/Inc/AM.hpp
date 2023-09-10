@@ -11,6 +11,9 @@
 
 #include "AM_ControlAlgorithm.hpp"
 #include "CommonDataTypes.hpp"
+#include "semphr.h"
+#include "config_foundation.hpp"
+#include "config.hpp"
 
 namespace AM {
 

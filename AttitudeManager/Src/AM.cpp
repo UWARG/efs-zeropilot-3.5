@@ -4,9 +4,6 @@
 #include "AM.hpp"
 
 #include "FreeRTOS.h"
-#include "semphr.h"
-#include "config_foundation.hpp"
-#include "config.hpp"
 
 #include <array>
 #include <cstdlib>
