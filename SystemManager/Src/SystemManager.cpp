@@ -11,6 +11,8 @@
 #include "independent_watchdog.h"
 #include "tim.h"
 #include "CommonDataTypes.hpp"
+#include "config.hpp"
+#include "cmsis_os.h"
 
 SystemManager::SystemManager():
     rcController_(&huart2),
@@ -19,10 +21,9 @@ SystemManager::SystemManager():
     rollMotorChannel_(&htim2, TIM_CHANNEL_3),
     pitchMotorChannel_(&htim2, TIM_CHANNEL_4),
     watchdog_(&hiwdg),
-    am_instance_(nullptr) // TODO: default flight mode? 
+    am_instance_(config::flightmodes[config::DEFAULT_FLIGHTMODE].flightmodeConstructor())
 {
-    // TODO: define priority levels
-    xTaskCreate(runAM, "AM Thread", 400U, (void*)&am_instance_, (configMAX_PRIORITIES / 2), &AM_handle_);
+    xTaskCreate(runAM, "AM Thread", 400U, (void*)&am_instance_, osPriorityNormal, &AM_handle_);
 }
 
 SystemManager::~SystemManager() {
