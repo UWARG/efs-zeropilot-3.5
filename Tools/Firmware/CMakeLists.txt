@@ -86,8 +86,6 @@ set(DRIVERS_IWDGDriver_CXX_SOURCES "${DRIVERS_IWDGDriver_DIR}/*.cpp")
 ## Drivers Sources ##
 set(DRIVERS_UARTDevice_DIR ${ROOT_DIR}/Drivers/UARTDevice/Src)
 set(DRIVERS_UARTDevice_CXX_SOURCES "${DRIVERS_UARTDevice_DIR}/*.cpp")
-set(DRIVERS_Common_DIR ${ROOT_DIR}/Drivers/Common/Src)
-set(DRIVERS_Common_CXX_SOURCES "${DRIVERS_Common_DIR}/*.cpp")
 
 file(GLOB_RECURSE C_SOURCES ${HAL_DRIVERS_C_SOURCES}
                             ${FREE_RTOS_C_SOURCES}
