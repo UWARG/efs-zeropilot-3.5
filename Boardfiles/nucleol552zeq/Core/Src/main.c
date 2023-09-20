@@ -31,6 +31,9 @@
 #include "ucpd.h"
 #include "usb.h"
 #include "gpio.h"
+#include "FreeRTOS.h"
+
+
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -60,7 +63,6 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -125,7 +127,6 @@ int main(void)
 
   /* Init scheduler */
   osKernelInitialize();  /* Call init function for freertos objects (in freertos.c) */
-  MX_FREERTOS_Init();
 
   /* Start scheduler */
   osKernelStart();
