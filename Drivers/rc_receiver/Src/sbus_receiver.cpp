@@ -17,17 +17,25 @@ SBUSReceiver::SBUSReceiver(UART_HandleTypeDef* uart) : uart_(uart)
 }
 
 SBus_t SBUSReceiver::GetSBUS(){
-	if(received_sbus_.new_data == false)
+	if(received_sbus_.new_data == false) {
 		HAL_UART_Receive_DMA (uart_, raw_sbus_, SBUS_FRAME_SIZE);
+	}
+	received_rccontrol_.isDataNew = is_data_new_;
+	is_data_new_ = false;
     return received_sbus_;
 }
 
 RCControl SBUSReceiver::GetRCControl(){
-    if(received_sbus_.new_data == false)
-       HAL_UART_Receive_DMA (uart_, raw_sbus_, SBUS_FRAME_SIZE);
-    cast_rccontrol();
-    is_data_new_ = true;
-    received_rccontrol_.isDataNew = is_data_new_;
+
+    if(received_sbus_.new_data == false) {
+    	 HAL_UART_Receive_DMA (uart_, raw_sbus_, SBUS_FRAME_SIZE);
+    }
+    else {
+    	cast_rccontrol();
+    	received_rccontrol_.isDataNew = is_data_new_;
+    	is_data_new_ = false;
+    }
+
     return received_rccontrol_;
 }
 
