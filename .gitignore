@@ -24,3 +24,4 @@
 .DS_Store/
 Tools/*/build
 Debug/
+/.metadata/
