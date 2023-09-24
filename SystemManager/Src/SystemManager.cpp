@@ -26,7 +26,11 @@ SystemManager::~SystemManager() {}
 void SystemManager::flyManually() {
     for(;;){
         this->rcInputs_ = rcController_.GetRCControl();
-        if (this->rcInputs_.isDataNew) watchdog_.refreshWatchdog();
+        if (this->rcInputs_.isDataNew){
+        	watchdog_.refreshWatchdog();
+
+        }
+
 
         if(this->rcInputs_.arm >= (SBUS_MAX/2)) {
             this->throttleMotorChannel_.set(rcInputs_.throttle);
