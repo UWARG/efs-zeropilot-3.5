@@ -35,7 +35,6 @@
 #include "SystemManager.hpp"
 
 
-
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -100,6 +99,8 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
+
+
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_LPUART1_UART_Init();
@@ -122,26 +123,33 @@ int main(void)
   MX_ICACHE_Init();
   MX_IWDG_Init();
   MX_TIM3_Init();
+
+
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
 
   /* Init scheduler */
-  osKernelInitialize();  /* Call init function for freertos objects (in freertos.c) */
+
 
   /* Start scheduler */
-  osKernelStart();
   /* We should never get here as control is now taken by the scheduler */
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  SystemManager TestFly;
-  TestFly.flyManually();
+  /*SystemManager TestFly;
+   TestFly.flyManually();*/
+
+  SBUSReceiver SBUStest (&huart2);
+  SBUStest.GetSBUS();
+  SBus_t Teststruct;
+
 
   while (1)
   {
     /* USER CODE END WHILE */
 
+	  Teststruct = SBUStest.GetSBUS();
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
