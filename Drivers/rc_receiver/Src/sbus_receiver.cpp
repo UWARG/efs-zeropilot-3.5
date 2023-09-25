@@ -1,5 +1,4 @@
 #include "sbus_receiver.hpp"
-#include "drivers_config.hpp"
 
 SBUSReceiver::SBUSReceiver(UART_HandleTypeDef* uart) : uart_(uart)
 {
