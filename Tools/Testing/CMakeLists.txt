@@ -28,7 +28,7 @@ set(AM_SRC "${AM_FOLDER}/Src")
 set(FLIGHTMODES_INC "${AM_FOLDER}/FlightModes/Inc")
 set(FLIGHTMODES_SRC "${AM_FOLDER}/FlightModes/Src")
 
-include_directories(${AM_INC} ${FLIGHTMODES_INC})
+include_directories(${AM_INC} ${FLIGHTMODES_INC} ${AM_FOLDER}/Tests)
 file(GLOB AM_CODE
     "${AM_FOLDER}/Tests/*.cpp"
 
@@ -111,6 +111,7 @@ set(STUBS_SRC "${STUBS_FOLDER}/Src")
 include_directories(${STUBS_INC})
 file(GLOB STUBS_CODE
     "${STUBS_SRC}/*.cpp"
+    "${STUBS_SRC}/*.c"
 )
 
 #Models

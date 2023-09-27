@@ -17,6 +17,10 @@
 
 namespace AM {
 
+// Test class forward declarations
+class MotorInitialization;
+// End of test class forward declarations
+
 class AttitudeManager {
    public:
     static void setControlInputs(const AttitudeManagerInput& new_control_inputs);
@@ -28,6 +32,8 @@ class AttitudeManager {
     void runControlLoopIteration(const AttitudeManagerInput& instructions);
 
    private:
+    FRIEND_TEST(AttitudeManager, MotorInitialization);
+
     AttitudeManager();
     void outputToMotor(config::ControlAxis_t axis, uint8_t percent);
 
