@@ -35,14 +35,14 @@ SBus_t SBUSReceiver::GetSBUS(){
 
 RCControl SBUSReceiver::GetRCControl(){
 
-    if(uart_->RxState != HAL_UART_STATE_BUSY_RX) {
+    // if(uart_->RxState != HAL_UART_STATE_BUSY_RX) {
     	 HAL_UART_Receive_DMA (uart_, raw_sbus_, SBUS_FRAME_SIZE);
-    }
-    else {
+    // }
+    // else {
     	cast_rccontrol();
     	received_rccontrol_.isDataNew = is_data_new_;
     	is_data_new_ = false;
-    }
+    // }
 
     return received_rccontrol_;
 }

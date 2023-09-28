@@ -72,18 +72,8 @@ extern "C" {
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 void SMTask(void *pvParameters) {
-    sbus_pointer->GetSBUS();
-    SBus_t Teststruct;
-    IndependentWatchdog watchdog(&hiwdg);
-
-    while (1)
-    {
-    /* USER CODE END WHILE */
-        watchdog.refreshWatchdog();
-        Teststruct = sbus_pointer->GetSBUS();
-    /* USER CODE BEGIN 3 */
-    }
-
+    SystemManager SM;
+    SM.flyManually();
 
 }
 /* USER CODE END 0 */
