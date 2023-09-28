@@ -21,11 +21,11 @@ SBus_t SBUSReceiver::GetSBUS(){
 	/*volatile int counter;
 	counter++;*/
 
-	if(uart_->RxState != HAL_UART_STATE_BUSY_RX) {
+	// if(uart_->RxState != HAL_UART_STATE_BUSY_RX) {
 		/*counter++;*/
 		HAL_UART_Receive_DMA (uart_, raw_sbus_, SBUS_FRAME_SIZE);
 
-	}
+	// }
 
 
 	received_sbus_.isDataNew = is_data_new_;
