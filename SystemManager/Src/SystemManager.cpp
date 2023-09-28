@@ -12,7 +12,7 @@
 #include "tim.h"
 
 SystemManager::SystemManager():
-    rcController_(&huart2),
+    rcController_(sbus_pointer),
     throttleMotorChannel_(&htim2, TIM_CHANNEL_1),
     yawMotorChannel_(&htim2, TIM_CHANNEL_2),
     rollMotorChannel_(&htim2, TIM_CHANNEL_3),
@@ -25,11 +25,10 @@ SystemManager::~SystemManager() {}
 
 void SystemManager::flyManually() {
     for(;;){
-        this->rcInputs_ = rcController_.GetRCControl();
-        if (this->rcInputs_.isDataNew){
+        this->rcInputs_ = rcController_->GetRCControl();
+        // if (this->rcInputs_.isDataNew){
         	watchdog_.refreshWatchdog();
-
-        }
+        // }
 
 
         if(this->rcInputs_.arm >= (SBUS_MAX/2)) {
