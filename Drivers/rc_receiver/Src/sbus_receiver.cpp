@@ -5,7 +5,7 @@ SBUSReceiver::SBUSReceiver(UART_HandleTypeDef* uart) : uart_(uart)
 {
     for(int i = 0; i < SBUS_INPUT_CHANNELS; i++)
     {
-        received_sbus_.ch[i] = 1000;
+        received_sbus_.ch[i] = SBUS_RANGE_MIN;
     }
     received_sbus_.ch17 = false;
     received_sbus_.ch18 = false;
@@ -18,14 +18,9 @@ SBUSReceiver::SBUSReceiver(UART_HandleTypeDef* uart) : uart_(uart)
 
 SBus_t SBUSReceiver::GetSBUS(){
 
-	/*volatile int counter;
-	counter++;*/
-
-	// if(uart_->RxState != HAL_UART_STATE_BUSY_RX) {
-		/*counter++;*/
+	 if(uart_->RxState != HAL_UART_STATE_BUSY_RX) {
 		HAL_UART_Receive_DMA (uart_, raw_sbus_, SBUS_FRAME_SIZE);
-
-	// }
+	 }
 
 
 	received_sbus_.isDataNew = is_data_new_;
@@ -35,14 +30,12 @@ SBus_t SBUSReceiver::GetSBUS(){
 
 RCControl SBUSReceiver::GetRCControl(){
 
-    // if(uart_->RxState != HAL_UART_STATE_BUSY_RX) {
+     if(uart_->RxState != HAL_UART_STATE_BUSY_RX) {
     	 HAL_UART_Receive_DMA (uart_, raw_sbus_, SBUS_FRAME_SIZE);
-    // }
-    // else {
+     }
     	cast_rccontrol();
     	received_rccontrol_.isDataNew = is_data_new_;
     	is_data_new_ = false;
-    // }
 
     return received_rccontrol_;
 }
