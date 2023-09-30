@@ -40,10 +40,10 @@ void SystemManager::flyManually() {
         }
         else{
             this->throttleMotorChannel_.set(0);
-            this->yawMotorChannel_.set(0);
-            this->rollMotorChannel_.set(0);
-            this->pitchMotorChannel_.set(0);
-            this->invertedRollMotorChannel_.set(0);
+            this->yawMotorChannel_.set(SBUS_MAX/2);
+            this->rollMotorChannel_.set(SBUS_MAX/2);
+            this->pitchMotorChannel_.set(SBUS_MAX/2);
+            this->invertedRollMotorChannel_.set(SBUS_MAX/2);
         }
     }
 }
