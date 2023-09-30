@@ -36,7 +36,7 @@ void SystemManager::flyManually() {
             this->yawMotorChannel_.set(rcInputs_.yaw);
             this->rollMotorChannel_.set(rcInputs_.roll);
             this->pitchMotorChannel_.set(rcInputs_.pitch);
-            this->invertedRollMotorChannel_.set(SBUS_MAX - rcInputs_.roll);
+            this->invertedRollMotorChannel_.set(rcInputs_.roll);
         }
         else{
             this->throttleMotorChannel_.set(0);
