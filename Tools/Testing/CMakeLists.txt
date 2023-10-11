@@ -78,15 +78,15 @@ file(GLOB TM_CODE
 
 # Drivers
 set(DRIVERS_FOLDER "${ROOT_DIR}/Drivers")
-set(MOTORCHANNEL_INC "${DRIVERS_FOLDER}/MotorChannel/Inc")
-set(MOTORCHANNEL_SRC "${DRIVERS_FOLDER}/MotorChannel/Src")
+# set(MOTORCHANNEL_INC "${DRIVERS_FOLDER}/MotorChannel/Inc")
+# set(MOTORCHANNEL_SRC "${DRIVERS_FOLDER}/MotorChannel/Src")
 
 include_directories(${MOTORCHANNEL_INC})
 file(GLOB DRIVERS_CODE
     "${DRIVERS_FOLDER}/Tests/*.cpp"
 
     # add necessary Drivers source files below
-    "${MOTORCHANNEL_SRC}/*.cpp"
+    # "${MOTORCHANNEL_SRC}/*.cpp"
 )
 
 # Common
@@ -115,7 +115,10 @@ file(GLOB STUBS_CODE
 )
 
 #Models
-include_directories("${ROOT_DIR}/Models" "${ROOT_DIR}/Models/example_model")
+include_directories("${ROOT_DIR}/Models" "${ROOT_DIR}/Models/unit_testing")
+file(GLOB MODELS_CODE
+    "${ROOT_DIR}/Models/unit_testing/*.cpp"
+)
 
 # --- ZeroPilot File Indexing End ---
 
@@ -127,6 +130,7 @@ add_executable(${PROJECT_NAME}
     ${DRIVERS_CODE}
     ${COMMON_CODE}
     ${STUBS_CODE}
+    ${MODELS_CODE}
 )
 
 target_link_libraries(${PROJECT_NAME}

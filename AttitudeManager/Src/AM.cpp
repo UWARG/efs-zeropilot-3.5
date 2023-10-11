@@ -37,7 +37,8 @@ AttitudeManagerInput AttitudeManager::getControlInputs() {
 }
 
 AttitudeManager::AttitudeManager(Flightmode* control_algorithm):
-    control_algorithm_(control_algorithm)
+    control_algorithm_(control_algorithm),
+    motorInstances_(new MotorInstance_t[config::NUM_MOTORS]{})
 {
     // Go through motor config list and count the # of motors of each axis type
     uint8_t yawCount{0}, pitchCount{0}, rollCount{0}, throttleCount{0};
@@ -57,6 +58,7 @@ AttitudeManager::AttitudeManager(Flightmode* control_algorithm):
 
     // Dedicate portions of the motorInstances array to the respective axis by holding references to those positions
     // We do this instead of creating 4 seperate arrays as we only know the # of total motors and thus don't know the size of the 4 arrays at compile time
+    // If there is 0 of an axis, having the same reference as the next axis will cause it to do nothing
     motorReferences_[config::yaw] = &motorInstances_[0];
     motorReferences_[config::pitch] = &motorInstances_[yawCount];
     motorReferences_[config::roll] = &motorInstances_[yawCount + pitchCount];

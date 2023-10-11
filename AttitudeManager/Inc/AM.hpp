@@ -47,7 +47,7 @@ class AttitudeManager {
     static struct AttitudeManagerInput control_inputs;
 
     Flightmode* control_algorithm_;
-    MotorInstance_t motorInstances_[config::NUM_MOTORS]{};
+    MotorInstance_t* motorInstances_;
     MotorInstance_t *motorReferences_[5]{nullptr};
     
 };
