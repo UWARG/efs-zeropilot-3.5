@@ -11,8 +11,6 @@ class PWMChannel : public MotorChannel {
 					uint16_t timerChannel);
 
         void set(uint8_t percent);
-
-        uint8_t percent_;
 };
 
 #endif // ZP_D_PWM_CHANNEL_HPP_

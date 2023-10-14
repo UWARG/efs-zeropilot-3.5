@@ -18,7 +18,7 @@
 namespace AM {
 
 // Test class forward declarations
-class MotorInitialization;
+class MotorInitializationAndOutput;
 // End of test class forward declarations
 
 class AttitudeManager {
@@ -28,6 +28,8 @@ class AttitudeManager {
     static AttitudeManagerInput getControlInputs();
 
     AttitudeManager(Flightmode* control_algorithm);
+
+    ~AttitudeManager();
 
     void runControlLoopIteration(const AttitudeManagerInput& instructions);
 

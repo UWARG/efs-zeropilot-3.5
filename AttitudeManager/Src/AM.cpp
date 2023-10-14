@@ -91,6 +91,7 @@ AttitudeManager::AttitudeManager(Flightmode* control_algorithm):
 
 AttitudeManager::~AttitudeManager() {
     delete[] motorInstances_;
+    motorInstances_ = nullptr;
     
     for (int i = 0; i < 5; i++)
     {
