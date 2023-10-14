@@ -81,7 +81,7 @@ set(DRIVERS_FOLDER "${ROOT_DIR}/Drivers")
 set(DRIVERS_INC "${DRIVERS_FOLDER}/Common/Inc")
 set(DRIVERS_SRC "{$DRIVERS_FOLDER}/Src")
 
-include_directories(${MOTORCHANNEL_INC})
+include_directories(${DRIVERS_INC})
 file(GLOB DRIVERS_CODE
     "${DRIVERS_FOLDER}/Tests/*.cpp"
 
@@ -140,8 +140,3 @@ target_link_libraries(${PROJECT_NAME}
 
 include(GoogleTest)
 gtest_discover_tests(${PROJECT_NAME})
-
-
-# Specify C standard we use
-# set_property(TARGET ${ELF_NAME} PROPERTY C_STANDARD 11)
-# set_property(TARGET ${ELF_NAME} PROPERTY CXX_STANDARD 20)
