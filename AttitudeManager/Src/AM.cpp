@@ -89,6 +89,15 @@ AttitudeManager::AttitudeManager(Flightmode* control_algorithm):
     }
 };
 
+AttitudeManager::~AttitudeManager() {
+    delete[] motorInstances_;
+    
+    for (int i = 0; i < 5; i++)
+    {
+        motorReferences_[i] = nullptr;
+    }
+}
+
 void AttitudeManager::runControlLoopIteration(const AttitudeManagerInput& instructions) {
     // Process Instructions
 
