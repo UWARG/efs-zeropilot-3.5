@@ -8,7 +8,7 @@
 #include <array>
 #include <cstdlib>
 
-
+#include <iostream>
 
 namespace AM {
 SemaphoreHandle_t AttitudeManager::control_inputs_mutex = xSemaphoreCreateMutex();
@@ -55,6 +55,7 @@ AttitudeManager::AttitudeManager(Flightmode* control_algorithm):
                 break;
         }
     }
+    std::cout << (int) yawCount << std::endl;
 
     // Dedicate portions of the motorInstances array to the respective axis by holding references to those positions
     // We do this instead of creating 4 seperate arrays as we only know the # of total motors and thus don't know the size of the 4 arrays at compile time
@@ -112,11 +113,14 @@ void AttitudeManager::outputToMotor(config::ControlAxis_t axis, uint8_t percent)
     // Move through the portion of the motorInstances array that matches the wanted axis.
     // The motorReferences array holds references to the wanted positions in the motorInstances array
     for (MotorInstance_t *i{motorReferences_[axis]}; i != motorReferences_[axis + 1]; i++) {
+        std::cout << i->isInverted << std::endl;
+        std::cout << (int) i->motorInstance->percent_ << " ";
         if (i->isInverted) {
             i->motorInstance->set(100-percent);
         } else {
             i->motorInstance->set(percent);
         }
+        std::cout << (int) i->motorInstance->percent_ << std::endl;
     }
     
 }
