@@ -7,6 +7,7 @@ class MotorChannel {
     public:
         virtual void set(uint8_t percent) = 0;
 
+        uint16_t timerChannel_;
         uint8_t percent_;
 };
 

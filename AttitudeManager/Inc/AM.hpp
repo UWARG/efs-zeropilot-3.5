@@ -32,7 +32,7 @@ class AttitudeManager {
     void runControlLoopIteration(const AttitudeManagerInput& instructions);
 
    private:
-    FRIEND_TEST(AttitudeManager, MotorInitialization);
+    FRIEND_TEST(AttitudeManager, MotorInitializationAndOutput);
 
     AttitudeManager();
     void outputToMotor(config::ControlAxis_t axis, uint8_t percent);
@@ -46,8 +46,8 @@ class AttitudeManager {
 
     static struct AttitudeManagerInput control_inputs;
 
-    Flightmode* control_algorithm_;
-    MotorInstance_t* motorInstances_;
+    Flightmode *control_algorithm_;
+    MotorInstance_t *motorInstances_;
     MotorInstance_t *motorReferences_[5]{nullptr};
     
 };
