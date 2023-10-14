@@ -78,15 +78,16 @@ file(GLOB TM_CODE
 
 # Drivers
 set(DRIVERS_FOLDER "${ROOT_DIR}/Drivers")
-# set(MOTORCHANNEL_INC "${DRIVERS_FOLDER}/MotorChannel/Inc")
-# set(MOTORCHANNEL_SRC "${DRIVERS_FOLDER}/MotorChannel/Src")
+set(DRIVERS_INC "${DRIVERS_FOLDER}/Common/Inc")
+set(DRIVERS_SRC "{$DRIVERS_FOLDER}/Src")
 
 include_directories(${MOTORCHANNEL_INC})
 file(GLOB DRIVERS_CODE
     "${DRIVERS_FOLDER}/Tests/*.cpp"
 
     # add necessary Drivers source files below
-    # "${MOTORCHANNEL_SRC}/*.cpp"
+    # "${DRIVERS_SRC}/foo.cpp"
+    "${DRIVERS_FOLDER}/Common/Src/circular_buffer.cpp"
 )
 
 # Common
