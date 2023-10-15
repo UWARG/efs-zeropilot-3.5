@@ -14,6 +14,7 @@
 #include "semphr.h"
 #include "config_foundation.hpp"
 #include "config.hpp"
+#include <gtest/gtest.h>
 
 namespace AM {
 
