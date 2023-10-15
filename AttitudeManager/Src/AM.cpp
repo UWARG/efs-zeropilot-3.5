@@ -87,7 +87,7 @@ AttitudeManager::AttitudeManager(Flightmode* control_algorithm):
                 motorReferences_[config::throttle][throttleCount].motorInstance = config::motors[i].driverConstructor();
                 motorReferences_[config::throttle][throttleCount].isInverted = config::motors[i].isInverted;
                 throttleCount++;
-            // * could I throw an error for default here? *
+                break;
         }
     }
 };
