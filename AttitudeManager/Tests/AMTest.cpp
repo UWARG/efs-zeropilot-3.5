@@ -30,6 +30,7 @@ TEST(AttitudeManager, MotorInitializationAndOutput) {
 
         delete control_algorithm;
         delete[] config::motors;
+        control_algorithm = nullptr;
         config::motors = nullptr;
     }
 
@@ -116,13 +117,14 @@ TEST(AttitudeManager, MotorInitializationAndOutput) {
 
         delete control_algorithm;
         delete[] config::motors;
+        control_algorithm = nullptr;
         config::motors = nullptr;
     }
 
     // 1 motor of roll type
     {
         config::NUM_MOTORS = 1;
-        config::motors = new ::config::Motor_t[config::NUM_MOTORS];
+        config::motors = new config::Motor_t[config::NUM_MOTORS];
 
         config::motors[0] =
             config::Motor_t{   //Roll servo motor
@@ -165,6 +167,7 @@ TEST(AttitudeManager, MotorInitializationAndOutput) {
 
         delete control_algorithm;
         delete[] config::motors;
+        control_algorithm = nullptr;
         config::motors = nullptr;
     }
 
@@ -283,6 +286,7 @@ TEST(AttitudeManager, MotorInitializationAndOutput) {
 
         delete control_algorithm;
         delete[] config::motors;
+        control_algorithm = nullptr;
         config::motors = nullptr;
     }
 
