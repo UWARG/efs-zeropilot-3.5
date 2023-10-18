@@ -14,7 +14,9 @@
 #include "semphr.h"
 #include "config_foundation.hpp"
 #include "config.hpp"
-#include <gtest/gtest.h>
+#ifdef TESTING
+#include <gtest/gtest_prod.h>
+#endif
 
 namespace AM {
 
@@ -35,7 +37,9 @@ class AttitudeManager {
     void runControlLoopIteration(const AttitudeManagerInput& instructions);
 
    private:
+    #ifdef TESTING
     FRIEND_TEST(AttitudeManager, MotorInitializationAndOutput);
+    #endif
 
     AttitudeManager();
     void outputToMotor(config::ControlAxis_t axis, uint8_t percent);

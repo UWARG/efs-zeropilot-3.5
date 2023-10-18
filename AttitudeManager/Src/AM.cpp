@@ -40,17 +40,17 @@ AttitudeManager::AttitudeManager(Flightmode* control_algorithm):
     motorInstances_(new MotorInstance_t[config::NUM_MOTORS]{})
 {
     // Go through motor config list and count the # of motors of each axis type
-    uint8_t yawCount{0}, pitchCount{0}, rollCount{0}, throttleCount{0};
+    uint8_t numYawMotors{0}, numPitchMotors{0}, numRollMotors{0}, numThrottleMotors{0};
     for (uint8_t i{0}; i < config::NUM_MOTORS; i++) {
         switch (config::motors[i].axis) {
             case config::yaw: 
-                yawCount++;
+                numYawMotors++;
                 break;
             case config::pitch: 
-                pitchCount++;
+                numPitchMotors++;
                 break;
             case config::roll: 
-                rollCount++;
+                numRollMotors++;
                 break;
         }
     }
@@ -59,34 +59,34 @@ AttitudeManager::AttitudeManager(Flightmode* control_algorithm):
     // We do this instead of creating 4 seperate arrays as we only know the # of total motors and thus don't know the size of the 4 arrays at compile time
     // If there is 0 of an axis, having the same reference as the next axis will cause it to do nothing
     motorReferences_[config::yaw] = &motorInstances_[0];
-    motorReferences_[config::pitch] = &motorInstances_[yawCount];
-    motorReferences_[config::roll] = &motorInstances_[yawCount + pitchCount];
-    motorReferences_[config::throttle] = &motorInstances_[yawCount + pitchCount + rollCount];
+    motorReferences_[config::pitch] = &motorInstances_[numYawMotors];
+    motorReferences_[config::roll] = &motorInstances_[numYawMotors + numPitchMotors];
+    motorReferences_[config::throttle] = &motorInstances_[numYawMotors + numPitchMotors + numRollMotors];
     motorReferences_[4] = &motorInstances_[config::NUM_MOTORS]; // out of bounds reference, useful for outputToMotor method to know the end of the array
 
     // Initialize and store motor instances in the motorInstances array with respect to their axis
-    yawCount = 0, pitchCount = 0, rollCount = 0, throttleCount = 0;
+    numYawMotors = 0, numPitchMotors = 0, numRollMotors = 0, numThrottleMotors = 0;
     for (uint8_t i{0}; i < config::NUM_MOTORS; i++) {
         switch (config::motors[i].axis) {
             case config::yaw:
-                motorReferences_[config::yaw][yawCount].motorInstance = config::motors[i].driverConstructor();
-                motorReferences_[config::yaw][yawCount].isInverted = config::motors[i].isInverted;
-                yawCount++;
+                motorReferences_[config::yaw][numYawMotors].motorInstance = config::motors[i].driverConstructor();
+                motorReferences_[config::yaw][numYawMotors].isInverted = config::motors[i].isInverted;
+                numYawMotors++;
                 break;
             case config::pitch:
-                motorReferences_[config::pitch][pitchCount].motorInstance = config::motors[i].driverConstructor();
-                motorReferences_[config::pitch][pitchCount].isInverted = config::motors[i].isInverted;
-                pitchCount++;
+                motorReferences_[config::pitch][numPitchMotors].motorInstance = config::motors[i].driverConstructor();
+                motorReferences_[config::pitch][numPitchMotors].isInverted = config::motors[i].isInverted;
+                numPitchMotors++;
                 break;
             case config::roll:
-                motorReferences_[config::roll][rollCount].motorInstance = config::motors[i].driverConstructor();
-                motorReferences_[config::roll][rollCount].isInverted = config::motors[i].isInverted;
-                rollCount++;
+                motorReferences_[config::roll][numRollMotors].motorInstance = config::motors[i].driverConstructor();
+                motorReferences_[config::roll][numRollMotors].isInverted = config::motors[i].isInverted;
+                numRollMotors++;
                 break;
             case config::throttle:
-                motorReferences_[config::throttle][throttleCount].motorInstance = config::motors[i].driverConstructor();
-                motorReferences_[config::throttle][throttleCount].isInverted = config::motors[i].isInverted;
-                throttleCount++;
+                motorReferences_[config::throttle][numThrottleMotors].motorInstance = config::motors[i].driverConstructor();
+                motorReferences_[config::throttle][numThrottleMotors].isInverted = config::motors[i].isInverted;
+                numThrottleMotors++;
                 break;
         }
     }
