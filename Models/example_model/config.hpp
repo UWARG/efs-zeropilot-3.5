@@ -3,6 +3,8 @@
 
 #include "config_foundation.hpp"
 #include "tim.h"
+#include "manual.hpp"
+#include "fbwa.hpp"
 
 namespace config
 {
@@ -75,17 +77,15 @@ namespace config
         void run();
         void updatePid();
     };
+    
+    //Indices of flightmodes in array
+    constexpr uint8_t FM_MANUAL_IDX = 0;
+    constexpr uint8_t FM_FBWA_IDX = 1;
 
     constexpr Flightmode_t flightmodes[] = {
-        {   //Flightmode1
+        {   //Manual
             .tuningData{
                 .PIDValues = {
-                    .yawPID = {
-                        .isEnabled = true,
-                        .p = 1.0f,
-                        .i = 1.0f,
-                        .d = 1.0f
-                    }
                 },
                 .controlLimits = {
                     .yawLimit = {
@@ -94,22 +94,28 @@ namespace config
                     }
                 }
             },
-            .flightmodeConstructor = constructObject<AM::Flightmode, ExampleFlightmode1>
+            .flightmodeConstructor = constructObject<AM::Flightmode, AM::Manual>
         },
-        {   //Flightmode2
+        {   //Fly By Wire A (FBWA)
             .tuningData{
                 .PIDValues = {
-                    .yawPID = {
+                    .pitchPID = {
                         .isEnabled = true,
                         .p = 1.0f,
                         .i = 1.0f,
-                        .d = 1.0f
+                        .d = 1.0f,
+                        .i_max = 100.0f,
+                        .min_output = -100.0f,
+                        .max_output = 100.0f
                     },
                     .rollPID = {
                         .isEnabled = true,
                         .p = 1.0f,
                         .i = 1.0f,
-                        .d = 1.0f
+                        .d = 1.0f,
+                        .i_max = 100.0f,
+                        .min_output = -100.0f,
+                        .max_output = 100.0f
                     }
                 },
                 .controlLimits = {
@@ -123,7 +129,7 @@ namespace config
                     }
                 }
             },
-            .flightmodeConstructor = constructObject<AM::Flightmode, ExampleFlightmode2>
+            .flightmodeConstructor = constructObject<AM::Flightmode, AM::FBWA>
         }
     };
 

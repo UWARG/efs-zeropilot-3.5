@@ -1,18 +1,23 @@
-#ifndef ZPSW3_AM_MANUAL_HPP
-#define ZPSW3_AM_MANUAL_HPP
+#ifndef ZPSW3_AM_FBWA_HPP
+#define ZPSW3_AM_FBWA_HPP
 
 #include "flightmode.hpp"
+#include "PID.hpp"
 
 namespace AM {
 
-class Manual : public Flightmode {
+class FBWA : public Flightmode {
    public:
-    Manual() = default;
+    FBWA();
 
     AttitudeManagerInput run(const AttitudeManagerInput& input) override;
     void updatePid(ControlAxis_t axis, PIDController::PID newPIDVals) override;
+
+   private:
+    PIDController* pitchPID_;
+    PIDController* rollPID_;
 };
 
 }  // namespace AM
 
-#endif  // ZPSW3_AM_MANUAL_HPP
+#endif  // ZPSW3_AM_FBWA_HPP

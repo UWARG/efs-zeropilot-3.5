@@ -10,6 +10,7 @@
 #define ZPSW3_AM_CONTROL_INTERFACE_HPP
 
 #include "CommonDataTypes.hpp"
+#include "PID.hpp"
 
 namespace AM {
 
@@ -18,7 +19,7 @@ class Flightmode {
     virtual ~Flightmode() = default;
 
     virtual AttitudeManagerInput run(const AttitudeManagerInput& input) = 0;
-    virtual void updatePid() = 0;
+    virtual void updatePid(ControlAxis_t axis, PIDController::PID newPIDVals) = 0;
 
    protected:
     Flightmode() = default;

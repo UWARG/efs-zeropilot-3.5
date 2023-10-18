@@ -56,6 +56,9 @@ namespace config
         float p = 0.0f;
         float i = 0.0f;
         float d = 0.0f;
+        float i_max = 0.0f;
+        float min_output = 0.0f;
+        float max_output = 0.0f;
     } AxisPID_t;
 
     typedef struct {
