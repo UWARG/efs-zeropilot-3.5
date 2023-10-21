@@ -5,13 +5,17 @@
 
 #include "ZP_D_MotorChannel.hpp"
 
+namespace mock {
+extern uint8_t *motorOutputs;
+}
+
 class MockChannel : public MotorChannel {
     public:
-        MockChannel();
+        MockChannel(uint8_t channel);
 
         void set(uint8_t percent);
 
-        uint8_t percent_;
+        uint8_t channel_;
 };
 
 #endif // ZP_D_PWM_CHANNEL_HPP_

@@ -1,9 +1,13 @@
 #include "MockChannel.hpp"
 
-MockChannel::MockChannel():
-                        percent_(0)
+namespace mock {
+    uint8_t *motorOutputs = nullptr;
+}
+
+MockChannel::MockChannel(uint8_t channel):
+                        channel_(channel)
 {}
 
 void MockChannel::set(uint8_t percent) {
-    percent_ = percent;
+    mock::motorOutputs[channel_] = percent;
 }
