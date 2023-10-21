@@ -11,6 +11,7 @@
 
 #include "AM_ControlAlgorithm.hpp"
 #include "CommonDataTypes.hpp"
+#include "FreeRTOS.h"
 #include "semphr.h"
 #include "config_foundation.hpp"
 #include "config.hpp"
@@ -19,10 +20,6 @@
 #endif
 
 namespace AM {
-
-// Test class forward declarations
-class MotorInitializationAndOutput;
-// End of test class forward declarations
 
 class AttitudeManager {
    public:

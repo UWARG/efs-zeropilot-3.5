@@ -4,10 +4,10 @@
 #include "AM.hpp"
 
 #include "FreeRTOS.h"
+#include "semphr.h"
 
 #include <array>
 #include <cstdlib>
-
 
 namespace AM {
 SemaphoreHandle_t AttitudeManager::control_inputs_mutex = xSemaphoreCreateMutex();
@@ -94,12 +94,6 @@ AttitudeManager::AttitudeManager(Flightmode* control_algorithm):
 
 AttitudeManager::~AttitudeManager() {
     delete[] motorInstances_;
-    motorInstances_ = nullptr;
-    
-    for (int i = 0; i < 5; i++)
-    {
-        motorReferences_[i] = nullptr;
-    }
 }
 
 void AttitudeManager::runControlLoopIteration(const AttitudeManagerInput& instructions) {

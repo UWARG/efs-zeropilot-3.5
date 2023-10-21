@@ -31,7 +31,7 @@ set(AM_SRC "${AM_FOLDER}/Src")
 set(FLIGHTMODES_INC "${AM_FOLDER}/FlightModes/Inc")
 set(FLIGHTMODES_SRC "${AM_FOLDER}/FlightModes/Src")
 
-include_directories(${AM_INC} ${FLIGHTMODES_INC} ${AM_FOLDER}/Tests)
+include_directories(${AM_INC} ${FLIGHTMODES_INC})
 file(GLOB AM_CODE
     "${AM_FOLDER}/Tests/*.cpp"
 
@@ -83,14 +83,17 @@ file(GLOB TM_CODE
 set(DRIVERS_FOLDER "${ROOT_DIR}/Drivers")
 set(DRIVERS_INC "${DRIVERS_FOLDER}/Common/Inc")
 set(DRIVERS_SRC "{$DRIVERS_FOLDER}/Src")
+set(MOTORCHANNEL_INC "${DRIVERS_FOLDER}/MotorChannel/Inc")
+set(MOTORCHANNEL_SRC "${DRIVERS_FOLDER}/MotorChannel/Src")
 
-include_directories(${DRIVERS_INC})
+include_directories(${DRIVERS_INC} ${MOTORCHANNEL_INC})
 file(GLOB DRIVERS_CODE
     "${DRIVERS_FOLDER}/Tests/*.cpp"
 
     # add necessary Drivers source files below
     # "${DRIVERS_SRC}/foo.cpp"
     "${DRIVERS_FOLDER}/Common/Src/circular_buffer.cpp"
+    "${MOTORCHANNEL_SRC}/*.cpp"
 )
 
 # Common

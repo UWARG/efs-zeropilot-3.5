@@ -2,7 +2,6 @@
 #define ZPSW3_CONFIG_HPP
 
 #include "config_foundation.hpp"
-#include "tim.h"
 
 namespace config
 {
