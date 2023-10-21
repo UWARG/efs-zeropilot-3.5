@@ -27,7 +27,7 @@ class AttitudeManager {
 
     static AttitudeManagerInput getControlInputs();
 
-    AttitudeManager(Flightmode* control_algorithm);
+    AttitudeManager(Flightmode* control_algorithm, config::Motor_t motors[]);
 
     ~AttitudeManager();
 
@@ -50,7 +50,7 @@ class AttitudeManager {
 
     static struct AttitudeManagerInput control_inputs;
 
-    Flightmode *control_algorithm_;
+    Flightmode *controlAlgorithm_;
     MotorInstance_t *motorInstances_;
     MotorInstance_t *motorReferences_[5]{nullptr};
     

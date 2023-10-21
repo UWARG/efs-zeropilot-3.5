@@ -10,7 +10,7 @@ TEST(AttitudeManager, MotorInitializationAndOutput) {
     // No motors
     {
         config::NUM_MOTORS = 0;
-        config::motors = new config::Motor_t[config::NUM_MOTORS];
+        config::Motor_t *motors = new config::Motor_t[config::NUM_MOTORS];
 
         AM::Flightmode *control_algorithm  = config::flightmodes[0].flightmodeConstructor();
         AM::AttitudeManager am{control_algorithm};
@@ -29,45 +29,45 @@ TEST(AttitudeManager, MotorInitializationAndOutput) {
         am.outputToMotor(config::yaw, 10);
 
         delete control_algorithm;
-        delete[] config::motors;
+        delete[] motors;
         control_algorithm = nullptr;
-        config::motors = nullptr;
+        motors = nullptr;
     }
 
     // 5 motors of yaw type, some are inverted, *DO MIXED DRIVERS WHEN THERE ARE IMPLEMENATIONS OF MORE THAN ONE DRIVER*
     {
         config::NUM_MOTORS = 5;
-        config::motors = new config::Motor_t[config::NUM_MOTORS];
+        config::Motor_t *motors = new config::Motor_t[config::NUM_MOTORS];
 
-        config::motors[0] =
+        motors[0] =
             config::Motor_t{   //Yaw servo motor
                 .axis = config::yaw,
                 .isInverted = false,
                 .driverConstructor = config::constructObject<MotorChannel, MockChannel,
                                                     /*timer*/ &htim1, /*timer_channel*/ config::yaw>
             };
-        config::motors[1] =
+        motors[1] =
             config::Motor_t{   //Yaw servo motor
                 .axis = config::yaw,
                 .isInverted = true,
                 .driverConstructor = config::constructObject<MotorChannel, MockChannel,
                                                     /*timer*/ &htim1, /*timer_channel*/ config::yaw>
             };
-        config::motors[2] =
+        motors[2] =
             config::Motor_t{   //Yaw servo motor
                 .axis = config::yaw,
                 .isInverted = true,
                 .driverConstructor = config::constructObject<MotorChannel, MockChannel,
                                                     /*timer*/ &htim1, /*timer_channel*/ config::yaw>
             };
-        config::motors[3] =
+        motors[3] =
             config::Motor_t{   //Yaw servo motor
                 .axis = config::yaw,
                 .isInverted = false,
                 .driverConstructor = config::constructObject<MotorChannel, MockChannel,
                                                     /*timer*/ &htim1, /*timer_channel*/ config::yaw>
             };
-        config::motors[4] =
+        motors[4] =
             config::Motor_t{   //Yaw servo motor
                 .axis = config::yaw,
                 .isInverted = true,
@@ -116,17 +116,17 @@ TEST(AttitudeManager, MotorInitializationAndOutput) {
         EXPECT_EQ(30, am.motorInstances_[4].motorInstance->percent_);
 
         delete control_algorithm;
-        delete[] config::motors;
+        delete[] motors;
         control_algorithm = nullptr;
-        config::motors = nullptr;
+        motors = nullptr;
     }
 
     // 1 motor of roll type
     {
         config::NUM_MOTORS = 1;
-        config::motors = new config::Motor_t[config::NUM_MOTORS];
+        config::Motor_t *motors = new config::Motor_t[config::NUM_MOTORS];
 
-        config::motors[0] =
+        motors[0] =
             config::Motor_t{   //Roll servo motor
                 .axis = config::roll,
                 .isInverted = false,
@@ -166,59 +166,59 @@ TEST(AttitudeManager, MotorInitializationAndOutput) {
         EXPECT_EQ(100, am.motorInstances_[0].motorInstance->percent_);
 
         delete control_algorithm;
-        delete[] config::motors;
+        delete[] motors;
         control_algorithm = nullptr;
-        config::motors = nullptr;
+        motors = nullptr;
     }
 
     // 7 motors of all motor types, given in a non-uniform order, some are inverted
     {
         config::NUM_MOTORS = 7;
-        config::motors = new config::Motor_t[config::NUM_MOTORS];
+        config::Motor_t *motors = new config::Motor_t[config::NUM_MOTORS];
 
-        config::motors[0] =
+        motors[0] =
             config::Motor_t{   //Yaw servo motor
                 .axis = config::roll,
                 .isInverted = false,
                 .driverConstructor = config::constructObject<MotorChannel, MockChannel,
                                                     /*timer*/ &htim1, /*timer_channel*/ config::roll>
             };
-        config::motors[1] =
+        motors[1] =
             config::Motor_t{   //Yaw servo motor
                 .axis = config::throttle,
                 .isInverted = false,
                 .driverConstructor = config::constructObject<MotorChannel, MockChannel,
                                                     /*timer*/ &htim1, /*timer_channel*/ config::throttle>
             };
-        config::motors[2] =
+        motors[2] =
             config::Motor_t{   //Yaw servo motor
                 .axis = config::yaw,
                 .isInverted = false,
                 .driverConstructor = config::constructObject<MotorChannel, MockChannel,
                                                     /*timer*/ &htim1, /*timer_channel*/ config::yaw>
             };
-        config::motors[3] =
+        motors[3] =
             config::Motor_t{   //Yaw servo motor
                 .axis = config::pitch,
                 .isInverted = true,
                 .driverConstructor = config::constructObject<MotorChannel, MockChannel,
                                                     /*timer*/ &htim1, /*timer_channel*/ config::pitch>
             };
-        config::motors[4] =
+        motors[4] =
             config::Motor_t{   //Yaw servo motor
                 .axis = config::pitch,
                 .isInverted = false,
                 .driverConstructor = config::constructObject<MotorChannel, MockChannel,
                                                     /*timer*/ &htim1, /*timer_channel*/ config::pitch>
             };
-        config::motors[5] =
+        motors[5] =
             config::Motor_t{   //Yaw servo motor
                 .axis = config::throttle,
                 .isInverted = true,
                 .driverConstructor = config::constructObject<MotorChannel, MockChannel,
                                                     /*timer*/ &htim1, /*timer_channel*/ config::throttle>
             };
-        config::motors[6] =
+        motors[6] =
             config::Motor_t{   //Yaw servo motor
                 .axis = config::yaw,
                 .isInverted = false,
@@ -286,9 +286,9 @@ TEST(AttitudeManager, MotorInitializationAndOutput) {
         EXPECT_EQ(8, am.motorInstances_[6].motorInstance->percent_); // throttle inverted
 
         delete control_algorithm;
-        delete[] config::motors;
+        delete[] motors;
         control_algorithm = nullptr;
-        config::motors = nullptr;
+        motors = nullptr;
     }
 
 }

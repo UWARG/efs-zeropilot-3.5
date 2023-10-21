@@ -35,14 +35,14 @@ AttitudeManagerInput AttitudeManager::getControlInputs() {
     return temp;
 }
 
-AttitudeManager::AttitudeManager(Flightmode* control_algorithm):
-    control_algorithm_(control_algorithm),
+AttitudeManager::AttitudeManager(Flightmode* controlAlgorithm, config::Motor_t motors[]):
+    controlAlgorithm_(controlAlgorithm),
     motorInstances_(new MotorInstance_t[config::NUM_MOTORS]{})
 {
     // Go through motor config list and count the # of motors of each axis type
     uint8_t numYawMotors{0}, numPitchMotors{0}, numRollMotors{0}, numThrottleMotors{0};
     for (uint8_t i{0}; i < config::NUM_MOTORS; i++) {
-        switch (config::motors[i].axis) {
+        switch (motors[i].axis) {
             case config::yaw: 
                 numYawMotors++;
                 break;
@@ -67,25 +67,25 @@ AttitudeManager::AttitudeManager(Flightmode* control_algorithm):
     // Initialize and store motor instances in the motorInstances array with respect to their axis
     numYawMotors = 0, numPitchMotors = 0, numRollMotors = 0, numThrottleMotors = 0;
     for (uint8_t i{0}; i < config::NUM_MOTORS; i++) {
-        switch (config::motors[i].axis) {
+        switch (motors[i].axis) {
             case config::yaw:
-                motorReferences_[config::yaw][numYawMotors].motorInstance = config::motors[i].driverConstructor();
-                motorReferences_[config::yaw][numYawMotors].isInverted = config::motors[i].isInverted;
+                motorReferences_[config::yaw][numYawMotors].motorInstance = motors[i].driverConstructor();
+                motorReferences_[config::yaw][numYawMotors].isInverted = motors[i].isInverted;
                 numYawMotors++;
                 break;
             case config::pitch:
-                motorReferences_[config::pitch][numPitchMotors].motorInstance = config::motors[i].driverConstructor();
-                motorReferences_[config::pitch][numPitchMotors].isInverted = config::motors[i].isInverted;
+                motorReferences_[config::pitch][numPitchMotors].motorInstance = motors[i].driverConstructor();
+                motorReferences_[config::pitch][numPitchMotors].isInverted = motors[i].isInverted;
                 numPitchMotors++;
                 break;
             case config::roll:
-                motorReferences_[config::roll][numRollMotors].motorInstance = config::motors[i].driverConstructor();
-                motorReferences_[config::roll][numRollMotors].isInverted = config::motors[i].isInverted;
+                motorReferences_[config::roll][numRollMotors].motorInstance = motors[i].driverConstructor();
+                motorReferences_[config::roll][numRollMotors].isInverted = motors[i].isInverted;
                 numRollMotors++;
                 break;
             case config::throttle:
-                motorReferences_[config::throttle][numThrottleMotors].motorInstance = config::motors[i].driverConstructor();
-                motorReferences_[config::throttle][numThrottleMotors].isInverted = config::motors[i].isInverted;
+                motorReferences_[config::throttle][numThrottleMotors].motorInstance = motors[i].driverConstructor();
+                motorReferences_[config::throttle][numThrottleMotors].isInverted = motors[i].isInverted;
                 numThrottleMotors++;
                 break;
         }
@@ -100,7 +100,7 @@ void AttitudeManager::runControlLoopIteration(const AttitudeManagerInput& instru
     // Process Instructions
 
     // Run Control Algorithms
-    control_algorithm_->run();
+    controlAlgorithm_->run();
 
     // Write motor outputs
 }
