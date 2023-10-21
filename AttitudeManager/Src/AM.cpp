@@ -37,63 +37,64 @@ AttitudeManagerInput AttitudeManager::getControlInputs() {
 
 AttitudeManager::AttitudeManager(Flightmode* controlAlgorithm, config::Motor_t motors[]):
     controlAlgorithm_(controlAlgorithm),
-    motorInstances_(new MotorInstance_t[config::NUM_MOTORS]{})
+    motorInstances_(),
+    numMotors()
 {
     // Go through motor config list and count the # of motors of each axis type
-    uint8_t numYawMotors{0}, numPitchMotors{0}, numRollMotors{0}, numThrottleMotors{0};
     for (uint8_t i{0}; i < config::NUM_MOTORS; i++) {
         switch (motors[i].axis) {
             case config::yaw: 
-                numYawMotors++;
+                numMotors[config::yaw]++;
                 break;
             case config::pitch: 
-                numPitchMotors++;
+                numMotors[config::pitch]++;
                 break;
             case config::roll: 
-                numRollMotors++;
+                numMotors[config::roll]++;
+                break;
+            case config::throttle:
+                numMotors[config::throttle]++;
                 break;
         }
     }
 
-    // Dedicate portions of the motorInstances array to the respective axis by holding references to those positions
-    // We do this instead of creating 4 seperate arrays as we only know the # of total motors and thus don't know the size of the 4 arrays at compile time
-    // If there is 0 of an axis, having the same reference as the next axis will cause it to do nothing
-    motorReferences_[config::yaw] = &motorInstances_[0];
-    motorReferences_[config::pitch] = &motorInstances_[numYawMotors];
-    motorReferences_[config::roll] = &motorInstances_[numYawMotors + numPitchMotors];
-    motorReferences_[config::throttle] = &motorInstances_[numYawMotors + numPitchMotors + numRollMotors];
-    motorReferences_[4] = &motorInstances_[config::NUM_MOTORS]; // out of bounds reference, useful for outputToMotor method to know the end of the array
-
+    motorInstances_[config::yaw] = new MotorInstance_t[numMotors[config::yaw]];
+    motorInstances_[config::pitch] = new MotorInstance_t[numMotors[config::pitch]];
+    motorInstances_[config::roll] = new MotorInstance_t[numMotors[config::roll]];
+    motorInstances_[config::throttle] = new MotorInstance_t[numMotors[config::throttle]];
+    
     // Initialize and store motor instances in the motorInstances array with respect to their axis
-    numYawMotors = 0, numPitchMotors = 0, numRollMotors = 0, numThrottleMotors = 0;
+    uint8_t yawMotorCount{0}, pitchMotorCount{0}, rollMotorCount{0}, throttleMotorCount{0};
     for (uint8_t i{0}; i < config::NUM_MOTORS; i++) {
         switch (motors[i].axis) {
             case config::yaw:
-                motorReferences_[config::yaw][numYawMotors].motorInstance = motors[i].driverConstructor();
-                motorReferences_[config::yaw][numYawMotors].isInverted = motors[i].isInverted;
-                numYawMotors++;
+                motorInstances_[config::yaw][yawMotorCount].motorInstance = motors[i].driverConstructor();
+                motorInstances_[config::yaw][yawMotorCount].isInverted = motors[i].isInverted;
+                yawMotorCount++;
                 break;
             case config::pitch:
-                motorReferences_[config::pitch][numPitchMotors].motorInstance = motors[i].driverConstructor();
-                motorReferences_[config::pitch][numPitchMotors].isInverted = motors[i].isInverted;
-                numPitchMotors++;
+                motorInstances_[config::pitch][pitchMotorCount].motorInstance = motors[i].driverConstructor();
+                motorInstances_[config::pitch][pitchMotorCount].isInverted = motors[i].isInverted;
+                pitchMotorCount++;
                 break;
             case config::roll:
-                motorReferences_[config::roll][numRollMotors].motorInstance = motors[i].driverConstructor();
-                motorReferences_[config::roll][numRollMotors].isInverted = motors[i].isInverted;
-                numRollMotors++;
+                motorInstances_[config::roll][rollMotorCount].motorInstance = motors[i].driverConstructor();
+                motorInstances_[config::roll][rollMotorCount].isInverted = motors[i].isInverted;
+                rollMotorCount++;
                 break;
             case config::throttle:
-                motorReferences_[config::throttle][numThrottleMotors].motorInstance = motors[i].driverConstructor();
-                motorReferences_[config::throttle][numThrottleMotors].isInverted = motors[i].isInverted;
-                numThrottleMotors++;
+                motorInstances_[config::throttle][throttleMotorCount].motorInstance = motors[i].driverConstructor();
+                motorInstances_[config::throttle][throttleMotorCount].isInverted = motors[i].isInverted;
+                throttleMotorCount++;
                 break;
         }
     }
 };
 
 AttitudeManager::~AttitudeManager() {
-    delete[] motorInstances_;
+    for (uint8_t i{0}; i < 4; i++) {
+        delete[] motorInstances_[i];
+    }
 }
 
 void AttitudeManager::runControlLoopIteration(const AttitudeManagerInput& instructions) {
@@ -108,11 +109,11 @@ void AttitudeManager::runControlLoopIteration(const AttitudeManagerInput& instru
 void AttitudeManager::outputToMotor(config::ControlAxis_t axis, uint8_t percent) {
     // Move through the portion of the motorInstances array that matches the wanted axis.
     // The motorReferences array holds references to the wanted positions in the motorInstances array
-    for (MotorInstance_t *i{motorReferences_[axis]}; i != motorReferences_[axis + 1]; i++) {
-        if (i->isInverted) {
-            i->motorInstance->set(100-percent);
+    for (uint8_t motorCount{0}; motorCount < numMotors[axis]; motorCount++) {
+        if (motorInstances_[axis][motorCount].isInverted) {
+            motorInstances_[axis][motorCount].motorInstance->set(100-percent);
         } else {
-            i->motorInstance->set(percent);
+            motorInstances_[axis][motorCount].motorInstance->set(percent);
         }
     }
     
