@@ -23,7 +23,7 @@ int main() {
     data.pitch = 5;
     data.yaw = 6;
 
-    std::cout << "Initialized incoming data with sample values." << std::endl;
+    // std::cout << "Initialized incoming data with sample values." << std::endl;
 
     // Define a buffer to store the MAVLink messages.
     uint8_t buffer[MAX_ARRAY_BUFFER_SIZE];
@@ -32,7 +32,7 @@ int main() {
     // This will encode the data into MAVLink format and store it in the buffer.
     mavlinkEncoder.packIntoMavlinkByteArray(data, buffer, MAX_ARRAY_BUFFER_SIZE);
 
-    std::cout << "The incoming data has been encoded into MAVLink messages and stored in a buffer." << std::endl;
+    // std::cout << "The incoming data has been encoded into MAVLink messages and stored in a buffer." << std::endl;
 
     // At this point, you can do whatever you want with the buffer.
     // In this example, we will decode the MAVLink messages back into their original format.
@@ -41,7 +41,7 @@ int main() {
     // This will use the callbacks specified in the MavlinkDecoder class to process the messages.
     mavlinkDecoder.parseBytesToMavlinkMsgs(buffer, MAX_ARRAY_BUFFER_SIZE);
 
-    std::cout << "Parsed the buffer back into MAVLink messages using MavlinkDecoder." << std::endl;
+    // std::cout << "Parsed the buffer back into MAVLink messages using MavlinkDecoder." << std::endl;
 
     return 0;
 }

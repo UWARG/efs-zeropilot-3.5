@@ -20,6 +20,7 @@ include_directories(
     ## Path Manager Includes ##
 
     ## Telemetry Manager Includes ##
+    ${ROOT_DIR}/TelemetryManager/Inc
 
     ## Driver Includes ##
     ${ROOT_DIR}/Drivers/rc_receiver/Inc
