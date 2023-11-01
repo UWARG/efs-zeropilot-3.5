@@ -85,15 +85,18 @@ set(DRIVERS_INC "${DRIVERS_FOLDER}/Common/Inc")
 set(DRIVERS_SRC "{$DRIVERS_FOLDER}/Src")
 set(MOTORCHANNEL_INC "${DRIVERS_FOLDER}/MotorChannel/Inc")
 set(MOTORCHANNEL_SRC "${DRIVERS_FOLDER}/MotorChannel/Src")
+# Driver Mocks
+set(MOTORCHANNEL_MOCK_INC "${ROOT_DIR}/Testing/Mocks/Inc")
+set(MOTORCHANNEL_MOCK_SRC "${ROOT_DIR}/Testing/Mocks/Src")
 
-include_directories(${DRIVERS_INC} ${MOTORCHANNEL_INC})
+include_directories(${DRIVERS_INC} ${MOTORCHANNEL_INC} ${MOTORCHANNEL_MOCK_INC})
 file(GLOB DRIVERS_CODE
     "${DRIVERS_FOLDER}/Tests/*.cpp"
 
     # add necessary Drivers source files below
     # "${DRIVERS_SRC}/foo.cpp"
     "${DRIVERS_FOLDER}/Common/Src/circular_buffer.cpp"
-    "${MOTORCHANNEL_SRC}/*.cpp"
+    "${MOTORCHANNEL_MOCK_SRC}/*.cpp"
 )
 
 # Common
@@ -122,9 +125,8 @@ file(GLOB STUBS_CODE
 )
 
 #Models
-include_directories("${ROOT_DIR}/Models" "${ROOT_DIR}/Models/unit_testing")
+include_directories("${ROOT_DIR}/Models")
 file(GLOB MODELS_CODE
-    "${ROOT_DIR}/Models/unit_testing/*.cpp"
 )
 
 # --- ZeroPilot File Indexing End ---

@@ -1,283 +1,278 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include "AM.hpp"
-#include "config.hpp"
+#include "config_foundation.hpp"
 #include "MockChannel.hpp"
+#include "MockFlightmode.hpp"
 
 namespace AM {
 
-TEST(AttitudeManager, MotorInitializationAndOutput) {
+TEST(AttitudeManagerOutputToMotor, NoMotors) {
+    MockFlightmode controlAlgorithm{};
+    MotorInstance_t *motorInstances[config::NUM_CONTROL_AXIS]{nullptr};
+    uint8_t numMotorsPerAxis[config::NUM_CONTROL_AXIS]{0};
 
-    // No motors
-    {
-        config::NUM_MOTORS = 0;
-        config::Motor_t *motors = new config::Motor_t[config::NUM_MOTORS];
-        mock::motorOutputs = new uint8_t[config::NUM_MOTORS];
+    AM::AttitudeManager am{&controlAlgorithm, motorInstances, numMotorsPerAxis};
 
+    am.outputToMotor(config::throttle, 40);
+    am.outputToMotor(config::pitch, 30);
+    am.outputToMotor(config::roll, 20);
+    am.outputToMotor(config::yaw, 10);
+}
 
-        AM::Flightmode *control_algorithm  = config::flightmodes[0].flightmodeConstructor();
-        AM::AttitudeManager am{control_algorithm, motors};
+TEST(AttitudeManagerOutputToMotor, MotorsOfSameAxis) {
+    MockFlightmode controlAlgorithm{};
+    MotorInstance_t *motorInstances[config::NUM_CONTROL_AXIS]{nullptr};
+    uint8_t numMotorsPerAxis[config::NUM_CONTROL_AXIS]{0};
 
-        // Shouldn't do anything
-        am.outputToMotor(config::throttle, 40);
-        am.outputToMotor(config::pitch, 30);
-        am.outputToMotor(config::roll, 20);
-        am.outputToMotor(config::yaw, 10);
+    MockChannel mockChannelReferences[5]{};
 
-        delete control_algorithm;
-        delete[] motors;
-        control_algorithm = nullptr;
-        motors = nullptr;
-    }
+    MotorInstance_t pitchMotorReferences[] = {
+        {
+            .motorInstance = &mockChannelReferences[0],
+            .isInverted = false
+        },
+        {
+            .motorInstance = &mockChannelReferences[1],
+            .isInverted = false
+        },
+        {
+            .motorInstance = &mockChannelReferences[2],
+            .isInverted = false
+        },
+        {
+            .motorInstance = &mockChannelReferences[3],
+            .isInverted = false
+        },
+        {
+            .motorInstance = &mockChannelReferences[4],
+            .isInverted = false
+        }
+    };
 
-    // 5 motors of yaw type, some are inverted, *DO MIXED DRIVERS WHEN THERE ARE IMPLEMENATIONS OF MORE THAN ONE DRIVER*
-    {
-        config::NUM_MOTORS = 5;
-        config::Motor_t *motors = new config::Motor_t[config::NUM_MOTORS];
-        mock::motorOutputs = new uint8_t[config::NUM_MOTORS];
+    motorInstances[config::pitch] = pitchMotorReferences;
 
-        motors[0] =
-            config::Motor_t{   //Yaw servo motor
-                .axis = config::yaw,
-                .isInverted = false,
-                .driverConstructor = config::constructObject<MotorChannel, MockChannel, 0>
-            };
-        motors[1] =
-            config::Motor_t{   //Yaw servo motor
-                .axis = config::yaw,
-                .isInverted = true,
-                .driverConstructor = config::constructObject<MotorChannel, MockChannel, 1>
-            };
-        motors[2] =
-            config::Motor_t{   //Yaw servo motor
-                .axis = config::yaw,
-                .isInverted = true,
-                .driverConstructor = config::constructObject<MotorChannel, MockChannel, 2>
-            };
-        motors[3] =
-            config::Motor_t{   //Yaw servo motor
-                .axis = config::yaw,
-                .isInverted = false,
-                .driverConstructor = config::constructObject<MotorChannel, MockChannel, 3>
-            };
-        motors[4] =
-            config::Motor_t{   //Yaw servo motor
-                .axis = config::yaw,
-                .isInverted = true,
-                .driverConstructor = config::constructObject<MotorChannel, MockChannel, 4>
-            };
+    numMotorsPerAxis[config::pitch] = 5;
 
-        AM::Flightmode *control_algorithm  = config::flightmodes[0].flightmodeConstructor();
-        AM::AttitudeManager am{control_algorithm, motors};
+    AM::AttitudeManager am{&controlAlgorithm, motorInstances, numMotorsPerAxis};
 
-        // Setting non-existent motors shouldn't affect yaw
-        am.outputToMotor(config::yaw, 0);
-        am.outputToMotor(config::throttle, 40);
-        am.outputToMotor(config::pitch, 30);
-        am.outputToMotor(config::roll, 20);
+    // Setting non-existent motors shouldn't affect yaw
+    EXPECT_CALL(mockChannelReferences[0], set(30));
+    EXPECT_CALL(mockChannelReferences[1], set(30));
+    EXPECT_CALL(mockChannelReferences[2], set(30));
+    EXPECT_CALL(mockChannelReferences[3], set(30));
+    EXPECT_CALL(mockChannelReferences[4], set(30));
 
-        EXPECT_EQ(0, mock::motorOutputs[0]);
-        EXPECT_EQ(100, mock::motorOutputs[1]);
-        EXPECT_EQ(100, mock::motorOutputs[2]);
-        EXPECT_EQ(0, mock::motorOutputs[3]);
-        EXPECT_EQ(100, mock::motorOutputs[4]);
+    am.outputToMotor(config::yaw, 10);
+    am.outputToMotor(config::throttle, 40);
+    am.outputToMotor(config::pitch, 30);
+    am.outputToMotor(config::roll, 20);
 
-        // Should set all of them
-        am.outputToMotor(config::yaw, 50);
+    // Should set all of them
+    EXPECT_CALL(mockChannelReferences[0], set(60));
+    EXPECT_CALL(mockChannelReferences[1], set(60));
+    EXPECT_CALL(mockChannelReferences[2], set(60));
+    EXPECT_CALL(mockChannelReferences[3], set(60));
+    EXPECT_CALL(mockChannelReferences[4], set(60));
 
-        EXPECT_EQ(50, mock::motorOutputs[0]);
-        EXPECT_EQ(50, mock::motorOutputs[1]);
-        EXPECT_EQ(50, mock::motorOutputs[2]);
-        EXPECT_EQ(50, mock::motorOutputs[3]);
-        EXPECT_EQ(50, mock::motorOutputs[4]);
+    am.outputToMotor(config::pitch, 60);
+}
 
-        // Another setting test
-        am.outputToMotor(config::yaw, 70);
+TEST(AttitudeManagerOutputToMotor, setOutputInRandomAxisOrder) {
+    MockFlightmode controlAlgorithm{};
+    MotorInstance_t *motorInstances[config::NUM_CONTROL_AXIS]{nullptr};
+    uint8_t numMotorsPerAxis[config::NUM_CONTROL_AXIS]{0};
 
-        EXPECT_EQ(70, mock::motorOutputs[0]);
-        EXPECT_EQ(30, mock::motorOutputs[1]);
-        EXPECT_EQ(30, mock::motorOutputs[2]);
-        EXPECT_EQ(70, mock::motorOutputs[3]);
-        EXPECT_EQ(30, mock::motorOutputs[4]);
+    MockChannel mockChannelReferences[4]{};
 
-        delete control_algorithm;
-        delete[] motors;
-        control_algorithm = nullptr;
-        motors = nullptr;
-    }
+    MotorInstance_t yawMotorReferences[] = {
+        {
+            .motorInstance = &mockChannelReferences[0],
+            .isInverted = false
+        }
+    };
 
-    // // 1 motor of roll type
-    // {
-    //     config::NUM_MOTORS = 1;
-    //     config::Motor_t *motors = new config::Motor_t[config::NUM_MOTORS];
-    //     mock::motorOutputs = new uint16_t[config::NUM_MOTORS];
+    MotorInstance_t pitchMotorReferences[] = {
+        {
+            .motorInstance = &mockChannelReferences[1],
+            .isInverted = false
+        }
+    };
 
-    //     motors[0] =
-    //         config::Motor_t{   //Roll servo motor
-    //             .axis = config::roll,
-    //             .isInverted = false,
-    //             .driverConstructor = config::constructObject<MotorChannel, MockChannel,
-    //                                                 /*timer*/ &htim1, /*timer_channel*/ config::roll>
-    //         };
+    MotorInstance_t rollMotorReferences[] = {
+        {
+            .motorInstance = &mockChannelReferences[2],
+            .isInverted = false
+        }
+    };
 
-    //     AM::Flightmode *control_algorithm  = config::flightmodes[0].flightmodeConstructor();
-    //     AM::AttitudeManager am{control_algorithm, motors};
+    MotorInstance_t throttleMotorReferences[] = {
+        {
+            .motorInstance = &mockChannelReferences[3],
+            .isInverted = false
+        }
+    };
 
-    //     // Non null references
-    //     EXPECT_THAT(am.motorReferences_[0], ::testing::NotNull());
-    //     EXPECT_THAT(am.motorReferences_[1], ::testing::NotNull());
-    //     EXPECT_THAT(am.motorReferences_[2], ::testing::NotNull());
-    //     EXPECT_THAT(am.motorReferences_[3], ::testing::NotNull());
-    //     EXPECT_THAT(am.motorReferences_[4], ::testing::NotNull());
+    motorInstances[config::yaw] = yawMotorReferences;
+    motorInstances[config::pitch] = pitchMotorReferences;
+    motorInstances[config::roll] = rollMotorReferences;
+    motorInstances[config::throttle] = throttleMotorReferences;
 
-    //     // Setting non-existent motors first shouldn't affect roll
-    //     am.outputToMotor(config::throttle, 40);
-    //     am.outputToMotor(config::pitch, 30);
-    //     am.outputToMotor(config::yaw, 20);
-    //     am.outputToMotor(config::roll, 10);
+    numMotorsPerAxis[config::yaw] = 1;
+    numMotorsPerAxis[config::pitch] = 1;
+    numMotorsPerAxis[config::roll] = 1;
+    numMotorsPerAxis[config::throttle] = 1;
 
-    //     EXPECT_EQ(10, am.motorInstances_[0].motorInstance->percent_);
+    AM::AttitudeManager am{&controlAlgorithm, motorInstances, numMotorsPerAxis};
 
-    //     // Setting non-existent motors last shouldn't affect roll
-    //     am.outputToMotor(config::roll, 50);
-    //     am.outputToMotor(config::throttle, 60);
-    //     am.outputToMotor(config::pitch, 70);
-    //     am.outputToMotor(config::yaw, 80);
-        
-    //     EXPECT_EQ(50, am.motorInstances_[0].motorInstance->percent_);
+    // Should invert all inputs
+    EXPECT_CALL(mockChannelReferences[0], set(12));
+    EXPECT_CALL(mockChannelReferences[1], set(75));
+    EXPECT_CALL(mockChannelReferences[2], set(100));
+    EXPECT_CALL(mockChannelReferences[3], set(33));
 
-    //     // Another setting test
-    //     am.outputToMotor(config::roll, 100);
+    am.outputToMotor(config::yaw, 12);
+    am.outputToMotor(config::throttle, 33);
+    am.outputToMotor(config::pitch, 75);
+    am.outputToMotor(config::roll, 100);
+}
 
-    //     EXPECT_EQ(100, am.motorInstances_[0].motorInstance->percent_);
+TEST(AttitudeManagerOutputToMotor, InvertedTest) {
+    MockFlightmode controlAlgorithm{};
+    MotorInstance_t *motorInstances[config::NUM_CONTROL_AXIS]{nullptr};
+    uint8_t numMotorsPerAxis[config::NUM_CONTROL_AXIS]{0};
 
-    //     delete control_algorithm;
-    //     delete[] motors;
-    //     control_algorithm = nullptr;
-    //     motors = nullptr;
-    // }
+    MockChannel mockChannelReferences[4]{};
 
-    // // 7 motors of all motor types, given in a non-uniform order, some are inverted
-    // {
-    //     config::NUM_MOTORS = 7;
-    //     config::Motor_t *motors = new config::Motor_t[config::NUM_MOTORS];
-    //     mock::motorOutputs = new uint16_t[config::NUM_MOTORS];
+    MotorInstance_t yawMotorReferences[] = {
+        {
+            .motorInstance = &mockChannelReferences[0],
+            .isInverted = true
+        }
+    };
 
-    //     motors[0] =
-    //         config::Motor_t{   //Yaw servo motor
-    //             .axis = config::roll,
-    //             .isInverted = false,
-    //             .driverConstructor = config::constructObject<MotorChannel, MockChannel,
-    //                                                 /*timer*/ &htim1, /*timer_channel*/ config::roll>
-    //         };
-    //     motors[1] =
-    //         config::Motor_t{   //Yaw servo motor
-    //             .axis = config::throttle,
-    //             .isInverted = false,
-    //             .driverConstructor = config::constructObject<MotorChannel, MockChannel,
-    //                                                 /*timer*/ &htim1, /*timer_channel*/ config::throttle>
-    //         };
-    //     motors[2] =
-    //         config::Motor_t{   //Yaw servo motor
-    //             .axis = config::yaw,
-    //             .isInverted = false,
-    //             .driverConstructor = config::constructObject<MotorChannel, MockChannel,
-    //                                                 /*timer*/ &htim1, /*timer_channel*/ config::yaw>
-    //         };
-    //     motors[3] =
-    //         config::Motor_t{   //Yaw servo motor
-    //             .axis = config::pitch,
-    //             .isInverted = true,
-    //             .driverConstructor = config::constructObject<MotorChannel, MockChannel,
-    //                                                 /*timer*/ &htim1, /*timer_channel*/ config::pitch>
-    //         };
-    //     motors[4] =
-    //         config::Motor_t{   //Yaw servo motor
-    //             .axis = config::pitch,
-    //             .isInverted = false,
-    //             .driverConstructor = config::constructObject<MotorChannel, MockChannel,
-    //                                                 /*timer*/ &htim1, /*timer_channel*/ config::pitch>
-    //         };
-    //     motors[5] =
-    //         config::Motor_t{   //Yaw servo motor
-    //             .axis = config::throttle,
-    //             .isInverted = true,
-    //             .driverConstructor = config::constructObject<MotorChannel, MockChannel,
-    //                                                 /*timer*/ &htim1, /*timer_channel*/ config::throttle>
-    //         };
-    //     motors[6] =
-    //         config::Motor_t{   //Yaw servo motor
-    //             .axis = config::yaw,
-    //             .isInverted = false,
-    //             .driverConstructor = config::constructObject<MotorChannel, MockChannel,
-    //                                                 /*timer*/ &htim1, /*timer_channel*/ config::yaw>
-    //         };
+    MotorInstance_t pitchMotorReferences[] = {
+        {
+            .motorInstance = &mockChannelReferences[1],
+            .isInverted = true
+        }
+    };
 
-    //     AM::Flightmode *control_algorithm  = config::flightmodes[0].flightmodeConstructor();
-    //     AM::AttitudeManager am{control_algorithm, motors};
+    MotorInstance_t rollMotorReferences[] = {
+        {
+            .motorInstance = &mockChannelReferences[2],
+            .isInverted = true
+        }
+    };
 
-    //     // Non null references
-    //     EXPECT_THAT(am.motorReferences_[0], ::testing::NotNull());
-    //     EXPECT_THAT(am.motorReferences_[1], ::testing::NotNull());
-    //     EXPECT_THAT(am.motorReferences_[2], ::testing::NotNull());
-    //     EXPECT_THAT(am.motorReferences_[3], ::testing::NotNull());
-    //     EXPECT_THAT(am.motorReferences_[4], ::testing::NotNull());
+    MotorInstance_t throttleMotorReferences[] = {
+        {
+            .motorInstance = &mockChannelReferences[3],
+            .isInverted = true
+        }
+    };
 
-    //     // This is internal and checking output should be enough, should be replaced with 4 arrays anyways
-    //     // // Check motor order
-    //     // EXPECT_EQ(config::yaw, am.motorInstances_[0].motorInstance->timerChannel_);
-    //     // EXPECT_EQ(config::yaw, am.motorInstances_[1].motorInstance->timerChannel_);
-    //     // EXPECT_EQ(config::pitch, am.motorInstances_[2].motorInstance->timerChannel_);
-    //     // EXPECT_EQ(config::pitch, am.motorInstances_[3].motorInstance->timerChannel_);
-    //     // EXPECT_EQ(config::roll, am.motorInstances_[4].motorInstance->timerChannel_);
-    //     // EXPECT_EQ(config::throttle, am.motorInstances_[5].motorInstance->timerChannel_);
-    //     // EXPECT_EQ(config::throttle, am.motorInstances_[6].motorInstance->timerChannel_);
+    motorInstances[config::yaw] = yawMotorReferences;
+    motorInstances[config::pitch] = pitchMotorReferences;
+    motorInstances[config::roll] = rollMotorReferences;
+    motorInstances[config::throttle] = throttleMotorReferences;
 
-    //     // Setting motors
-    //     am.outputToMotor(config::yaw, 0);
-    //     am.outputToMotor(config::throttle, 5);
-    //     am.outputToMotor(config::pitch, 12);
-    //     am.outputToMotor(config::roll, 33);
+    numMotorsPerAxis[config::yaw] = 1;
+    numMotorsPerAxis[config::pitch] = 1;
+    numMotorsPerAxis[config::roll] = 1;
+    numMotorsPerAxis[config::throttle] = 1;
 
-    //     EXPECT_EQ(0, am.motorInstances_[0].motorInstance->percent_); // yaw
-    //     EXPECT_EQ(0, am.motorInstances_[1].motorInstance->percent_); // yaw
-    //     EXPECT_EQ(88, am.motorInstances_[2].motorInstance->percent_); // pitch inverted
-    //     EXPECT_EQ(12, am.motorInstances_[3].motorInstance->percent_); // pitch
-    //     EXPECT_EQ(33, am.motorInstances_[4].motorInstance->percent_); // roll
-    //     EXPECT_EQ(5, am.motorInstances_[5].motorInstance->percent_); // throttle
-    //     EXPECT_EQ(95, am.motorInstances_[6].motorInstance->percent_); // throttle inverted
+    AM::AttitudeManager am{&controlAlgorithm, motorInstances, numMotorsPerAxis};
 
-    //     // Should set only pitch
-    //     am.outputToMotor(config::pitch, 52);
+    // Should invert all inputs
+    EXPECT_CALL(mockChannelReferences[0], set(88));
+    EXPECT_CALL(mockChannelReferences[1], set(25));
+    EXPECT_CALL(mockChannelReferences[2], set(0));
+    EXPECT_CALL(mockChannelReferences[3], set(67));
 
-    //     EXPECT_EQ(0, am.motorInstances_[0].motorInstance->percent_); // yaw
-    //     EXPECT_EQ(0, am.motorInstances_[1].motorInstance->percent_); // yaw
-    //     EXPECT_EQ(48, am.motorInstances_[2].motorInstance->percent_); // pitch inverted
-    //     EXPECT_EQ(52, am.motorInstances_[3].motorInstance->percent_); // pitch
-    //     EXPECT_EQ(33, am.motorInstances_[4].motorInstance->percent_); // roll
-    //     EXPECT_EQ(5, am.motorInstances_[5].motorInstance->percent_); // throttle
-    //     EXPECT_EQ(95, am.motorInstances_[6].motorInstance->percent_); // throttle inverted
+    am.outputToMotor(config::yaw, 12);
+    am.outputToMotor(config::pitch, 75);
+    am.outputToMotor(config::roll, 100);
+    am.outputToMotor(config::throttle, 33);
+}
 
-    //     // Another setting test
-    //     am.outputToMotor(config::roll, 7);
-    //     am.outputToMotor(config::pitch, 67);
-    //     am.outputToMotor(config::throttle, 92);
-    //     am.outputToMotor(config::yaw, 44);
-       
-    //     EXPECT_EQ(44, am.motorInstances_[0].motorInstance->percent_); // yaw
-    //     EXPECT_EQ(44, am.motorInstances_[1].motorInstance->percent_); // yaw
-    //     EXPECT_EQ(33, am.motorInstances_[2].motorInstance->percent_); // pitch inverted
-    //     EXPECT_EQ(67, am.motorInstances_[3].motorInstance->percent_); // pitch
-    //     EXPECT_EQ(7, am.motorInstances_[4].motorInstance->percent_); // roll
-    //     EXPECT_EQ(92, am.motorInstances_[5].motorInstance->percent_); // throttle
-    //     EXPECT_EQ(8, am.motorInstances_[6].motorInstance->percent_); // throttle inverted
+TEST(AttitudeManagerOutputToMotor, CombinedTest) {
+    MockFlightmode controlAlgorithm{};
+    MotorInstance_t *motorInstances[config::NUM_CONTROL_AXIS]{nullptr};
+    uint8_t numMotorsPerAxis[config::NUM_CONTROL_AXIS]{0};
 
-    //     delete control_algorithm;
-    //     delete[] motors;
-    //     control_algorithm = nullptr;
-    //     motors = nullptr;
-    // }
+    MockChannel mockChannelReferences[8]{};
 
+    MotorInstance_t yawMotorReferences[] = {
+        {
+            .motorInstance = &mockChannelReferences[0],
+            .isInverted = false
+        },
+        {
+            .motorInstance = &mockChannelReferences[1],
+            .isInverted = false
+        }
+    };
+
+    MotorInstance_t pitchMotorReferences[] = {
+        {
+            .motorInstance = &mockChannelReferences[2],
+            .isInverted = true
+        },
+        {
+            .motorInstance = &mockChannelReferences[3],
+            .isInverted = true
+        },
+        {
+            .motorInstance = &mockChannelReferences[4],
+            .isInverted = false
+        }
+    };
+
+    MotorInstance_t rollMotorReferences[] = {
+        {
+            .motorInstance = &mockChannelReferences[5],
+            .isInverted = false
+        }
+    };
+
+    MotorInstance_t throttleMotorReferences[] = {
+        {
+            .motorInstance = &mockChannelReferences[6],
+            .isInverted = false
+        },
+        {
+            .motorInstance = &mockChannelReferences[7],
+            .isInverted = true
+        }
+    };
+
+    motorInstances[config::yaw] = yawMotorReferences;
+    motorInstances[config::pitch] = pitchMotorReferences;
+    motorInstances[config::roll] = rollMotorReferences;
+    motorInstances[config::throttle] = throttleMotorReferences;
+
+    numMotorsPerAxis[config::yaw] = 2;
+    numMotorsPerAxis[config::pitch] = 3;
+    numMotorsPerAxis[config::roll] = 1;
+    numMotorsPerAxis[config::throttle] = 2;
+
+    AM::AttitudeManager am{&controlAlgorithm, motorInstances, numMotorsPerAxis};
+
+    // Should invert all necessary inputs
+    EXPECT_CALL(mockChannelReferences[0], set(84));
+    EXPECT_CALL(mockChannelReferences[1], set(84));
+    EXPECT_CALL(mockChannelReferences[2], set(73));
+    EXPECT_CALL(mockChannelReferences[3], set(73));
+    EXPECT_CALL(mockChannelReferences[4], set(27));
+    EXPECT_CALL(mockChannelReferences[5], set(94));
+    EXPECT_CALL(mockChannelReferences[6], set(5));
+    EXPECT_CALL(mockChannelReferences[7], set(95));
+
+    am.outputToMotor(config::yaw, 84);
+    am.outputToMotor(config::pitch, 27);
+    am.outputToMotor(config::roll, 94);
+    am.outputToMotor(config::throttle, 5);
 }
 
 }

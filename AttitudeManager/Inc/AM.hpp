@@ -14,12 +14,16 @@
 #include "FreeRTOS.h"
 #include "semphr.h"
 #include "config_foundation.hpp"
-#include "config.hpp"
 #ifdef TESTING
 #include <gtest/gtest_prod.h>
 #endif
 
 namespace AM {
+
+typedef struct {
+        MotorChannel *motorInstance;
+        bool isInverted;
+    } MotorInstance_t;
 
 class AttitudeManager {
    public:
@@ -27,7 +31,7 @@ class AttitudeManager {
 
     static AttitudeManagerInput getControlInputs();
 
-    AttitudeManager(Flightmode* control_algorithm, config::Motor_t motors[]);
+    AttitudeManager(Flightmode* controlAlgorithm,  MotorInstance_t *(&motorInstances)[], uint8_t (&numMotorsPerAxis)[]);
 
     ~AttitudeManager();
 
@@ -35,24 +39,24 @@ class AttitudeManager {
 
    private:
     #ifdef TESTING
-    FRIEND_TEST(AttitudeManager, MotorInitializationAndOutput);
+    FRIEND_TEST(AttitudeManager, MotorInitializationAndOutput); // Remove FRIEND_TEST when updating tests with setControlInputs
+    FRIEND_TEST(AttitudeManagerOutputToMotor, NoMotors);
+    FRIEND_TEST(AttitudeManagerOutputToMotor, MotorsOfSameAxis);
+    FRIEND_TEST(AttitudeManagerOutputToMotor, setOutputInRandomAxisOrder);
+    FRIEND_TEST(AttitudeManagerOutputToMotor, InvertedTest);
+    FRIEND_TEST(AttitudeManagerOutputToMotor, CombinedTest);
     #endif
 
     AttitudeManager();
     void outputToMotor(config::ControlAxis_t axis, uint8_t percent);
-
-    typedef struct {
-        MotorChannel *motorInstance;
-        bool isInverted;
-    } MotorInstance_t;
 
     static SemaphoreHandle_t control_inputs_mutex;
 
     static struct AttitudeManagerInput control_inputs;
 
     Flightmode *controlAlgorithm_;
-    MotorInstance_t *motorInstances_[4];
-    uint8_t numMotors[4];
+    MotorInstance_t *(&motorInstances_)[];
+    uint8_t (&numMotorsPerAxis_)[];
     
 };
 

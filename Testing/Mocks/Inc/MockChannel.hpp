@@ -2,20 +2,14 @@
 #define ZP_D_MOCK_CHANNEL_HPP_
 
 #include "main.h"
-
 #include "ZP_D_MotorChannel.hpp"
-
-namespace mock {
-extern uint8_t *motorOutputs;
-}
+#include <gmock/gmock.h>
 
 class MockChannel : public MotorChannel {
     public:
-        MockChannel(uint8_t channel);
+        MockChannel();
 
-        void set(uint8_t percent);
-
-        uint8_t channel_;
+        MOCK_METHOD(void, set, (uint8_t));
 };
 
 #endif // ZP_D_PWM_CHANNEL_HPP_
