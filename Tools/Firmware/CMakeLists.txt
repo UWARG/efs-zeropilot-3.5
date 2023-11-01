@@ -71,6 +71,7 @@ set(ATTITUDE_MANAGER_C_SOURCES "${ATTITUDE_MANAGER}/Src/*.c"
                               "${ATTITUDE_MANAGER}/FlightModes/Src/*.c")
 set(ATTITUDE_MANAGER_CXX_SOURCES "${ATTITUDE_MANAGER}/Src/*.cpp"
                                 "${ATTITUDE_MANAGER}/FlightModes/Src/*.cpp")
+set(TELEMETRY_MANAGER_CXX_SOURCES "${TELEMETRY_MANAGER}/Src/*.cpp")
 set(DRIVERS_DIR ${ROOT_DIR}/Drivers)
 set(DRIVERS_C_SOURCES "${DRIVERS_DIR}/ccontrol/Src/*.c")
 set(DRIVERS_CXX_SOURCES "${DRIVERS_DIR}/sensor_fusion/Src/*.cpp")
@@ -97,6 +98,7 @@ file(GLOB_RECURSE C_SOURCES ${HAL_DRIVERS_C_SOURCES}
 message("C Sources: ${C_SOURCES}")
 file(GLOB_RECURSE CXX_SOURCES ${HAL_CORE_CXX_SOURCES}
                               ${ATTITUDE_MANAGER_CXX_SOURCES}
+                              ${TELEMETRY_MANAGER_CXX_SOURCES}
                               ${DRIVERS_RcReceiver_CXX_SOURCES}
                               ${DRIVERS_UARTDevice_CXX_SOURCES}
                               ${DRIVERS_Common_CXX_SOURCES}
