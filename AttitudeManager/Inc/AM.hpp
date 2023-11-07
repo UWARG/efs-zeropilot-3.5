@@ -22,6 +22,12 @@ class AttitudeManager {
 
     static void setControlInputs(const AttitudeManagerInput& new_control_inputs);
     static AttitudeManagerInput getControlInputs();
+    
+    static void setSensorFusionData(const SensorFusionOutput& new_SF_output);
+    static SensorFusionOutput getSensorFusionData();
+
+    static float attitudePercentToDegrees(float input);
+    static float attitudeDegreesToPercent(float output);
 
     void runControlLoopIteration();
 
@@ -30,6 +36,9 @@ class AttitudeManager {
 
     static SemaphoreHandle_t control_inputs_mutex;
     static struct AttitudeManagerInput control_inputs;
+
+    static SemaphoreHandle_t sensor_fusion_mutex;
+    static SensorFusionOutput SF_data;
 
     Flightmode* control_algorithm;
 
