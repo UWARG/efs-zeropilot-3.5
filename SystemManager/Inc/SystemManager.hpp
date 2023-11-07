@@ -14,7 +14,7 @@
 #define SBUS_THRESHOLD 25
 #define SBUS_MIN 0
 #define SBUS_MAX 100
-#define AM_PERIOD_MS 100
+#define AM_PERIOD_MS 1000
 
 class SystemManager {
 public:

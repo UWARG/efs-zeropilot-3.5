@@ -99,10 +99,10 @@ void testAMThread(void* pvParameters) {
     	currInputs.yaw = counter;
     	AM::AttitudeManager::setControlInputs(currInputs);
     	counter++;
-    	myprintf("---------- IN SET CONTROL INSTNS lmao ----------\r\n");
+    	myprintf("---------- IN SET CONTROL INSTNS ----------\r\n");
     	myprintf("R: %d, P: %d, Y: %d, T: %d\r\n\n", (int)currInputs.roll, (int)currInputs.pitch, (int)currInputs.yaw, (int)currInputs.throttle);
     	HAL_IWDG_Refresh(&hiwdg);
-    	vTaskDelayUntil(&xLastWakeTime, 500);
+    	vTaskDelayUntil(&xLastWakeTime, 2000);
     }
     vTaskDelete(NULL);
 }
@@ -195,10 +195,6 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-//	   SystemManager sm;
-//	   sm.flyManually();
-//	   myprintf("AM handle: %d\r\n", sm.AM_handle_);
-//	   HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

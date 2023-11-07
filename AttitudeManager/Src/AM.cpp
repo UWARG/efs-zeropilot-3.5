@@ -38,8 +38,8 @@ AttitudeManagerInput AttitudeManager::getControlInputs() {
 }
 
 void AttitudeManager::runControlLoopIteration(const AttitudeManagerInput& instructions) {
-    // myprintf("---------- IN RUN CONTROL LOOP ITERATION ----------\r\n");
-    // myprintf("R: %d, P: %d, Y: %d, T: %d\r\n\n", (int)instructions.roll, (int)instructions.pitch, (int)instructions.yaw, (int)instructions.throttle);
+    myprintf("---------- IN RUN CONTROL LOOP ITERATION ----------\r\n");
+    myprintf("R: %d, P: %d, Y: %d, T: %d\r\n\n", (int)instructions.roll, (int)instructions.pitch, (int)instructions.yaw, (int)instructions.throttle);
     // Process Instructions
 
     // Run Control Algorithms
