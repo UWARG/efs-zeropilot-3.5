@@ -35,6 +35,12 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
+#include <cstring>
+#include <stdio.h>
+#include <stdarg.h> //for va_list var arg functions
+
+#include "SystemManager.hpp"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -67,6 +73,58 @@ void MX_FREERTOS_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+void myprintf(const char *fmt, ...)
+{
+    char buffer[256];
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(buffer, sizeof(buffer), fmt, args);
+    va_end(args);
+
+    int len = strlen(buffer);
+    HAL_UART_Transmit(&hlpuart1, (uint8_t*)buffer, len, -1);
+}
+
+void testAMThread(void* pvParameters) {
+	SystemManager SM;
+    TickType_t xLastWakeTime;
+    xLastWakeTime = xTaskGetTickCount();
+    int counter = 1;
+    while (1) {
+    	AM::AttitudeManagerInput currInputs = AM::AttitudeManager::getControlInputs();
+    	currInputs.pitch = counter;
+    	currInputs.roll = counter;
+    	currInputs.throttle = counter;
+    	currInputs.yaw = counter;
+    	AM::AttitudeManager::setControlInputs(currInputs);
+    	counter++;
+    	myprintf("---------- IN SET CONTROL INSTNS ----------\r\n");
+    	myprintf("R: %d, P: %d, Y: %d, T: %d\r\n\n", (int)currInputs.roll, (int)currInputs.pitch, (int)currInputs.yaw, (int)currInputs.throttle);
+    	vTaskDelayUntil(&xLastWakeTime, 500);
+    }
+    vTaskDelete(NULL);
+}
+
+void StartDefaultTask(void *pvParameters)
+{
+  /* USER CODE BEGIN StartDefaultTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    taskYIELD();
+  }
+  /* USER CODE END StartDefaultTask */
+}
+
+void MX_FREERTOS_Init(void) {
+  xTaskCreate(StartDefaultTask, "Null Task", 800U, NULL, osPriorityLow, NULL);
+}
+
+void setupThreads()
+{ 
+  xTaskCreate(testAMThread, "Test AM Thread", 800U, NULL, osPriorityNormal, NULL);
+} 
 
 /* USER CODE END 0 */
 
@@ -121,19 +179,25 @@ int main(void)
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 
-  /* USER CODE END 2 */
-
   /* Init scheduler */
-  osKernelInitialize();  /* Call init function for freertos objects (in freertos.c) */
-  MX_FREERTOS_Init();
-
+  // osKernelInitialize();  /* Call init function for freertos objects (in freertos.c) */
+//  MX_FREERTOS_Init();
+  setupThreads();
   /* Start scheduler */
-  osKernelStart();
+  vTaskStartScheduler();
+  // osKernelStart();
   /* We should never get here as control is now taken by the scheduler */
   /* Infinite loop */
+
+  /* USER CODE END 2 */
+
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+//	   SystemManager sm;
+//	   sm.flyManually();
+//	   myprintf("AM handle: %d\r\n", sm.AM_handle_);
+//	   HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

@@ -14,16 +14,19 @@
 #include "config.hpp"
 #include "cmsis_os.h"
 
+#include "main.h"
+
 SystemManager::SystemManager():
-    rcController_(&huart2),
-    throttleMotorChannel_(&htim2, TIM_CHANNEL_1),
-    yawMotorChannel_(&htim2, TIM_CHANNEL_2),
-    rollMotorChannel_(&htim2, TIM_CHANNEL_3),
-    pitchMotorChannel_(&htim2, TIM_CHANNEL_4),
-    watchdog_(&hiwdg),
-    am_instance_(config::flightmodes[config::DEFAULT_FLIGHTMODE].flightmodeConstructor())
+    // rcController_(&huart2),
+    // throttleMotorChannel_(&htim2, TIM_CHANNEL_1),
+    // yawMotorChannel_(&htim2, TIM_CHANNEL_2),
+    // rollMotorChannel_(&htim2, TIM_CHANNEL_3),
+    // pitchMotorChannel_(&htim2, TIM_CHANNEL_4),
+    // watchdog_(&hiwdg),
+    // am_instance_(config::flightmodes[config::DEFAULT_FLIGHTMODE].flightmodeConstructor()),
+    am_instance_(NULL)
 {
-    xTaskCreate(runAM, "AM Thread", 400U, (void*)&am_instance_, osPriorityNormal, &AM_handle_);
+    xTaskCreate(runAM, "AM Thread", 1000U, (void*)&am_instance_, osPriorityNormal, &AM_handle_);
 }
 
 SystemManager::~SystemManager() {
@@ -41,25 +44,26 @@ void SystemManager::runAM(void* pvParameters) {
 }
 
 void SystemManager::flyManually() {
-    for(;;){
-        this->rcInputs_ = rcController_.GetRCControl();
-        if (this->rcInputs_.isDataNew) watchdog_.refreshWatchdog();
+    // myprintf("In flyManually()!\r\n");
+    // for(;;){
+    //     this->rcInputs_ = rcController_.GetRCControl();
+    //     if (this->rcInputs_.isDataNew) watchdog_.refreshWatchdog();
         
-        AM::AttitudeManagerInput am_input = {
-            .roll = 0,
-            .pitch = 0,
-            .yaw = 0,
-            .throttle = 0
-        };
+    //     AM::AttitudeManagerInput am_input = {
+    //         .roll = 0,
+    //         .pitch = 0,
+    //         .yaw = 0,
+    //         .throttle = 0
+    //     };
 
-        if (this->rcInputs_.arm >= (SBUS_MAX/2)) {
-            am_input.roll = rcInputs_.roll;
-            am_input.pitch = rcInputs_.pitch;
-            am_input.yaw = rcInputs_.yaw;
-            am_input.throttle = rcInputs_.throttle;
-            AM::AttitudeManager::setControlInputs(am_input);
-        } else {
-            AM::AttitudeManager::setControlInputs(am_input);
-        }
-    }
+    //     if (this->rcInputs_.arm >= (SBUS_MAX/2)) {
+    //         am_input.roll = rcInputs_.roll;
+    //         am_input.pitch = rcInputs_.pitch;
+    //         am_input.yaw = rcInputs_.yaw;
+    //         am_input.throttle = rcInputs_.throttle;
+    //         AM::AttitudeManager::setControlInputs(am_input);
+    //     } else {
+    //         AM::AttitudeManager::setControlInputs(am_input);
+    //     }
+    // }
 }

@@ -14,7 +14,7 @@
 #define SBUS_THRESHOLD 25
 #define SBUS_MIN 0
 #define SBUS_MAX 100
-#define AM_PERIOD_MS 5
+#define AM_PERIOD_MS 100
 
 class SystemManager {
 public:
@@ -27,13 +27,13 @@ public:
     static void runAM(void* pvParameters);
 
 private:
-    SBUSReceiver rcController_;
-    RCControl rcInputs_;
-    PWMChannel throttleMotorChannel_;
-    PWMChannel yawMotorChannel_;
-    PWMChannel rollMotorChannel_;
-    PWMChannel pitchMotorChannel_;
-    IndependentWatchdog watchdog_;
+    // SBUSReceiver rcController_;
+    // RCControl rcInputs_;
+    // PWMChannel throttleMotorChannel_;
+    // PWMChannel yawMotorChannel_;
+    // PWMChannel rollMotorChannel_;
+    // PWMChannel pitchMotorChannel_;
+    // IndependentWatchdog watchdog_;
     AM::AttitudeManager am_instance_;
     TaskHandle_t AM_handle_ = NULL;
 };

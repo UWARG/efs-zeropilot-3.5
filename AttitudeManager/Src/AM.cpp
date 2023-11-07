@@ -9,14 +9,16 @@
 #include <array>
 #include <cstdlib>
 
+#include "main.h"
+
 namespace AM {
 SemaphoreHandle_t AttitudeManager::control_inputs_mutex = xSemaphoreCreateMutex();
 
 AttitudeManagerInput AttitudeManager::control_inputs = {
-    .roll = 0.0f,
-    .pitch = 0.0f,
-    .yaw = 0.0f,
-    .throttle = 0.0f
+    .roll = 1.0f,
+    .pitch = 1.0f,
+    .yaw = 1.0f,
+    .throttle = 1.0f
 };
 
 void AttitudeManager::setControlInputs(const AttitudeManagerInput& new_control_inputs) {
@@ -36,10 +38,12 @@ AttitudeManagerInput AttitudeManager::getControlInputs() {
 }
 
 void AttitudeManager::runControlLoopIteration(const AttitudeManagerInput& instructions) {
+    // myprintf("---------- IN RUN CONTROL LOOP ITERATION ----------\r\n");
+    // myprintf("R: %d, P: %d, Y: %d, T: %d\r\n\n", (int)instructions.roll, (int)instructions.pitch, (int)instructions.yaw, (int)instructions.throttle);
     // Process Instructions
 
     // Run Control Algorithms
-    control_algorithm->run();
+    // control_algorithm->run();
 
     // Write motor outputs
 }
