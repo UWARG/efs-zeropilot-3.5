@@ -99,8 +99,9 @@ void testAMThread(void* pvParameters) {
     	currInputs.yaw = counter;
     	AM::AttitudeManager::setControlInputs(currInputs);
     	counter++;
-    	myprintf("---------- IN SET CONTROL INSTNS ----------\r\n");
+    	myprintf("---------- IN SET CONTROL INSTNS lmao ----------\r\n");
     	myprintf("R: %d, P: %d, Y: %d, T: %d\r\n\n", (int)currInputs.roll, (int)currInputs.pitch, (int)currInputs.yaw, (int)currInputs.throttle);
+    	HAL_IWDG_Refresh(&hiwdg);
     	vTaskDelayUntil(&xLastWakeTime, 500);
     }
     vTaskDelete(NULL);
