@@ -9,6 +9,13 @@
 
 namespace AM {
 
+struct SensorFusionOutput{
+    float roll;
+    float pitch;
+    float yaw;
+    float throttle;
+};
+
 struct AttitudeManagerInput {
     float roll;
     float pitch;

@@ -35,11 +35,49 @@ AttitudeManagerInput AttitudeManager::getControlInputs() {
     return temp;
 }
 
+
+SemaphoreHandle_t AttitudeManager::sensor_fusion_mutex = xSemaphoreCreateMutex();
+
+SensorFusionOutput AttitudeManager::SF_data = {
+    .roll = 0.0f,
+    .pitch = 0.0f,
+    .yaw = 0.0f,
+    .throttle = 0.0f
+};
+
+void AttitudeManager::setSensorFusionData(const SensorFusionOutput& new_SF_output) {
+    if (xSemaphoreTake(sensor_fusion_mutex, (TickType_t) portMAX_DELAY) == pdPASS) {
+        SF_data = new_SF_output;
+        xSemaphoreGive(sensor_fusion_mutex);
+    }
+}
+
+SensorFusionOutput AttitudeManager::getSensorFusionData() {
+    SensorFusionOutput latestData {};
+    if (xSemaphoreTake(sensor_fusion_mutex, (TickType_t) portMAX_DELAY) == pdPASS) {
+        latestData = SF_data;
+        xSemaphoreGive(sensor_fusion_mutex);
+    }
+    return latestData;
+}
+
+//TODO: convert AM input format to degrees
+float attitudePercentToDegrees(float input)
+{
+    return input;
+}
+
+//TODO: convert AM output format to percent
+float attitudeDegreesToPercent(float output)
+{
+    return output;
+}
+
 void AttitudeManager::runControlLoopIteration() {
     // Process Instructions
 
     // Run Control Algorithms
-    control_algorithm->run(getControlInputs());
+    AttitudeManagerInput motorOutput = control_algorithm->run(getControlInputs());
 
     // Write motor outputs
 }

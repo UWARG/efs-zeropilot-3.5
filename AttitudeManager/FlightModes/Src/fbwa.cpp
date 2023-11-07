@@ -1,6 +1,8 @@
+#include "constrain.h"
 #include "fbwa.hpp"
 #include "CommonDataTypes.hpp"
 #include "config.hpp"
+#include "AM.hpp"
 
 namespace AM {
 
@@ -32,30 +34,37 @@ FBWA::FBWA()
 }
 
 AttitudeManagerInput FBWA::run(const AttitudeManagerInput& input) {
-    //TODO: Get latest attitude from sensor fusion
-    float currentPitch = 0;
-    float currentRoll = 0;
-
-    //Initialize PID outputs
-    float outputPitch = 0;
-    float outputRoll = 0;
+    // Get latest attitude from sensor fusion
+    SensorFusionOutput currentState = AttitudeManager::getSensorFusionData();
     
+    //Initialize outputs and get tuning data from config
+    AttitudeManagerInput output;
     config::ControlTuning_t tuningData = config::flightmodes[config::FM_FBWA_IDX].tuningData;
 
-    //TODO: Apply control limits
+    //Apply control limits and convert to degrees
+    float targetPitch = constrain(input.pitch, tuningData.controlLimits.pitchLimit.max, tuningData.controlLimits.pitchLimit.min);
+    float targetRoll = constrain(input.roll, tuningData.controlLimits.rollLimit.max, tuningData.controlLimits.rollLimit.min);
+    targetPitch = AttitudeManager::attitudePercentToDegrees(targetPitch);
+    targetRoll = AttitudeManager::attitudePercentToDegrees(targetRoll);
 
-    //Execute PID loops
+    //Map yaw and throttle directly
+    output.yaw = constrain(input.yaw, tuningData.controlLimits.yawLimit.max, tuningData.controlLimits.yawLimit.min);
+    output.throttle = constrain(input.yaw, tuningData.controlLimits.thrustLimit.max, tuningData.controlLimits.thrustLimit.min);
+
+    //Execute PID loops for pitch and roll
     if(tuningData.PIDValues.pitchPID.isEnabled)
     {
-        outputPitch = pitchPID_->execute(input.pitch, currentPitch);
+        output.pitch = pitchPID_->execute(targetPitch, currentState.pitch);
+        output.pitch = AttitudeManager::attitudeDegreesToPercent(output.pitch);
     }
     if(tuningData.PIDValues.rollPID.isEnabled)
     {
-        outputRoll = rollPID_->execute(input.roll, currentRoll);
+        output.roll = rollPID_->execute(targetRoll, currentState.roll);
+        output.roll = AttitudeManager::attitudeDegreesToPercent(output.roll);
     }
 
-    //TODO: Return, save, or send outputs to motors
-    return input;
+    // Return outputs to motors
+    return output;
 }
 
 void FBWA::updatePid(ControlAxis_t axis, PIDController::PID newPIDVals)
