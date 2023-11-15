@@ -11,7 +11,7 @@ typedef struct SBus{
     bool lost_frame;
     bool failsafe;
     bool ch17, ch18;
-    bool new_data;
+    bool isDataNew;
 } SBus_t;
 
 /*  a struct for control signal channel mapping and attribute values*/

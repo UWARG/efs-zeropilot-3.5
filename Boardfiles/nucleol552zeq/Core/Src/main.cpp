@@ -34,7 +34,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "SystemManager.hpp"
+#include "drivers_config.hpp"
+#include "independent_watchdog.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -59,15 +61,21 @@
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
-void SystemClock_Config(void);
-void MX_FREERTOS_Init(void);
+extern "C" {
+    void SystemClock_Config(void);
+    void MX_FREERTOS_Init(void);
+}
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void SMTask(void *pvParameters) {
+    SystemManager SM;
+    SM.flyManually();
 
+}
 /* USER CODE END 0 */
 
 /**
@@ -120,6 +128,13 @@ int main(void)
   MX_IWDG_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
+
+
+
+
+  TaskHandle_t hSM = NULL;
+  xTaskCreate(SMTask, "SM", 500U, NULL, osPriorityNormal, &hSM);
+
 
   /* USER CODE END 2 */
 

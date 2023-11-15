@@ -10,7 +10,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     if(huart == sbus_uart){
         sbus_pointer->parse();
         HAL_UART_Receive_DMA (huart, sbus_pointer->raw_sbus_, SBUS_FRAME_SIZE);
-        sbus_pointer->is_data_new_ = false;
+        sbus_pointer->is_data_new_ = true;
     }
 }
 

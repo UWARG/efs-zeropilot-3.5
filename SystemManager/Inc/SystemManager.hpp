@@ -27,7 +27,7 @@ public:
     static void runAM(void* pvParameters);
 
 private:
-    SBUSReceiver rcController_;
+    SBUSReceiver* rcController_;
     RCControl rcInputs_;
     PWMChannel throttleMotorChannel_;
     PWMChannel yawMotorChannel_;
