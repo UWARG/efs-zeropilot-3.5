@@ -49,10 +49,10 @@ void SystemManager::flyManually() {
         // }
         
         AM::AttitudeManagerInput am_input = {
-            .roll = 0,
-            .pitch = 0,
-            .yaw = 0,
-            .throttle = 0
+            .roll = 0.0,
+            .pitch = 0.0,
+            .yaw = 0.0,
+            .throttle = 0.0
         };
 
         if (this->rcInputs_.arm >= (SBUS_MAX/2)) {
