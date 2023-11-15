@@ -57,9 +57,8 @@ void SystemManager::flyManually() {
             am_input.pitch = rcInputs_.pitch;
             am_input.yaw = rcInputs_.yaw;
             am_input.throttle = rcInputs_.throttle;
-            AM::AttitudeManager::setControlInputs(am_input);
-        } else {
-            AM::AttitudeManager::setControlInputs(am_input);
         }
+
+        AM::AttitudeManager::setControlInputs(am_input);
     }
 }
