@@ -21,7 +21,8 @@ SystemManager::SystemManager():
     rollMotorChannel_(&htim2, TIM_CHANNEL_3),
     pitchMotorChannel_(&htim2, TIM_CHANNEL_4),
     watchdog_(&hiwdg),
-    am_instance_(config::flightmodes[config::DEFAULT_FLIGHTMODE].flightmodeConstructor())
+    // am_instance_(config::flightmodes[config::DEFAULT_FLIGHTMODE].flightmodeConstructor()) // uncomment this once flight mode objects filled in
+    am_instance_(NULL)
 {
     xTaskCreate(runAM, "AM Thread", 400U, (void*)&am_instance_, osPriorityNormal, &AM_handle_);
 }
