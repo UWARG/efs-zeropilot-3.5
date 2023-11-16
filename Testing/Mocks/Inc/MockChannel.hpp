@@ -1,7 +1,6 @@
 #ifndef ZP_D_MOCK_CHANNEL_HPP_
 #define ZP_D_MOCK_CHANNEL_HPP_
 
-#include "main.h"
 #include "ZP_D_MotorChannel.hpp"
 #include <gmock/gmock.h>
 

@@ -3,7 +3,7 @@
 
 //TODO: Remove this file when drivers and flightmodes are implemented
 
-#include "ZP_D_PWMChannel.hpp"
+#include "ZP_D_MotorChannel.hpp"
 
 class TempDSHOTDriver : public MotorChannel
 {
