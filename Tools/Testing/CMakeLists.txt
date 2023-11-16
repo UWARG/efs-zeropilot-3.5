@@ -62,15 +62,15 @@ file(GLOB SM_CODE
 
 # Telemetry Manager
 set(TM_FOLDER "${ROOT_DIR}/TelemetryManager")
-set(TM_INC "{$TM_FOLDER}/Inc")
-set(TM_SRC "{$TM_FOLDER}/Src")
+set(TM_INC "${TM_FOLDER}/Inc")
+set(TM_SRC "${TM_FOLDER}/Src")
 
 include_directories(${TM_INC})
 file(GLOB TM_CODE
-    "${TM_FOLDER}/Tests/*.cpp"
+    "${TM_FOLDER}/Tests/generic_test.cpp"
 
     # add necessary TelemetryManager source files below
-    # "${TM_SRC}/foo.cpp"
+    "${TM_SRC}/*.cpp"
 )
 
 # Drivers
