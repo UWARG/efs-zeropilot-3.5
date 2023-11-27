@@ -10,6 +10,9 @@
 #include "drivers_config.hpp"
 #include "independent_watchdog.h"
 #include "tim.h"
+#include "CommonDataTypes.hpp"
+#include "config.hpp"
+#include "cmsis_os.h"
 
 SystemManager::SystemManager():
     rcController_(sbus_pointer),
@@ -17,11 +20,26 @@ SystemManager::SystemManager():
     yawMotorChannel_(&htim2, TIM_CHANNEL_2),
     rollMotorChannel_(&htim2, TIM_CHANNEL_3),
     pitchMotorChannel_(&htim2, TIM_CHANNEL_4),
-    invertedRollMotorChannel_(&htim3, TIM_CHANNEL_1),
-    watchdog_(&hiwdg)
-{}
+    watchdog_(&hiwdg),
+    // am_instance_(config::flightmodes[config::DEFAULT_FLIGHTMODE].flightmodeConstructor()) // uncomment this once flight mode objects filled in
+    am_instance_(NULL)
+{
+    xTaskCreate(runAM, "AM Thread", 400U, (void*)&am_instance_, osPriorityNormal, &AM_handle_);
+}
 
-SystemManager::~SystemManager() {}
+SystemManager::~SystemManager() {
+    vTaskDelete(AM_handle_);
+}
+
+void SystemManager::runAM(void* pvParameters) {
+    AM::AttitudeManager* am_instance = (AM::AttitudeManager *) pvParameters;
+    TickType_t xLastWakeTime;
+    xLastWakeTime = xTaskGetTickCount();
+    for(;;) {
+        am_instance->runControlLoopIteration(AM::AttitudeManager::getControlInputs());
+        vTaskDelayUntil(&xLastWakeTime, AM_PERIOD_MS);
+    }
+}
 
 void SystemManager::flyManually() {
     for(;;){
@@ -29,21 +47,21 @@ void SystemManager::flyManually() {
         // if (this->rcInputs_.isDataNew){
         	watchdog_.refreshWatchdog();
         // }
+        
+        AM::AttitudeManagerInput am_input = {
+            .roll = 0.0,
+            .pitch = 0.0,
+            .yaw = 0.0,
+            .throttle = 0.0
+        };
 
+        if (this->rcInputs_.arm >= (SBUS_MAX/2)) {
+            am_input.roll = rcInputs_.roll;
+            am_input.pitch = rcInputs_.pitch;
+            am_input.yaw = rcInputs_.yaw;
+            am_input.throttle = rcInputs_.throttle;
+        }
 
-        if(this->rcInputs_.arm >= (SBUS_MAX/2)) {
-            this->throttleMotorChannel_.set(rcInputs_.throttle);
-            this->yawMotorChannel_.set(rcInputs_.yaw);
-            this->rollMotorChannel_.set(SBUS_MAX - rcInputs_.roll);
-            this->pitchMotorChannel_.set(SBUS_MAX - rcInputs_.pitch);
-            this->invertedRollMotorChannel_.set(SBUS_MAX - rcInputs_.roll);
-        }
-        else{
-            this->throttleMotorChannel_.set(0);
-            this->yawMotorChannel_.set(SBUS_MAX/2);
-            this->rollMotorChannel_.set(SBUS_MAX/2);
-            this->pitchMotorChannel_.set(SBUS_MAX/2);
-            this->invertedRollMotorChannel_.set(SBUS_MAX/2);
-        }
+        AM::AttitudeManager::setControlInputs(am_input);
     }
 }

@@ -112,6 +112,8 @@ namespace config
         }
     };
 
+    constexpr uint8_t DEFAULT_FLIGHTMODE = 0;
+
 }
 
 #endif // ZPSW3_CONFIG_HPP
