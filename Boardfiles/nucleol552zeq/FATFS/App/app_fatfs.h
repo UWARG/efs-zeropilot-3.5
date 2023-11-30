@@ -1,8 +1,8 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    stm32l5xx_it.h
-  * @brief   This file contains the headers of the interrupt handlers.
+  * @file   app_fatfs.h
+  * @brief  Header for fatfs applications
   ******************************************************************************
   * @attention
   *
@@ -13,17 +13,18 @@
   * in the root directory of this software component.
   * If no LICENSE file comes with this software, it is provided AS-IS.
   *
- ******************************************************************************
+  ******************************************************************************
   */
 /* USER CODE END Header */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __STM32L5xx_IT_H
-#define __STM32L5xx_IT_H
+#ifndef __APP_FATFS_H
+#define __APP_FATFS_H
 
-#ifdef __cplusplus
- extern "C" {
-#endif
+/* Includes ------------------------------------------------------------------*/
+#include "ff.h"
+#include "ff_gen_drv.h"
+#include "sd_diskio.h" /* defines SD_Driver as external */
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -46,26 +47,22 @@
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
-void NMI_Handler(void);
-void HardFault_Handler(void);
-void MemManage_Handler(void);
-void BusFault_Handler(void);
-void UsageFault_Handler(void);
-void DebugMon_Handler(void);
-void DMA1_Channel1_IRQHandler(void);
-void DMA1_Channel2_IRQHandler(void);
-void DMA1_Channel3_IRQHandler(void);
-void DMA1_Channel4_IRQHandler(void);
-void TIM5_IRQHandler(void);
-void USART2_IRQHandler(void);
-void USART3_IRQHandler(void);
-void SDMMC1_IRQHandler(void);
+int32_t MX_FATFS_Init(void);
+int32_t MX_FATFS_Process(void);
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */
 
-#ifdef __cplusplus
-}
-#endif
+/* Private defines -----------------------------------------------------------*/
+/* USER CODE BEGIN Private defines */
+#define APP_OK                      0
+#define APP_ERROR                  -1
+#define APP_SD_UNPLUGGED           -2
+/* USER CODE END Private defines */
 
-#endif /* __STM32L5xx_IT_H */
+extern FATFS SDFatFS;    /* File system object for SD logical drive */
+extern FIL SDFile;       /* File object for SD */
+extern char SDPath[4];   /* SD logical drive path */
+
+#endif /*__APP_FATFS_H */
+

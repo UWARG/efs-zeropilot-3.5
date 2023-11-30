@@ -40,11 +40,16 @@ include_directories(
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Core/Inc
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Drivers/CMSIS/Device/ST/${FAMILY_NAME}/Include
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Drivers/CMSIS/Include
+    ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/FATFS
+    ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/FATFS/App
+    ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/FATFS/Target
+    ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/include
+    ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FatFs/src
+    ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FatFs/src/option
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_${PORTABLE_NAME}
-    ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/include
 )
 
 ## Boardfile Sources ##
