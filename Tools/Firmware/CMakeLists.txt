@@ -45,7 +45,6 @@ include_directories(
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/FATFS/Target
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/include
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FatFs/src
-    ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FatFs/src/option
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2
@@ -61,6 +60,13 @@ set(FREE_RTOS_C_SOURCES "${FREE_RTOS_DIR}/*.c"
                         "${FREE_RTOS_DIR}/CMSIS_RTOS_V2/*.c"
                         "${FREE_RTOS_DIR}/portable/GCC/ARM_${PORTABLE_NAME}/*.c"
                         "${FREE_RTOS_DIR}/portable/MemMang/*.c")
+
+set(FATFS_DIR ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FatFs/src)
+set(FATFS_DIR_C_SOURCES "${FATFS_DIR}/*.c")
+
+set(FATFS ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/FATFS)
+set(FATFS_C_SOURCES "${FATFS}/App/*.c" 
+                    "${FATFS}/Target/*.c")
 
 set(HAL_CORE ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Core)
 set(HAL_CORE_C_SOURCES "${HAL_CORE}/Src/*.c")
@@ -104,7 +110,9 @@ file(GLOB_RECURSE C_SOURCES ${HAL_DRIVERS_C_SOURCES}
                             ${ATTITUDE_MANAGER_C_SOURCES}
                             ${DRIVERS_IWDGDriver_DIR}
                             ${SYSTEM_MANAGER_C_SOURCES}
-                            ${DRIVERS_C_SOURCES})
+                            ${DRIVERS_C_SOURCES}
+                            ${FATFS_C_SOURCES}
+                            ${FATFS_DIR_C_SOURCES})
 message("C Sources: ${C_SOURCES}")
 file(GLOB_RECURSE CXX_SOURCES ${HAL_CORE_CXX_SOURCES}
                               ${ATTITUDE_MANAGER_CXX_SOURCES}
