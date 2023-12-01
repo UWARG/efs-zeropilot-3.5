@@ -21,7 +21,6 @@
 #include "cmsis_os.h"
 #include "adc.h"
 #include "dma.h"
-#include "app_fatfs.h"
 #include "i2c.h"
 #include "icache.h"
 #include "iwdg.h"
@@ -39,6 +38,10 @@
 #include "SystemManager.hpp"
 #include "drivers_config.hpp"
 #include "independent_watchdog.h"
+
+extern "C" {
+  #include "app_fatfs.h"
+}
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
