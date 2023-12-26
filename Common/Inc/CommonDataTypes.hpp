@@ -43,6 +43,31 @@ struct JetsonMovementRequest {
     bool request;
 };
 
+struct TM_CMD {
+    uint16_t command_id;
+    float param1;
+    float param2;
+    float param3;
+    float param4;
+    int32_t x; // local in meters, global in latitude
+    int32_t y; // local in meters, global in longitude
+    float z; // always in meters
+    uint16_t seq;
+    uint8_t frame;
+    uint8_t auto_continue;
+};
+
+enum CMD_ID {
+    MAV_CMD_NAV_WAYPOINT,
+    MAV_CMD_NAV_LOITER_TIME,
+    MAV_CMD_NAV_LOITER_TURNS,
+    MAV_CMD_NAV_LOITER_TO_ALT,
+    MAV_CMD_NAV_LOITER_UNLIM,
+    MAV_CMD_NAV_RETURN_TO_LAUNCH,
+    MAV_CMD_NAV_LAND,
+    MAV_CMD_NAV_TAKEOFF
+}
+
 struct TelemWaypoint {
     uint8_t waypoint_id;
     double longitude;
