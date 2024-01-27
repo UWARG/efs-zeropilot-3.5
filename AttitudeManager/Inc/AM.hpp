@@ -13,10 +13,21 @@
 #include "CommonDataTypes.hpp"
 #include "FreeRTOS.h"
 #include "semphr.h"
-#include "config_foundation.hpp"
+// #include "config_foundation.hpp"
+#include "ZP_D_MotorChannel.hpp" // for testing
 #ifdef TESTING
 #include <gtest/gtest_prod.h>
 #endif
+
+namespace config { // for testing
+    typedef enum {
+        yaw,
+        pitch,
+        roll,
+        throttle,
+        NUM_CONTROL_AXIS
+    } ControlAxis_t;
+}
 
 namespace AM {
 
