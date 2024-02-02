@@ -47,8 +47,8 @@ include_directories(
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/include
     
     ## Models Includes ##
-    ${ROOT_DIR}/Models
-    ${ROOT_DIR}/Models/${MODEL_NAME}
+    ${ROOT_DIR}/Models_blah
+    ${ROOT_DIR}/Models_blah/${MODEL_NAME}
 )
 
 ## Boardfile Sources ##
