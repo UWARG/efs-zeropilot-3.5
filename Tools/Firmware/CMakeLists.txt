@@ -12,12 +12,13 @@ include_directories(
     ${ROOT_DIR}/Common/Inc
 
     ## System Manager Includes ##
+    ${ROOT_DIR}/SystemManager/Inc
 
     ## Attitude Manager Includes ##
     ${ROOT_DIR}/AttitudeManager/Inc
     ${ROOT_DIR}/AttitudeManager/FlightModes/Inc
 
-    ## Path Manager Includes ##
+    ## Path Manager Includes #
 
     ## Telemetry Manager Includes ##
     ${ROOT_DIR}/TelemetryManager/Inc
@@ -29,7 +30,6 @@ include_directories(
     ${ROOT_DIR}/Drivers/ccontrol/Inc
     ${ROOT_DIR}/Drivers/sensor_fusion/Inc
     ${ROOT_DIR}/Drivers/IWDG_Driver/Inc
-
     ${ROOT_DIR}/Drivers/MotorChannel/Inc
 
     ${ROOT_DIR}/Drivers/UARTDevice/Inc
@@ -72,6 +72,11 @@ set(ATTITUDE_MANAGER_C_SOURCES "${ATTITUDE_MANAGER}/Src/*.c"
 set(ATTITUDE_MANAGER_CXX_SOURCES "${ATTITUDE_MANAGER}/Src/*.cpp"
                                 "${ATTITUDE_MANAGER}/FlightModes/Src/*.cpp")
 set(TELEMETRY_MANAGER_CXX_SOURCES "${TELEMETRY_MANAGER}/Src/*.cpp")
+
+set(SYSTEM_MANAGER ${ROOT_DIR}/SystemManager)
+set(SYSTEM_MANAGER_C_SOURCES "${SYSTEM_MANAGER}/Src/*.c")
+set(SYSTEM_MANAGER_CXX_SOURCES "${SYSTEM_MANAGER}/Src/*.cpp")
+
 set(DRIVERS_DIR ${ROOT_DIR}/Drivers)
 set(DRIVERS_C_SOURCES "${DRIVERS_DIR}/ccontrol/Src/*.c")
 set(DRIVERS_CXX_SOURCES "${DRIVERS_DIR}/sensor_fusion/Src/*.cpp")
@@ -80,9 +85,12 @@ set(DRIVERS_CXX_SOURCES "${DRIVERS_DIR}/sensor_fusion/Src/*.cpp")
 set(DRIVERS_RcReceiver_DIR ${ROOT_DIR}/Drivers/rc_receiver/Src)
 set(DRIVERS_RcReceiver_CXX_SOURCES "${DRIVERS_RcReceiver_DIR}/*.cpp")
 set(DRIVERS_Common_DIR ${ROOT_DIR}/Drivers/Common/Src)
+set(DRIVERS_MotorChannel_DIR ${ROOT_DIR}/Drivers/MotorChannel/Src)
+set(DRIVERS_MotorChannel_CXX_SOURCES "${DRIVERS_MotorChannel_DIR}/*.cpp")
 set(DRIVERS_Common_CXX_SOURCES "${DRIVERS_Common_DIR}/*.cpp")
 set(DRIVERS_IWDGDriver_DIR ${ROOT_DIR}/Drivers/IWDG_Driver/Src)
 set(DRIVERS_IWDGDriver_CXX_SOURCES "${DRIVERS_IWDGDriver_DIR}/*.cpp")
+
 
 ## Actually find the sources, NOTE: if you add a new source above, add it here! ##
 ## Drivers Sources ##
@@ -93,17 +101,20 @@ file(GLOB_RECURSE C_SOURCES ${HAL_DRIVERS_C_SOURCES}
                             ${FREE_RTOS_C_SOURCES}
                             ${HAL_CORE_C_SOURCES}
                             ${ATTITUDE_MANAGER_C_SOURCES}
-                            ${DRIVERS_C_SOURCES}
-                            ${DRIVERS_IWDGDriver_DIR})
+                            ${DRIVERS_IWDGDriver_DIR}
+                            ${SYSTEM_MANAGER_C_SOURCES}
+                            ${DRIVERS_C_SOURCES})
 message("C Sources: ${C_SOURCES}")
 file(GLOB_RECURSE CXX_SOURCES ${HAL_CORE_CXX_SOURCES}
                               ${ATTITUDE_MANAGER_CXX_SOURCES}
                               ${TELEMETRY_MANAGER_CXX_SOURCES}
+                              ${SYSTEM_MANAGER_CXX_SOURCES}
                               ${DRIVERS_RcReceiver_CXX_SOURCES}
                               ${DRIVERS_UARTDevice_CXX_SOURCES}
                               ${DRIVERS_Common_CXX_SOURCES}
                               ${DRIVERS_CXX_SOURCES}
-                              ${DRIVERS_IWDGDriver_CXX_SOURCES})
+                              ${DRIVERS_IWDGDriver_CXX_SOURCES}
+                              ${DRIVERS_MotorChannel_CXX_SOURCES})
 message("C++ Sources: ${CXX_SOURCES}")
 
 ## Find the startup and linker script ##
