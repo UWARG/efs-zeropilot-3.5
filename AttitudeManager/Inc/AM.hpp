@@ -11,9 +11,9 @@
 
 #include "AM_ControlAlgorithm.hpp"
 #include "CommonDataTypes.hpp"
+#include "config_foundation.hpp"
 #include "FreeRTOS.h"
 #include "semphr.h"
-#include "config_foundation.hpp"
 #ifdef TESTING
 #include <gtest/gtest_prod.h>
 #endif
