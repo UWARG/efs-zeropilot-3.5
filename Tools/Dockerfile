@@ -5,13 +5,12 @@ ENV HOME /root
 
 SHELL ["/bin/bash", "-c"]
 
-RUN apt-get update
-
-RUN apt-get -y --no-install-recommends install \
+RUN apt-get update && apt-get -y --no-install-recommends install \
     wget \
     xz-utils \
     tar \
     make \
+    cmake \
     sudo
 
 ARG ARM_PKG_LINK=https://developer.arm.com/-/media/Files/downloads/gnu/12.3.rel1/binrel/arm-gnu-toolchain-12.3.rel1-x86_64-arm-none-eabi.tar.xz
@@ -23,12 +22,5 @@ RUN wget --no-check-certificate https://developer.arm.com/-/media/Files/download
     sudo ln -s /usr/share/$ARM_PKG_NAME/bin/arm-none-eabi-gdb /usr/bin/arm-none-eabi-gdb && \
     sudo ln -s /usr/share/$ARM_PKG_NAME/bin/arm-none-eabi-size /usr/bin/arm-none-eabi-size && \
     sudo ln -s /usr/share/$ARM_PKG_NAME/bin/arm-none-eabi-objcopy /usr/bin/arm-none-eabi-objcopy
-
-ARG CMAKE_PKG_LINK=https://github.com/Kitware/CMake/releases/download/v3.28.2/cmake-3.28.2-linux-x86_64.tar.gz
-ARG CMAKE_PKG_NAME=cmake-3.28.2-linux-x86_64
-RUN wget --no-check-certificate $CMAKE_PKG_LINK -O /tmp/$CMAKE_PKG_NAME.tar.gz && \
-    tar -xvf /tmp/$CMAKE_PKG_NAME.tar.gz -C /usr/share/ && \
-    cp /usr/share/$CMAKE_PKG_NAME/bin/* /usr/bin/ && \
-    cp -r /usr/share/$CMAKE_PKG_NAME/share/* /usr/share/
 
 RUN rm -rf /tmp/*
