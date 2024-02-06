@@ -2,6 +2,7 @@
 #define AIRSPEED_HPP
 
 #include "i2c.h"
+#include <cstdint>
 
 #define MS4525DO_I2C_ADDR1 0x28
 #define MS4525DO_I2C_ADDR2 0x36
@@ -17,10 +18,10 @@ namespace Airspeed
 {
 
 typedef enum {
-  STATUS_GOOD = 0x00,
-  STATUS_RESERVED = 0x01,
-  STATUS_STALE = 0x02,
-  STATUS_FAIL = 0x03
+  STATUS_GOOD = 0x00U,
+  STATUS_RESERVED = 0x01U,
+  STATUS_STALE = 0x02U,
+  STATUS_FAIL = 0x03U
 } sensor_status_t;
 
 struct airspeed_data_t{
@@ -36,9 +37,9 @@ class MS4525DO
 public:
   MS4525DO(I2C_HandleTypeDef* hi2c);
   
-  bool init();
-  void getData(airspeed_data_t* airspeedData);  
-  void updateData();
+  bool init(void);
+  void get_data(airspeed_data_t* airspeedData);  
+  void update_data(void);
   
 private:
   airspeed_data_t airspeedData;
@@ -46,15 +47,15 @@ private:
   I2C_HandleTypeDef* i2c;
   
   uint8_t rxBuffer[4];
-  uint16_t pressureReading;
-  uint16_t tempReading;
+  int16_t pressureReading;
+  int16_t tempReading;
  
-  void update_pressure();
-  void update_temp();
+  void update_pressure(void);
+  void update_temp(void);
   
-  void update_airspeed();
+  void update_airspeed(void);
   
-  void readData();
+  void read_data(void);
 };
 
 }
