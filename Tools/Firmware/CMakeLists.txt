@@ -35,6 +35,8 @@ include_directories(
     ${ROOT_DIR}/Drivers/UARTDevice/Inc
     ${ROOT_DIR}/Drivers/Common/Inc
 
+    ${ROOT_DIR}/Drivers/airspeed/Inc
+
     ## Boardfiles Includes ##
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Drivers/${FAMILY_NAME}_HAL_Driver/Inc
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Core/Inc
@@ -93,6 +95,9 @@ set(DRIVERS_IWDGDriver_CXX_SOURCES "${DRIVERS_IWDGDriver_DIR}/*.cpp")
 set(DRIVERS_UARTDevice_DIR ${ROOT_DIR}/Drivers/UARTDevice/Src)
 set(DRIVERS_UARTDevice_CXX_SOURCES "${DRIVERS_UARTDevice_DIR}/*.cpp")
 
+set(DRIVERS_Airspeed_DIR "${ROOT_DIR}/Drivers/airspeed/Src")
+set(DRIVERS_Airspeed_CXX_SOURCES "${DRIVERS_Airspeed_DIR}/*.cpp")
+
 file(GLOB_RECURSE C_SOURCES ${HAL_DRIVERS_C_SOURCES}
                             ${FREE_RTOS_C_SOURCES}
                             ${HAL_CORE_C_SOURCES}
@@ -110,7 +115,8 @@ file(GLOB_RECURSE CXX_SOURCES ${HAL_CORE_CXX_SOURCES}
                               ${DRIVERS_Common_CXX_SOURCES}
                               ${DRIVERS_CXX_SOURCES}
                               ${DRIVERS_IWDGDriver_CXX_SOURCES}
-                              ${DRIVERS_MotorChannel_CXX_SOURCES})
+                              ${DRIVERS_MotorChannel_CXX_SOURCES}
+                              ${DRIVERS_Airspeed_CXX_SOURCES})
 message("C++ Sources: ${CXX_SOURCES}")
 
 ## Find the startup and linker script ##
