@@ -2,17 +2,30 @@
 #define AIRSPEED_HPP
 
 #include "i2c.h"
+#include "math.h"
 #include <cstdint>
 
-#define MS4525DO_I2C_ADDR1 0x28
-#define MS4525DO_I2C_ADDR2 0x36
-#define MS4525DO_I2C_ADDR3 0x46
+#define MS4525DO_I2C_ADDR 0x28
 
-#define MAX_TEMP 150
-#define MIN_TEMP -50
+#define MAX_TEMP 150 // Deg C
+#define MIN_TEMP -50 // Deg C
 
-#define MAX_PRESSURE 150
-#define MIN_PRESSURE -150
+#define MAX_COUNT_TEMP 0x07FF
+
+// 001 model, so range is 1 PSI
+#define PRESSURE_RANGE 1 // PSI
+
+// Differential pressure type model
+#define MAX_PRESSURE PRESSURE_RANGE
+#define MIN_PRESSURE -PRESSURE_RANGE
+
+#define MAX_COUNT_PRESSURE 0x3FFF
+
+#define RHO 1.225 // kg / m^3
+#define PSI_PA_CONSTANT 6894.747
+
+#define PSI_TO_PA(pressure) (pressure * PSI_PA_CONSTANT)
+
 
 namespace Airspeed
 {
@@ -25,7 +38,7 @@ typedef enum {
 } sensor_status_t;
 
 struct airspeed_data_t{
-  float airspeed {0.0f}; // m/s
+  float airspeed {0.0f}; // m / s
   float pressure {0.0f}; // psi
   float temperature {0.0f}; // degrees C
 
@@ -47,8 +60,8 @@ private:
   I2C_HandleTypeDef* i2c;
   
   uint8_t rxBuffer[4];
-  int16_t pressureReading;
-  int16_t tempReading;
+  uint16_t pressureReading;
+  uint16_t tempratureReading;
  
   void update_pressure(void);
   void update_temp(void);
