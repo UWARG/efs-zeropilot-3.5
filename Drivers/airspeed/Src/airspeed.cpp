@@ -60,7 +60,7 @@ void MS4525DO::read_data(void)
 {
     HAL_StatusTypeDef ret = HAL_I2C_Master_Receive(
         i2c, 
-        (MS4525DO_I2C_ADDR << 1 & 0x01),
+        (MS4525DO_I2C_ADDR << 1 | 0x01),
         rxBuffer,
         4,
         50
