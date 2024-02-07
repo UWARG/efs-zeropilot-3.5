@@ -35,13 +35,35 @@ AttitudeManagerInput AttitudeManager::getControlInputs() {
     return temp;
 }
 
+AttitudeManager::AttitudeManager(Flightmode* controlAlgorithm,  MotorInstance_t *(&motorInstances)[], uint8_t (&numMotorsPerAxis)[]):
+    controlAlgorithm_(controlAlgorithm),
+    motorInstances_(motorInstances),
+    numMotorsPerAxis_(numMotorsPerAxis)
+{};
+
+AttitudeManager::~AttitudeManager() 
+{}
+
 void AttitudeManager::runControlLoopIteration(const AttitudeManagerInput& instructions) {
     // Process Instructions
 
     // Run Control Algorithms
-    control_algorithm->run();
+    controlAlgorithm_->run();
 
     // Write motor outputs
+}
+
+void AttitudeManager::outputToMotor(config::ControlAxis_t axis, uint8_t percent) {
+    // Move through the portion of the motorInstances array that matches the wanted axis.
+    // The motorReferences array holds references to the wanted positions in the motorInstances array
+    for (uint8_t motorCount{0}; motorCount < numMotorsPerAxis_[axis]; ++motorCount) {
+        if (motorInstances_[axis][motorCount].isInverted) {
+            motorInstances_[axis][motorCount].motorInstance->set(100-percent);
+        } else {
+            motorInstances_[axis][motorCount].motorInstance->set(percent);
+        }
+    }
+    
 }
 
 }  // namespace AM

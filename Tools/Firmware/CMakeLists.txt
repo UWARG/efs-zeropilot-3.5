@@ -45,6 +45,10 @@ include_directories(
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_${PORTABLE_NAME}
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Middlewares/Third_Party/FreeRTOS/Source/include
+    
+    ## Models Includes ##
+    ${ROOT_DIR}/Config_Models
+    ${ROOT_DIR}/Config_Models/${MODEL_NAME}
 )
 
 ## Boardfile Sources ##

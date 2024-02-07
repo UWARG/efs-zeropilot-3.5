@@ -28,7 +28,8 @@ namespace config
         yaw,
         pitch,
         roll,
-        throttle
+        throttle,
+        NUM_CONTROL_AXIS
     } ControlAxis_t;
 
     typedef struct {

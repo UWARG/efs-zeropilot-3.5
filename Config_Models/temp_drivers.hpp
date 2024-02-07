@@ -3,7 +3,7 @@
 
 //TODO: Remove this file when drivers and flightmodes are implemented
 
-#include "ZP_D_PWMChannel.hpp"
+#include "ZP_D_MotorChannel.hpp"
 
 class TempDSHOTDriver : public MotorChannel
 {
@@ -22,15 +22,15 @@ class ExampleFlightmode1 : public AM::Flightmode{
     public:
     ExampleFlightmode1(){}
     //TODO: Implement control algorithm functions in AM
-    void run();
-    void updatePid();
+    void run(){};
+    void updatePid(){};
 };
 
 class ExampleFlightmode2 : public AM::Flightmode{
     public:
     ExampleFlightmode2(){}
-    void run();
-    void updatePid();
+    void run(){};
+    void updatePid(){};
 };
 
 

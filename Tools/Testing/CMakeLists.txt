@@ -5,8 +5,11 @@ set(CMAKE_C_COMPILER "gcc")
 set(CMAKE_CXX_COMPILER "g++")
 
 # GoogleTest requires at least C++14
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Define TESTING Preprocessor Macro
+add_compile_definitions(TESTING)
 
 # Locate GTest
 find_package(GTest REQUIRED)
@@ -23,21 +26,24 @@ set(ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../..")
 
 # Attitude Manager
 set(AM_FOLDER "${ROOT_DIR}/AttitudeManager")
-set(AM_INC "{$AM_FOLDER}/Inc")
-set(AM_SRC "{$AM_FOLDER}/Src")
+set(AM_INC "${AM_FOLDER}/Inc")
+set(AM_SRC "${AM_FOLDER}/Src")
+set(FLIGHTMODES_INC "${AM_FOLDER}/FlightModes/Inc")
+set(FLIGHTMODES_SRC "${AM_FOLDER}/FlightModes/Src")
 
-include_directories(${AM_INC})
+include_directories(${AM_INC} ${FLIGHTMODES_INC})
 file(GLOB AM_CODE
     "${AM_FOLDER}/Tests/*.cpp"
 
     # add necessary AttitudeManager source files below
-    # "${AM_SRC}/foo.cpp"
+    "${AM_SRC}/*.cpp"
+    "${FLIGHTMODES_SRC}/*.cpp"
 )
 
 # Path Manager
 set(PM_FOLDER "${ROOT_DIR}/PathManager")
-set(PM_INC "{$PM_FOLDER}/Inc")
-set(PM_SRC "{$PM_FOLDER}/Src")
+set(PM_INC "${PM_FOLDER}/Inc")
+set(PM_SRC "${PM_FOLDER}/Src")
 
 include_directories(${PM_INC})
 file(GLOB PM_CODE
@@ -49,8 +55,8 @@ file(GLOB PM_CODE
 
 # System Manager
 set(SM_FOLDER "${ROOT_DIR}/SystemManager")
-set(SM_INC "{$SM_FOLDER}/Inc")
-set(SM_SRC "{$SM_FOLDER}/Src")
+set(SM_INC "${SM_FOLDER}/Inc")
+set(SM_SRC "${SM_FOLDER}/Src")
 
 include_directories(${SM_INC})
 file(GLOB SM_CODE
@@ -77,14 +83,50 @@ file(GLOB TM_CODE
 set(DRIVERS_FOLDER "${ROOT_DIR}/Drivers")
 set(DRIVERS_INC "${DRIVERS_FOLDER}/Common/Inc")
 set(DRIVERS_SRC "{$DRIVERS_FOLDER}/Src")
+set(MOTORCHANNEL_INC "${DRIVERS_FOLDER}/MotorChannel/Inc")
+set(MOTORCHANNEL_SRC "${DRIVERS_FOLDER}/MotorChannel/Src")
+# Driver Mocks
+set(MOTORCHANNEL_MOCK_INC "${ROOT_DIR}/Testing/Mocks/Inc")
+set(MOTORCHANNEL_MOCK_SRC "${ROOT_DIR}/Testing/Mocks/Src")
 
-include_directories(${DRIVERS_INC})
+include_directories(${DRIVERS_INC} ${MOTORCHANNEL_INC} ${MOTORCHANNEL_MOCK_INC})
 file(GLOB DRIVERS_CODE
     "${DRIVERS_FOLDER}/Tests/*.cpp"
 
     # add necessary Drivers source files below
     # "${DRIVERS_SRC}/foo.cpp"
     "${DRIVERS_FOLDER}/Common/Src/circular_buffer.cpp"
+    "${MOTORCHANNEL_MOCK_SRC}/*.cpp"
+)
+
+# Common
+set(COMMON_FOLDER "${ROOT_DIR}/Common")
+set(COMMON_INC "${COMMON_FOLDER}/Inc")
+set(COMMON_SRC "${COMMON_FOLDER}/Src")
+
+include_directories(${COMMON_INC})
+file(GLOB COMMON_CODE
+    "${COMMON_FOLDER}/Tests/*.cpp"
+
+    # add necessary TelemetryManager source files below
+    # "${COMMON_SRC}/foo.cpp"
+)
+
+
+# Testing stubs
+set(STUBS_FOLDER "${ROOT_DIR}/Testing/Stubs")
+set(STUBS_INC "${STUBS_FOLDER}/Inc")
+set(STUBS_SRC "${STUBS_FOLDER}/Src")
+
+include_directories(${STUBS_INC})
+file(GLOB STUBS_CODE
+    "${STUBS_SRC}/*.cpp"
+    "${STUBS_SRC}/*.c"
+)
+
+#Models
+include_directories("${ROOT_DIR}/Config_Models")
+file(GLOB MODELS_CODE
 )
 
 # --- ZeroPilot File Indexing End ---
@@ -95,6 +137,9 @@ add_executable(${PROJECT_NAME}
     ${SM_CODE}
     ${TM_CODE}
     ${DRIVERS_CODE}
+    ${COMMON_CODE}
+    ${STUBS_CODE}
+    ${MODELS_CODE}
 )
 
 target_link_libraries(${PROJECT_NAME}
