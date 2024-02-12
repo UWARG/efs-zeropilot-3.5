@@ -25,6 +25,7 @@
 /* USER CODE BEGIN UserDefinitions */
 /* Place for user definitions */
 /* Includes ------------------------------------------------------------------*/
+#include "bsp_driver_sd.h"
 
 /* Exported types ------------------------------------------------------------*/
 

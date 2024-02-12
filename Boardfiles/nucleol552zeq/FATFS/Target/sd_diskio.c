@@ -35,7 +35,11 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define QUEUE_SIZE         (uint32_t) 10
+#define READ_CPLT_MSG      (uint32_t) 1
+#define WRITE_CPLT_MSG     (uint32_t) 2
+#define SD_TIMEOUT 30 * 1000
+#define SD_DEFAULT_BLOCK_SIZE 512
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -47,6 +51,7 @@
 /* USER CODE BEGIN PV */
 /* Disk status */
 static volatile DSTATUS Stat = STA_NOINIT;
+osMessageQueueId_t SDQueueID = NULL;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -89,6 +94,21 @@ DSTATUS SD_initialize(BYTE lun)
   Stat = STA_NOINIT;
 
   /* Place for user code (may require BSP functions/defines to be added to the project) */
+  if (osKernelGetState() == osKernelRunning) {
+    if (BSP_SD_Init() == MSD_OK) {
+			Stat = SD_CheckStatus(lun);
+		}
+
+		if (Stat != STA_NOINIT) {
+			if (SDQueueID == NULL) {
+        SDQueueID = osMessageQueueNew(QUEUE_SIZE, 2, NULL);
+      }
+      
+      if (SDQueueID == NULL) {
+				Stat |= STA_NOINIT;
+			}
+    }
+  }
 
   return Stat;
   /* USER CODE END SD_initialize */
