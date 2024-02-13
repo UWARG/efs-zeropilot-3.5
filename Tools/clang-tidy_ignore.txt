@@ -1,0 +1,6 @@
+# Add pathes to be ignored by clang-tidy
+# e.g. Drivers/MAVLink/MAVLink_Third_Party/Src
+
+Boardfiles
+
+# Do not remove this last line
