@@ -13,7 +13,7 @@ while IFS=$'\n' read -r line; do
     if [[ $line != *#* && $line != "" ]]; then
         SRC_FILES=($(printf "%s\n" "${SRC_FILES[@]}" | grep -v "${line}"))
     fi
-done < "$SCRIPT_PATH/clang-tidy_ignore.txt"
+done < "$SCRIPT_PATH/static_analysis_ignore.txt"
 # trim quotation marks in file path string
 for i in "${!SRC_FILES[@]}"; do
     SRC_FILES[$i]=${SRC_FILES[$i]:1:-1}
