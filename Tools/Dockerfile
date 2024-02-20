@@ -52,4 +52,6 @@ RUN ln -s /usr/share/$ARM_PKG_NAME/bin/arm-none-eabi-gcc /usr/bin/arm-none-eabi-
     chmod 644 /etc/apt/sources.list.d/llvm.list && \
     apt-get update && \
     apt-get -y --no-install-recommends install clang-tidy-18 && \
-    ln -s /usr/bin/clang-tidy-18 /usr/bin/clang-tidy
+    ln -s /usr/bin/clang-tidy-18 /usr/bin/clang-tidy && \
+    apt-get -y --no-install-recommends install clang-format-18 && \
+    ln -s /usr/bin/clang-format-18 /usr/bin/clang-format
