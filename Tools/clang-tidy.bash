@@ -24,7 +24,7 @@ COMPILER_ROOT=/usr/share/arm-gnu-toolchain-12.3.rel1-x86_64-arm-none-eabi
 for SRC_FILE in "${SRC_FILES[@]}"
 do
     echo "Analyzing ${SRC_FILE}"
-    clang-tidy --checks=-*,cppcoreguidelines-avoid-do-while \
+    clang-tidy \
         -p /src/Tools/Firmware/build \
         --extra-arg=--target=arm-none-eabi \
         --extra-arg=-I"${COMPILER_ROOT}/arm-none-eabi/include/c++/12.3.1" \
