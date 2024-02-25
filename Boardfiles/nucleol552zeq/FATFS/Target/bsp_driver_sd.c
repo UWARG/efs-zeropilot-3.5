@@ -18,7 +18,7 @@ DSTATUS SD_CheckStatus(BYTE lun)
   return Stat;
 }
 
-__weak BYTE BSP_SD_Init(void)
+BYTE BSP_SD_Init(void)
 {
   BYTE sd_state = MSD_OK;
   /* Check if the SD card is plugged in the slot */
@@ -40,7 +40,7 @@ __weak BYTE BSP_SD_Init(void)
   *            @arg  SD_TRANSFER_OK: No data transfer is acting
   *            @arg  SD_TRANSFER_BUSY: Data transfer is acting
   */
-__weak BYTE BSP_SD_GetCardState(void)
+BYTE BSP_SD_GetCardState(void)
 {
   return ((HAL_SD_GetCardState(&hsd1) == HAL_SD_CARD_TRANSFER ) ? SD_TRANSFER_OK : SD_TRANSFER_BUSY);
 }
@@ -50,7 +50,7 @@ __weak BYTE BSP_SD_GetCardState(void)
  * @param  None
  * @retval Returns if SD is detected or not
  */
-__weak BYTE BSP_SD_IsDetected(void)
+BYTE BSP_SD_IsDetected(void)
 {
   __IO BYTE status = SD_PRESENT;
 
@@ -62,7 +62,7 @@ __weak BYTE BSP_SD_IsDetected(void)
   return status;
 }
 
-BYTE	BSP_PlatformIsDetected(void) {
+BYTE BSP_PlatformIsDetected(void) {
     BYTE status = SD_PRESENT;
     /* Check SD card detect pin */
     if(HAL_GPIO_ReadPin(SD_DETECT_GPIO_PORT, SD_DETECT_PIN) != GPIO_PIN_RESET)
