@@ -48,6 +48,11 @@ BYTE BSP_PlatformIsDetected(void);
 
 // Used by SD_read
 BYTE BSP_SD_ReadBlocks_DMA(DWORD *pData, DWORD ReadAddr, DWORD NumOfBlocks);
+
+// Used by SD_write
+BYTE BSP_SD_WriteBlocks_DMA(DWORD *pData, DWORD WriteAddr, DWORD NumOfBlocks);
+
+// Used by SD_read, SD_write
 int SD_CheckStatusWithTimeout(DWORD timeout);
 
 #ifdef __cplusplus

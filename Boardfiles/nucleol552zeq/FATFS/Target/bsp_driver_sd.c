@@ -82,8 +82,26 @@ BYTE BSP_PlatformIsDetected(void) {
 BYTE BSP_SD_ReadBlocks_DMA(DWORD *pData, DWORD ReadAddr, DWORD NumOfBlocks) {
   BYTE sd_state = MSD_OK;
 
-  /* Read block(s) in DMA transfer mode */
+  // Read block(s) in DMA transfer mode
   if (HAL_SD_ReadBlocks_DMA(&hsd1, (uint8_t *)pData, ReadAddr, NumOfBlocks) != HAL_OK) {
+    sd_state = MSD_ERROR;
+  }
+
+  return sd_state;
+}
+
+/**
+  * @brief  Writes block(s) to a specified address in an SD card, in DMA mode.
+  * @param  pData: Pointer to the buffer that will contain the data to transmit
+  * @param  WriteAddr: Address from where data is to be written
+  * @param  NumOfBlocks: Number of SD blocks to write
+  * @retval SD status
+  */
+BYTE BSP_SD_WriteBlocks_DMA(DWORD *pData, DWORD WriteAddr, DWORD NumOfBlocks) {
+  BYTE sd_state = MSD_OK;
+
+  // Write block(s) in DMA transfer mode
+  if (HAL_SD_WriteBlocks_DMA(&hsd1, (uint8_t *)pData, WriteAddr, NumOfBlocks) != HAL_OK) {
     sd_state = MSD_ERROR;
   }
 
