@@ -217,11 +217,45 @@ DRESULT SD_write(BYTE lun, const BYTE *buff, DWORD sector, UINT count)
 DRESULT SD_ioctl(BYTE lun, BYTE cmd, void *buff)
 {
   /* USER CODE BEGIN SD_ioctl */
-  DRESULT res = RES_ERROR;
+	DRESULT res = RES_ERROR;
+	BSP_SD_CardInfo CardInfo;
 
-  /* Place for user code (may require BSP functions/defines to be added to the project) */
-  return res;
+	if (Stat & STA_NOINIT)
+		return RES_NOTRDY;
 
+	switch (cmd) {
+		// Make sure that no pending write process
+		case CTRL_SYNC:
+			res = RES_OK;
+		  break;
+
+		// Get number of sectors on the disk (DWORD)
+		case GET_SECTOR_COUNT:
+			BSP_SD_GetCardInfo(&CardInfo);
+			*((DWORD*) buff) = CardInfo.LogBlockNbr;
+			res = RES_OK;
+		  break;
+
+		// Get R/W sector size (WORD)
+		case GET_SECTOR_SIZE:
+			BSP_SD_GetCardInfo(&CardInfo);
+			*((WORD*) buff) = CardInfo.LogBlockSize;
+			res = RES_OK;
+		  break;
+
+		// Get erase block size in unit of sector (DWORD)
+		case GET_BLOCK_SIZE:
+			BSP_SD_GetCardInfo(&CardInfo);
+			*((DWORD*) buff) = CardInfo.LogBlockSize / SD_DEFAULT_BLOCK_SIZE;
+			res = RES_OK;
+		  break;
+
+		default:
+			res = RES_PARERR;
+      break;
+	}
+
+	return res;
   /* USER CODE END SD_ioctl */
 }
 #endif /* _USE_IOCTL == 1 */

@@ -117,3 +117,13 @@ int SD_CheckStatusWithTimeout(DWORD timeout) {
   }
   return -1;
 }
+
+/**
+  * @brief  Get SD information about specific SD card.
+  * @param  CardInfo: Pointer to HAL_SD_CardInfoTypedef structure
+  * @retval None
+  */
+void BSP_SD_GetCardInfo(BSP_SD_CardInfo *CardInfo) {
+  // Get SD card Information
+  HAL_SD_GetCardInfo(&hsd1, CardInfo);
+}

@@ -55,6 +55,9 @@ BYTE BSP_SD_WriteBlocks_DMA(DWORD *pData, DWORD WriteAddr, DWORD NumOfBlocks);
 // Used by SD_read, SD_write
 int SD_CheckStatusWithTimeout(DWORD timeout);
 
+// Used by SD_ioctl
+void BSP_SD_GetCardInfo(BSP_SD_CardInfo *CardInfo);
+
 #ifdef __cplusplus
 }
 #endif
