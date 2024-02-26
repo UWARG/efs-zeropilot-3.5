@@ -39,11 +39,16 @@ typedef HAL_SD_CardInfoTypeDef BSP_SD_CardInfo;
 #define SD_DETECT_GPIO_PORT   GPIOB
 
 /* Exported functions --------------------------------------------------------*/
+// Used by SD_initialize
 BYTE BSP_SD_Init(void);
 BYTE BSP_SD_GetCardState(void);
 BYTE BSP_SD_IsDetected(void);
-DSTATUS SD_CheckStatus(BYTE lun);
+DSTATUS SD_CheckStatus(BYTE lun); // Used by SD_initialize and SD_status
 BYTE BSP_PlatformIsDetected(void);
+
+// Used by SD_read
+BYTE BSP_SD_ReadBlocks_DMA(DWORD *pData, DWORD ReadAddr, DWORD NumOfBlocks);
+int SD_CheckStatusWithTimeout(DWORD timeout);
 
 #ifdef __cplusplus
 }

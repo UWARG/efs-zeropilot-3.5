@@ -138,8 +138,29 @@ DRESULT SD_read(BYTE lun, BYTE *buff, DWORD sector, UINT count)
 {
   /* USER CODE BEGIN SD_read */
   DRESULT res = RES_ERROR;
+  DWORD timer;
+  WORD event;
+	osStatus_t status;
 
-  /* Place for user code (may require BSP functions/defines to be added to the project) */
+  // Ensure the SDCard is ready for a new operation
+  if (SD_CheckStatusWithTimeout(SD_TIMEOUT) < 0) {
+		return res;
+	}
+
+  uint8_t ret = BSP_SD_ReadBlocks_DMA((DWORD*) buff, (DWORD) (sector), count);
+  if (ret == MSD_OK) {
+		status = osMessageQueueGet(SDQueueID, (void*) &event, NULL, SD_TIMEOUT);
+		if ((status == osOK) && (event == READ_CPLT_MSG)) {
+			timer = osKernelGetTickCount();
+			// Block until SDIO IP is ready or a timeout occur
+			while (osKernelGetTickCount() - timer < SD_TIMEOUT) {
+        if (BSP_SD_GetCardState() == SD_TRANSFER_OK) {
+					res = RES_OK;
+          break;
+        }
+      }
+    }
+  }
 
   return res;
   /* USER CODE END SD_read */
