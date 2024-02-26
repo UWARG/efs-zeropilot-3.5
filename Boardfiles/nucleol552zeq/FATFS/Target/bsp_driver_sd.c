@@ -72,3 +72,30 @@ BYTE BSP_PlatformIsDetected(void) {
     return status;
 }
 
+/**
+  * @brief  Reads block(s) from a specified address in an SD card, in DMA mode.
+  * @param  pData: Pointer to the buffer that will contain the data to transmit
+  * @param  ReadAddr: Address from where data is to be read
+  * @param  NumOfBlocks: Number of SD blocks to read
+  * @retval SD status
+  */
+BYTE BSP_SD_ReadBlocks_DMA(DWORD *pData, DWORD ReadAddr, DWORD NumOfBlocks) {
+  BYTE sd_state = MSD_OK;
+
+  /* Read block(s) in DMA transfer mode */
+  if (HAL_SD_ReadBlocks_DMA(&hsd1, (uint8_t *)pData, ReadAddr, NumOfBlocks) != HAL_OK) {
+    sd_state = MSD_ERROR;
+  }
+
+  return sd_state;
+}
+
+int SD_CheckStatusWithTimeout(DWORD timeout) {
+  DWORD timer = osKernelGetTickCount();
+  while (osKernelGetTickCount() - timer < timeout) {
+    if (BSP_SD_GetCardState() == SD_TRANSFER_OK) {
+      return 0;
+    }
+  }
+  return -1;
+}
