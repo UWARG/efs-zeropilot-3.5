@@ -1,6 +1,12 @@
 # Add pathes to be ignored by clang-tidy and cppcheck
 # e.g. Drivers/MAVLink/MAVLink_Third_Party/Src
 
+.git
+.github
+.settings
+Tools
 Boardfiles
+TelemetryManager/Inc/Official_Mavlink_2_Library
+TelemetryManager/Src/Official_Mavlink_2_Library
 
 # Do not remove this last line
