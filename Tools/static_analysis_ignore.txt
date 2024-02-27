@@ -1,5 +1,4 @@
-# Add pathes to be ignored by clang-tidy and cppcheck
-# e.g. Drivers/MAVLink/MAVLink_Third_Party/Src
+# Add pathes to be ignored by static analysis (clang-tidy, clang-format, cppcheck)
 
 .git
 .github
