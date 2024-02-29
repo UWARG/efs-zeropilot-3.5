@@ -8,6 +8,71 @@
 
 namespace AM {
 
+TEST(AttitudeManager, RunIteration) {
+    //TODO: This boilerplate setup code could probably be abstracted into a test fixture
+    MockFlightmode controlAlgorithm{};
+    MotorInstance_t *motorInstances[NUM_CONTROL_AXIS]{nullptr};
+    uint8_t numMotorsPerAxis[NUM_CONTROL_AXIS]{0};
+
+    MockChannel mockChannelReferences[4]{};
+
+    MotorInstance_t yawMotorReferences[] = {
+        {
+            .motorInstance = &mockChannelReferences[0],
+            .isInverted = false
+        }
+    };
+
+    MotorInstance_t pitchMotorReferences[] = {
+        {
+            .motorInstance = &mockChannelReferences[1],
+            .isInverted = false
+        }
+    };
+
+    MotorInstance_t rollMotorReferences[] = {
+        {
+            .motorInstance = &mockChannelReferences[2],
+            .isInverted = false
+        }
+    };
+
+    MotorInstance_t throttleMotorReferences[] = {
+        {
+            .motorInstance = &mockChannelReferences[3],
+            .isInverted = false
+        }
+    };
+
+    motorInstances[yaw] = yawMotorReferences;
+    motorInstances[pitch] = pitchMotorReferences;
+    motorInstances[roll] = rollMotorReferences;
+    motorInstances[throttle] = throttleMotorReferences;
+
+    numMotorsPerAxis[yaw] = 1;
+    numMotorsPerAxis[pitch] = 1;
+    numMotorsPerAxis[roll] = 1;
+    numMotorsPerAxis[throttle] = 1;
+
+    AM::AttitudeManager am{&controlAlgorithm, motorInstances, numMotorsPerAxis};
+
+    EXPECT_CALL(mockChannelReferences[0], set(12));
+    EXPECT_CALL(mockChannelReferences[1], set(75));
+    EXPECT_CALL(mockChannelReferences[2], set(100));
+    EXPECT_CALL(mockChannelReferences[3], set(33));
+
+    AM::AttitudeManagerInput input {
+        .roll=100,
+        .pitch=75,
+        .yaw=12,
+        .throttle=33
+    };
+
+    am.setControlInputs(input);
+    am.runControlLoopIteration();
+}
+
+
 TEST(AttitudeManagerOutputToMotor, NoMotors) {
     MockFlightmode controlAlgorithm{};
     MotorInstance_t *motorInstances[NUM_CONTROL_AXIS]{nullptr};

@@ -1,2 +1,2 @@
 #include "semphr.h"
-long xSemaphoreTake(int, int) {return 0;}
+long xSemaphoreTake(int, int) {return 1;}

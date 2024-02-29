@@ -46,11 +46,17 @@ AttitudeManager::~AttitudeManager()
 
 void AttitudeManager::runControlLoopIteration() {
     // Process Instructions
+    AttitudeManagerInput control_inputs = getControlInputs();
 
     // Run Control Algorithms
-    controlAlgorithm_->run(getControlInputs());
+    AttitudeManagerInput motor_outputs = controlAlgorithm_->run(control_inputs);
 
     // Write motor outputs
+    outputToMotor(yaw, static_cast<uint8_t>(motor_outputs.yaw));
+    outputToMotor(pitch, static_cast<uint8_t>(motor_outputs.pitch));
+    outputToMotor(roll, static_cast<uint8_t>(motor_outputs.roll));
+    outputToMotor(throttle, static_cast<uint8_t>(motor_outputs.throttle));
+
 }
 
 void AttitudeManager::outputToMotor(ControlAxis_t axis, uint8_t percent) {
