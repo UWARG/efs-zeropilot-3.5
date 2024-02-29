@@ -5,11 +5,12 @@
 
 #include "flightmode.hpp"
 #include "temp_drivers.hpp"
+#include "common_data_types.hpp"
 
 namespace config
 {
     using percentage_t = float;
-     
+
     //Define factory function to create drivers and flightmodes
     template <class BaseClass, class DerivedClass, auto... args>
     BaseClass* constructObject() {
@@ -23,15 +24,6 @@ namespace config
 
 
     /* Motor declarations */
-
-    typedef enum {
-        yaw,
-        pitch,
-        roll,
-        throttle,
-        NUM_CONTROL_AXIS
-    } ControlAxis_t;
-
     typedef struct {
         ControlAxis_t axis;
         bool isInverted = false;
@@ -89,7 +81,7 @@ namespace config
         ControlPID_t PIDValues = {};
         ControlLimits_t controlLimits = {};
     } ControlTuning_t;
-    
+
     typedef struct {
         ControlTuning_t tuningData;
         ObjectFactory<AM::Flightmode> flightmodeConstructor;

@@ -48,7 +48,7 @@ class AttitudeManager {
     #endif
 
     AttitudeManager();
-    void outputToMotor(config::ControlAxis_t axis, uint8_t percent);
+    void outputToMotor(ControlAxis_t axis, uint8_t percent);
 
     static SemaphoreHandle_t control_inputs_mutex;
     static struct AttitudeManagerInput control_inputs;

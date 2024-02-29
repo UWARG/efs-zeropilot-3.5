@@ -53,7 +53,7 @@ void AttitudeManager::runControlLoopIteration(const AttitudeManagerInput& instru
     // Write motor outputs
 }
 
-void AttitudeManager::outputToMotor(config::ControlAxis_t axis, uint8_t percent) {
+void AttitudeManager::outputToMotor(ControlAxis_t axis, uint8_t percent) {
     // Move through the portion of the motorInstances array that matches the wanted axis.
     // The motorReferences array holds references to the wanted positions in the motorInstances array
     for (uint8_t motorCount{0}; motorCount < numMotorsPerAxis_[axis]; ++motorCount) {

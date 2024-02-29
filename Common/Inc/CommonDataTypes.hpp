@@ -22,6 +22,7 @@ typedef enum {
     yaw,
     pitch,
     roll,
-    thrust
+    throttle,
+    NUM_CONTROL_AXIS
 } ControlAxis_t;
 #endif  // ZPSW3_COMMON_DATATYPES_HPP
