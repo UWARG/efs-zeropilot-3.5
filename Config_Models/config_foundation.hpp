@@ -5,7 +5,7 @@
 
 #include "flightmode.hpp"
 #include "temp_drivers.hpp"
-#include "common_data_types.hpp"
+#include "CommonDataTypes.hpp"
 
 namespace config
 {

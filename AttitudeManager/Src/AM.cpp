@@ -44,7 +44,7 @@ AttitudeManager::AttitudeManager(Flightmode* controlAlgorithm,  MotorInstance_t 
 AttitudeManager::~AttitudeManager()
 {}
 
-void AttitudeManager::runControlLoopIteration(const AttitudeManagerInput& instructions) {
+void AttitudeManager::runControlLoopIteration() {
     // Process Instructions
 
     // Run Control Algorithms

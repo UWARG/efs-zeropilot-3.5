@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include "AM.hpp"
+#include "CommonDataTypes.hpp"
 #include "config_foundation.hpp"
 #include "MockChannel.hpp"
 #include "MockFlightmode.hpp"
@@ -9,21 +10,21 @@ namespace AM {
 
 TEST(AttitudeManagerOutputToMotor, NoMotors) {
     MockFlightmode controlAlgorithm{};
-    MotorInstance_t *motorInstances[config::NUM_CONTROL_AXIS]{nullptr};
-    uint8_t numMotorsPerAxis[config::NUM_CONTROL_AXIS]{0};
+    MotorInstance_t *motorInstances[NUM_CONTROL_AXIS]{nullptr};
+    uint8_t numMotorsPerAxis[NUM_CONTROL_AXIS]{0};
 
     AM::AttitudeManager am{&controlAlgorithm, motorInstances, numMotorsPerAxis};
 
-    am.outputToMotor(config::throttle, 40);
-    am.outputToMotor(config::pitch, 30);
-    am.outputToMotor(config::roll, 20);
-    am.outputToMotor(config::yaw, 10);
+    am.outputToMotor(throttle, 40);
+    am.outputToMotor(pitch, 30);
+    am.outputToMotor(roll, 20);
+    am.outputToMotor(yaw, 10);
 }
 
 TEST(AttitudeManagerOutputToMotor, MotorsOfSameAxis) {
     MockFlightmode controlAlgorithm{};
-    MotorInstance_t *motorInstances[config::NUM_CONTROL_AXIS]{nullptr};
-    uint8_t numMotorsPerAxis[config::NUM_CONTROL_AXIS]{0};
+    MotorInstance_t *motorInstances[NUM_CONTROL_AXIS]{nullptr};
+    uint8_t numMotorsPerAxis[NUM_CONTROL_AXIS]{0};
 
     MockChannel mockChannelReferences[5]{};
 
@@ -50,9 +51,9 @@ TEST(AttitudeManagerOutputToMotor, MotorsOfSameAxis) {
         }
     };
 
-    motorInstances[config::pitch] = pitchMotorReferences;
+    motorInstances[pitch] = pitchMotorReferences;
 
-    numMotorsPerAxis[config::pitch] = 5;
+    numMotorsPerAxis[pitch] = 5;
 
     AM::AttitudeManager am{&controlAlgorithm, motorInstances, numMotorsPerAxis};
 
@@ -63,10 +64,10 @@ TEST(AttitudeManagerOutputToMotor, MotorsOfSameAxis) {
     EXPECT_CALL(mockChannelReferences[3], set(30));
     EXPECT_CALL(mockChannelReferences[4], set(30));
 
-    am.outputToMotor(config::yaw, 10);
-    am.outputToMotor(config::throttle, 40);
-    am.outputToMotor(config::pitch, 30);
-    am.outputToMotor(config::roll, 20);
+    am.outputToMotor(yaw, 10);
+    am.outputToMotor(throttle, 40);
+    am.outputToMotor(pitch, 30);
+    am.outputToMotor(roll, 20);
 
     // Should set all of them
     EXPECT_CALL(mockChannelReferences[0], set(60));
@@ -75,13 +76,13 @@ TEST(AttitudeManagerOutputToMotor, MotorsOfSameAxis) {
     EXPECT_CALL(mockChannelReferences[3], set(60));
     EXPECT_CALL(mockChannelReferences[4], set(60));
 
-    am.outputToMotor(config::pitch, 60);
+    am.outputToMotor(pitch, 60);
 }
 
 TEST(AttitudeManagerOutputToMotor, setOutputInRandomAxisOrder) {
     MockFlightmode controlAlgorithm{};
-    MotorInstance_t *motorInstances[config::NUM_CONTROL_AXIS]{nullptr};
-    uint8_t numMotorsPerAxis[config::NUM_CONTROL_AXIS]{0};
+    MotorInstance_t *motorInstances[NUM_CONTROL_AXIS]{nullptr};
+    uint8_t numMotorsPerAxis[NUM_CONTROL_AXIS]{0};
 
     MockChannel mockChannelReferences[4]{};
 
@@ -113,15 +114,15 @@ TEST(AttitudeManagerOutputToMotor, setOutputInRandomAxisOrder) {
         }
     };
 
-    motorInstances[config::yaw] = yawMotorReferences;
-    motorInstances[config::pitch] = pitchMotorReferences;
-    motorInstances[config::roll] = rollMotorReferences;
-    motorInstances[config::throttle] = throttleMotorReferences;
+    motorInstances[yaw] = yawMotorReferences;
+    motorInstances[pitch] = pitchMotorReferences;
+    motorInstances[roll] = rollMotorReferences;
+    motorInstances[throttle] = throttleMotorReferences;
 
-    numMotorsPerAxis[config::yaw] = 1;
-    numMotorsPerAxis[config::pitch] = 1;
-    numMotorsPerAxis[config::roll] = 1;
-    numMotorsPerAxis[config::throttle] = 1;
+    numMotorsPerAxis[yaw] = 1;
+    numMotorsPerAxis[pitch] = 1;
+    numMotorsPerAxis[roll] = 1;
+    numMotorsPerAxis[throttle] = 1;
 
     AM::AttitudeManager am{&controlAlgorithm, motorInstances, numMotorsPerAxis};
 
@@ -131,16 +132,16 @@ TEST(AttitudeManagerOutputToMotor, setOutputInRandomAxisOrder) {
     EXPECT_CALL(mockChannelReferences[2], set(100));
     EXPECT_CALL(mockChannelReferences[3], set(33));
 
-    am.outputToMotor(config::yaw, 12);
-    am.outputToMotor(config::throttle, 33);
-    am.outputToMotor(config::pitch, 75);
-    am.outputToMotor(config::roll, 100);
+    am.outputToMotor(yaw, 12);
+    am.outputToMotor(throttle, 33);
+    am.outputToMotor(pitch, 75);
+    am.outputToMotor(roll, 100);
 }
 
 TEST(AttitudeManagerOutputToMotor, InvertedTest) {
     MockFlightmode controlAlgorithm{};
-    MotorInstance_t *motorInstances[config::NUM_CONTROL_AXIS]{nullptr};
-    uint8_t numMotorsPerAxis[config::NUM_CONTROL_AXIS]{0};
+    MotorInstance_t *motorInstances[NUM_CONTROL_AXIS]{nullptr};
+    uint8_t numMotorsPerAxis[NUM_CONTROL_AXIS]{0};
 
     MockChannel mockChannelReferences[4]{};
 
@@ -172,15 +173,15 @@ TEST(AttitudeManagerOutputToMotor, InvertedTest) {
         }
     };
 
-    motorInstances[config::yaw] = yawMotorReferences;
-    motorInstances[config::pitch] = pitchMotorReferences;
-    motorInstances[config::roll] = rollMotorReferences;
-    motorInstances[config::throttle] = throttleMotorReferences;
+    motorInstances[yaw] = yawMotorReferences;
+    motorInstances[pitch] = pitchMotorReferences;
+    motorInstances[roll] = rollMotorReferences;
+    motorInstances[throttle] = throttleMotorReferences;
 
-    numMotorsPerAxis[config::yaw] = 1;
-    numMotorsPerAxis[config::pitch] = 1;
-    numMotorsPerAxis[config::roll] = 1;
-    numMotorsPerAxis[config::throttle] = 1;
+    numMotorsPerAxis[yaw] = 1;
+    numMotorsPerAxis[pitch] = 1;
+    numMotorsPerAxis[roll] = 1;
+    numMotorsPerAxis[throttle] = 1;
 
     AM::AttitudeManager am{&controlAlgorithm, motorInstances, numMotorsPerAxis};
 
@@ -190,16 +191,16 @@ TEST(AttitudeManagerOutputToMotor, InvertedTest) {
     EXPECT_CALL(mockChannelReferences[2], set(0));
     EXPECT_CALL(mockChannelReferences[3], set(67));
 
-    am.outputToMotor(config::yaw, 12);
-    am.outputToMotor(config::pitch, 75);
-    am.outputToMotor(config::roll, 100);
-    am.outputToMotor(config::throttle, 33);
+    am.outputToMotor(yaw, 12);
+    am.outputToMotor(pitch, 75);
+    am.outputToMotor(roll, 100);
+    am.outputToMotor(throttle, 33);
 }
 
 TEST(AttitudeManagerOutputToMotor, CombinedTest) {
     MockFlightmode controlAlgorithm{};
-    MotorInstance_t *motorInstances[config::NUM_CONTROL_AXIS]{nullptr};
-    uint8_t numMotorsPerAxis[config::NUM_CONTROL_AXIS]{0};
+    MotorInstance_t *motorInstances[NUM_CONTROL_AXIS]{nullptr};
+    uint8_t numMotorsPerAxis[NUM_CONTROL_AXIS]{0};
 
     MockChannel mockChannelReferences[8]{};
 
@@ -247,15 +248,15 @@ TEST(AttitudeManagerOutputToMotor, CombinedTest) {
         }
     };
 
-    motorInstances[config::yaw] = yawMotorReferences;
-    motorInstances[config::pitch] = pitchMotorReferences;
-    motorInstances[config::roll] = rollMotorReferences;
-    motorInstances[config::throttle] = throttleMotorReferences;
+    motorInstances[yaw] = yawMotorReferences;
+    motorInstances[pitch] = pitchMotorReferences;
+    motorInstances[roll] = rollMotorReferences;
+    motorInstances[throttle] = throttleMotorReferences;
 
-    numMotorsPerAxis[config::yaw] = 2;
-    numMotorsPerAxis[config::pitch] = 3;
-    numMotorsPerAxis[config::roll] = 1;
-    numMotorsPerAxis[config::throttle] = 2;
+    numMotorsPerAxis[yaw] = 2;
+    numMotorsPerAxis[pitch] = 3;
+    numMotorsPerAxis[roll] = 1;
+    numMotorsPerAxis[throttle] = 2;
 
     AM::AttitudeManager am{&controlAlgorithm, motorInstances, numMotorsPerAxis};
 
@@ -269,10 +270,10 @@ TEST(AttitudeManagerOutputToMotor, CombinedTest) {
     EXPECT_CALL(mockChannelReferences[6], set(5));
     EXPECT_CALL(mockChannelReferences[7], set(95));
 
-    am.outputToMotor(config::yaw, 84);
-    am.outputToMotor(config::pitch, 27);
-    am.outputToMotor(config::roll, 94);
-    am.outputToMotor(config::throttle, 5);
+    am.outputToMotor(yaw, 84);
+    am.outputToMotor(pitch, 27);
+    am.outputToMotor(roll, 94);
+    am.outputToMotor(throttle, 5);
 }
 
 }

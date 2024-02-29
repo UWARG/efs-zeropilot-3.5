@@ -5,8 +5,10 @@
 
 // Demonstrate some basic assertions.
 TEST(AttitudeManager, random_test) {
+    AM::MotorInstance_t *motorInstances[NUM_CONTROL_AXIS]{nullptr};
+    uint8_t numMotorsPerAxis[NUM_CONTROL_AXIS]{0};
     AM::Flightmode* flightmode = new AM::Manual();
-    AM::AttitudeManager am(flightmode);
+    AM::AttitudeManager am(flightmode, motorInstances, numMotorsPerAxis);
 
     am.runControlLoopIteration();
 }

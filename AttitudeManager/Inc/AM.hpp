@@ -21,9 +21,9 @@
 namespace AM {
 
 typedef struct {
-        MotorChannel *motorInstance;
-        bool isInverted;
-    } MotorInstance_t;
+    MotorChannel *motorInstance;
+    bool isInverted;
+} MotorInstance_t;
 
 class AttitudeManager {
    public:
@@ -35,7 +35,7 @@ class AttitudeManager {
 
     ~AttitudeManager();
 
-    void runControlLoopIteration(const AttitudeManagerInput& instructions);
+    void runControlLoopIteration();
 
    private:
     #ifdef TESTING
