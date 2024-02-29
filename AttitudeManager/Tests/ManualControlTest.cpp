@@ -1,31 +1,29 @@
+#include "manual.hpp"
+#include "AM.hpp"
+
 #include <gtest/gtest.h>
 
-#include "AM.hpp"
-#include "manual.hpp"
+class ManualModeTestFixture : public ::testing::TestWithParam<AM::AttitudeManagerInput>{};
 
-// Demonstrate some basic assertions.
-TEST(AttitudeManager, random_test) {
-    AM::MotorInstance_t *motorInstances[NUM_CONTROL_AXIS]{nullptr};
-    uint8_t numMotorsPerAxis[NUM_CONTROL_AXIS]{0};
-    AM::Flightmode* flightmode = new AM::Manual();
-    AM::AttitudeManager am(flightmode, motorInstances, numMotorsPerAxis);
+TEST_P(ManualModeTestFixture, check_inputs_are_expected) {
+    auto input = GetParam();
 
-    am.runControlLoopIteration();
-}
-
-TEST(ManualMode, check_inputs) {
-    AM::Manual manual_mode{};
-
-    AM::AttitudeManagerInput input{
-        .roll = 0,
-        .pitch = 0,
-        .yaw = 0,
-        .throttle = 0,
-    };
-    auto output = manual_mode.run(input);
+    AM::Manual flightmode;
+    auto output = flightmode.run(input);
 
     EXPECT_EQ(input.roll, output.roll);
     EXPECT_EQ(input.pitch, output.pitch);
     EXPECT_EQ(input.yaw, output.yaw);
     EXPECT_EQ(input.throttle, output.throttle);
 }
+
+INSTANTIATE_TEST_CASE_P(
+    ManualModeTests,
+    ManualModeTestFixture,
+    ::testing::Values(
+        AM::AttitudeManagerInput{.roll = 0, .pitch = 0, .yaw = 0, .throttle = 0 },
+        AM::AttitudeManagerInput{.roll = 0xDEAD, .pitch = 0xBEEF, .yaw = 0xFEED, .throttle = 0xFACE},
+        AM::AttitudeManagerInput{.roll = 0.1f, .pitch = 0.5f, .yaw = 100, .throttle = 0.001f},
+        AM::AttitudeManagerInput{.roll = 10, .pitch = -5.5, .yaw = -66.99, .throttle = -0xFFFF}
+    )
+);
