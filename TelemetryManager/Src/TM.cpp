@@ -1,5 +1,5 @@
 
-#include "GroundStationComs.hpp"
+#include "GroundStationComms.hpp"
 #include "MavlinkTranslator.hpp"
 #include "TimerInterrupt.hpp"
 
