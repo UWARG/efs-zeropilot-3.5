@@ -9,8 +9,11 @@
 
 class MavlinkTranslator
 {
+    /**
+     * @brief Construct a new MavlinkTranslator object. Do whatever needs to be done here.
+     * 
+     */
     MavlinkTranslator();
-    ~MavlinkTranslator();
 
 
 public:

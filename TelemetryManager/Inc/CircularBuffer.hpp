@@ -10,6 +10,20 @@ class CircularBuffer
 
     using MAVLinkByte = unsigned char; // not 100% sure if this is the right type
 
+    /**
+     * @brief Construct a new Circular Buffer object. Do whatever needs to be done here.
+     * 
+     */
+    CircularBuffer() ;
+
+    /**
+     * @brief Destroy and cleanup memory (everything should be static anyways). Do whatever 
+     * needs to be done here.
+     * 
+     */
+    ~CircularBuffer() ;
+
+
 public:
 
     /**

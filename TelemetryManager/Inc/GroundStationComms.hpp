@@ -15,6 +15,11 @@
  */
 class GroundStationComms
 {
+    /**
+     * @brief Construct a new Ground Station Comms object. Do whatever needs to be done here.
+     * 
+     */
+    GroundStationComms();
 
 public:
     /*
