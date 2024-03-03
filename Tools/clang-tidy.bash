@@ -3,7 +3,7 @@
 # define path to this bash script
 SCRIPT_PATH=$(dirname -- "$0")
 
-SRC_FILES=$(bash $SCRIPT_PATH/static_analysis_src_files.bash)
+SRC_FILES=$(bash $SCRIPT_PATH/static_analysis_files.bash)
 COMPILER_ROOT=/usr/share/arm-gnu-toolchain-12.3.rel1-x86_64-arm-none-eabi
 clang-tidy \
     -p /src/Tools/Firmware/build \
