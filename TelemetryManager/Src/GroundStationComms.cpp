@@ -2,19 +2,29 @@
 
 #include "GroundStationComms.hpp"
 
-// ** Implement sendToGroundStation first ** 
+// ** Implement sendToGroundStation first **
 
-void GroundStationComms::sendToGroundStation(CircularBuffer &transmissionBuffer)
-{
-    // Send the bytes in transmissionBuffer to the ground station via RFD900
+void GroundStationComms::sendToGroundStation(CircularBuffer &transmissionBuffer) {
+    // START: Send the bytes in transmissionBuffer to the ground station via RFD900
+
+    // END: Send the bytes in transmissionBuffer to the ground station via RFD900
+
+    return;
 }
 
-void GroundStationComms::receiveFromGroundStationISR()
-    {
+void GroundStationComms::receiveFromGroundStationISR() {
 
-        // if GSC.DMAReceiveBuffer has enough space for the new data add it
-        //otherwise discard the data
+    int bytesReceived = 0; // replace with actual number of bytes received
 
-
-        //end of ISR
+    // if GSC.DMAReceiveBuffer has enough space for the new data add it
+    // otherwise discard the data
+    if(DMAReceiveBuffer.remainingMemory() > bytesReceived) {
+        // add the new data to GSC.DMAReceiveBuffer
     }
+    else{
+        // discard the new data
+    }
+
+    // end of ISR
+    return;
+}

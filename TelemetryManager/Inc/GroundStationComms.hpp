@@ -7,7 +7,11 @@
 #define GROUNDSTATIONCOMMS_H
 
 /**
- * @brief
+ * @brief This class is responsible for handling the communication between the ground station
+ * and the drone. It is responsible for sending and receiving bytes from the ground station. It 
+ * acts as a layer of abstraction between the RFD 900 and the rest of the program. This is useful
+ * because it allows us to define the behaviour of the RFD 900 send/receive function before its 
+ * implementation.
  */
 class GroundStationComms
 {
@@ -15,14 +19,14 @@ class GroundStationComms
 public:
     /*
     * When the DMA interrupt is triggered the data should be stored in the DMAReceiveBuffer
-    * if there is space
+    * IF there is space.
     */
     CircularBuffer DMAReceiveBuffer;
 
-    // low priority mavlink bytes to be sent to the ground station.
+    // low priority Mavlink bytes to be sent to the ground station.
     CircularBuffer lowPriorityTransmitBuffer;
 
-    // high priority mavlink bytes to be sent to the ground station.
+    // high priority Mavlink bytes to be sent to the ground station.
     CircularBuffer highPriorityTransmitBuffer;
 
     /**

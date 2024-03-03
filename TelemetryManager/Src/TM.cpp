@@ -50,15 +50,15 @@ void init()
     );
 
     // Start the scheduler
-    vTaskStartScheduler();
+    vTaskStartScheduler(); //should this be in system manager instead?
 }
 
 /**
  * @brief This thread is responsible for taking the bytes from the GSC.DMAReceiveBuffer and
- * converting them to Mavlink messages/triggering the callbacks associated with each mavlink
+ * converting them to Mavlink messages/triggering the callbacks associated with each Mavlink
  * message.
  */
-void translateToMavlinkThread()
+void translateToMavlinkThread(void *pvParameters)
 {
     while (true)
     {
@@ -70,9 +70,9 @@ void translateToMavlinkThread()
 
 /**
  * @brief This thread is responsible for taking data from other managers and converting
- * them to mavlink bytes, then putting them into GSC.lowPriorityTransmitBuffer.
+ * them to Mavlink bytes, then putting them into GSC.lowPriorityTransmitBuffer.
  */
-void mavlinkToBytesThread()
+void mavlinkToBytesThread(void *pvParameters)
 {
     while (true)
     {
