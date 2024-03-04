@@ -32,6 +32,7 @@
 #include "ucpd.h"
 #include "usb.h"
 #include "gpio.h"
+#include "SystemManager.hpp"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -79,7 +80,7 @@ extern "C" {
 /* USER CODE BEGIN 0 */
 void SMTask(void *pvParameters) {
     SystemManager SM;
-    SM.flyManually();
+    SM.startSystemManager();
 }
 /* USER CODE END 0 */
 
@@ -137,14 +138,16 @@ int main(void)
   /* USER CODE BEGIN 2 */
   logInit();
 
-  TaskHandle_t hSM = NULL;
-  xTaskCreate(SMTask, "SM", 500U, NULL, osPriorityNormal, &hSM);
-
   /* USER CODE END 2 */
 
   /* Init scheduler */
   osKernelInitialize();  /* Call init function for freertos objects (in freertos.c) */
   MX_FREERTOS_Init();
+  osThreadAttr_t sm_task_attri = {
+  .name = "smTask",
+  .priority = (osPriority_t) osPriorityNormal,
+};
+  osThreadNew(SMTask, NULL, &sm_task_attri);
 
   /* Start scheduler */
   osKernelStart();

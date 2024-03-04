@@ -61,7 +61,10 @@ extern DMA_HandleTypeDef hdma_usart2_rx;
 extern DMA_HandleTypeDef hdma_usart2_tx;
 extern UART_HandleTypeDef huart2;
 extern UART_HandleTypeDef huart3;
+<<<<<<< HEAD
 extern SD_HandleTypeDef hsd1;
+=======
+>>>>>>> 5ab5f34 (freeRTOS skeleton for SM to control AM and TM)
 extern DMA_HandleTypeDef hdma_tim5_ch1;
 extern DMA_HandleTypeDef hdma_tim5_ch2;
 extern TIM_HandleTypeDef htim5;

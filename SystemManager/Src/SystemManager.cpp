@@ -11,10 +11,15 @@
 #include "sbus_defines.h"
 #include "sbus_receiver.hpp"
 #include "tim.h"
+#include "cmsis_os.h"
+#include "FreeRTOS.h"
+#include <iostream>
 
 
 #define TIMEOUT_CYCLES 250000 // 25k = 1 sec fro testing 10/14/2023 => 250k = 10 sec
 #define TIMOUT_MS      10000 // 10 sec
+
+static TaskHandle_t taskHandles[3];
 
 static uint32_t DisconnectionCount = 0;
 float prevthrottle;
@@ -62,8 +67,28 @@ SystemManager::SystemManager()
 
 SystemManager::~SystemManager() {}
 
-void SystemManager::flyManually() {
-    for (;;) {
+//wrapper functions are needed as FreeRTOS xTaskCreate function does not accept functions that have "this" pointers
+void SystemManager::systemManagerTaskWrapper(void *pvParameters) {
+    SystemManager *systemManagerInstance = static_cast<SystemManager *>(pvParameters);
+    systemManagerInstance->systemManagerTask();
+}
+
+void SystemManager::attitudeManagerTaskWrapper(void* pvParameters){
+    SystemManager *systemManagerInstance = static_cast<SystemManager *>(pvParameters);  
+    systemManagerInstance->attitudeManagerTask();
+}
+
+void SystemManager::telemetryManagerTaskWrapper(void* pvParameters){
+    SystemManager *systemManagerInstance = static_cast<SystemManager *>(pvParameters);
+    systemManagerInstance->telemetryManagerTask();
+}
+
+void SystemManager::systemManagerTask(){
+    for(;;){
+        printf("systemCheckTask called\r\n");
+        vTaskDelay(1000); 
+
+        /*
         this->rcInputs_ = rcController_->GetRCControl();
 
         // TO-DO: need to implement it using is_Data_New;
@@ -103,5 +128,36 @@ void SystemManager::flyManually() {
             this->pitchMotorChannel_.set(SBUS_MAX / 2);
             this->invertedRollMotorChannel_.set(SBUS_MAX / 2);
         }
+        */
     }
+}
+
+void SystemManager::attitudeManagerTask(){
+    for(;;){
+        //call AM
+
+        printf("AM called\r\n");
+        HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
+        vTaskDelay(2000); 
+    }
+}
+
+void SystemManager::telemetryManagerTask(){
+    for(;;){
+        //call TM
+
+        printf("TM called\r\n");
+        HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_9);
+        vTaskDelay(3000); 
+    }
+}
+
+void SystemManager::startSystemManager() {
+    //BaseType_t xTaskCreate( TaskFunction_t pvTaskCode, const char * const pcName, configSTACK_DEPTH_TYPE usStackDepth, void * pvParameters, UBaseType_t uxPriority, TaskHandle_t * pxCreatedTask ); 
+    //                          function's name             description                 size of stack to allocate        parameters for task        priority                    handler 
+    xTaskCreate(systemManagerTaskWrapper, "System Check", 150U, this, osPriorityNormal, taskHandles);
+    xTaskCreate(attitudeManagerTaskWrapper, "Attitude Manager", 200U, this, osPriorityNormal, taskHandles + 1);
+    xTaskCreate(telemetryManagerTaskWrapper, "Telemetry Manager", 200U, this, osPriorityNormal, taskHandles + 2);
+
+    vTaskDelete(NULL);
 }
