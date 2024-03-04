@@ -22,8 +22,17 @@ public:
 
     /* Class Functions */
     void flyManually();
+    
 
 private:
+    void systemCheckTask(void *pvParameters);
+    static void systemCheckTaskWrapper(void* pvParameters);
+    
+    void attitudeManagerTask(void *pvParameters);
+    static void attitudeManagerTaskWrapper(void* pvParameters);
+
+    void telemetryManagerTask(void *pvParameters);
+    static void telemetryManagerTaskWrapper(void* pvParameters);
     SBUSReceiver* rcController_;
     RCControl rcInputs_;
     PWMChannel throttleMotorChannel_;

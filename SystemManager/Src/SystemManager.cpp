@@ -10,6 +10,10 @@
 #include "drivers_config.hpp"
 #include "independent_watchdog.h"
 #include "tim.h"
+#include "cmsis_os.h"
+#include "FreeRTOS.h"
+
+
 
 #define TIMEOUT_CYCLES 250000 // 25k = 1 sec fro testing 10/14/2023 => 250k = 10 sec
 
@@ -31,7 +35,7 @@ SystemManager::SystemManager():
 
 SystemManager::~SystemManager() {}
 
-void SystemManager::flyManually() {
+void SystemManager::systemCheckTask(void *pvParameters){
     for(;;){
         this->rcInputs_ = rcController_->GetRCControl();
 
@@ -55,27 +59,53 @@ void SystemManager::flyManually() {
         }
 
         watchdog_.refreshWatchdog(); // always hit the dog
-
-        if(this->rcInputs_.arm >= (SBUS_MAX/2)) {
-        		this->throttleMotorChannel_.set(rcInputs_.throttle);
-        		this->yawMotorChannel_.set(rcInputs_.yaw);
-        		this->rollMotorChannel_.set(SBUS_MAX - rcInputs_.roll);
-        		this->pitchMotorChannel_.set(SBUS_MAX - rcInputs_.pitch);
-        		this->invertedRollMotorChannel_.set(SBUS_MAX - rcInputs_.roll);
-
-        		prevthrottle = rcInputs_.throttle;
-        		prevyaw = rcInputs_.yaw;
-        		prevroll = rcInputs_.roll;
-        		prevpitch = rcInputs_.pitch;
-
-
-        }
-        else{
-            this->throttleMotorChannel_.set(0);
-            this->yawMotorChannel_.set(SBUS_MAX/2);
-            this->rollMotorChannel_.set(SBUS_MAX/2);
-            this->pitchMotorChannel_.set(SBUS_MAX/2);
-            this->invertedRollMotorChannel_.set(SBUS_MAX/2);
-        }
     }
+}
+
+//wrapper functions are needed as FreeRTOS xTaskCreate function does not accept functions that have "this" pointers
+void SystemManager::systemCheckTaskWrapper(void *pvParameters) {
+
+    SystemManager *systemManagerInstance = static_cast<SystemManager *>(pvParameters);
+    systemManagerInstance->systemCheckTask(pvParameters);
+}
+
+void SystemManager::attitudeManagerTask(void *pvParameters){
+    for(;;){
+        //call AM
+        watchdog_.refreshWatchdog(); // always hit the dog
+    }
+}
+
+void SystemManager::attitudeManagerTaskWrapper(void* pvParameters){
+    SystemManager *systemManagerInstance = static_cast<SystemManager *>(pvParameters);
+    systemManagerInstance->attitudeManagerTask(pvParameters);
+}
+
+void SystemManager::telemetryManagerTask(void *pvParameters){
+    for(;;){
+        //call TM
+        watchdog_.refreshWatchdog(); // always hit the dog
+    }
+}
+
+void SystemManager::telemetryManagerTaskWrapper(void* pvParameters){
+    SystemManager *systemManagerInstance = static_cast<SystemManager *>(pvParameters);
+    systemManagerInstance->attitudeManagerTask(pvParameters);
+}
+
+
+void SystemManager::flyManually() {
+    TaskHandle_t hSystemCheck = NULL;
+
+    //BaseType_t xTaskCreate( TaskFunction_t pvTaskCode, const char * const pcName, configSTACK_DEPTH_TYPE usStackDepth, void * pvParameters, UBaseType_t uxPriority, TaskHandle_t * pxCreatedTask ); 
+    //                          function's name             description                 size of stack to allocate        parameters for task        priority                    handler
+    xTaskCreate(systemCheckTaskWrapper, "System Check", 500U, NULL, osPriorityNormal, &hSystemCheck);
+
+    TaskHandle_t hAM = NULL;
+    xTaskCreate(attitudeManagerTaskWrapper, "Attitude Manager", 500U, NULL, osPriorityNormal, &hAM);
+
+    TaskHandle_t hTM = NULL;
+    xTaskCreate(telemetryManagerTaskWrapper, "Telemetry Manager", 500U, NULL, osPriorityNormal, &hTM);
+
+    vTaskStartScheduler();
 }
