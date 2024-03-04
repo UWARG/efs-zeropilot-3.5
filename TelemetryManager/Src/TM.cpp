@@ -1,5 +1,11 @@
 #include "TM.hpp"
 
+#include "FreeRTOS.h"
+// #include "task.h"// for some reason this is causing an error during complilation??
+
+TelemetryManager::TelemetryManager() {
+    // Constructor
+}
 TelemetryManager::~TelemetryManager() {
     // Destructor
 }
@@ -13,12 +19,12 @@ void TelemetryManager::init() {
     TI.registerTimerInterrupt(1000, TimerISR1000ms);
 
     // Initialize translateToMavlinkThread as a FreeRTOS task
-    xTaskCreate(mavlinkToBytesThread,        // Task function
-                "translateToMavlinkThread",  // Task name
-                configMINIMAL_STACK_SIZE,    // Stack size
-                NULL,                        // Task parameters
-                tskIDLE_PRIORITY + 1,        // Task priority
-                NULL                         // Task handle
+
+    /* task.h is causing errors during compilation says it is not found. Just uncomment this once
+    fixed xTaskCreate(mavlinkToBytesThread,        // Task function "translateToMavlinkThread",  //
+    Task name configMINIMAL_STACK_SIZE,    // Stack size NULL,                        // Task
+    parameters tskIDLE_PRIORITY + 1,        // Task priority NULL                         // Task
+    handle
     );
 
     // Initialize mavlinkToBytesThread as a FreeRTOS task
@@ -30,8 +36,10 @@ void TelemetryManager::init() {
                 NULL                       // Task handle
     );
 
+
     // Start the scheduler
     vTaskStartScheduler();  // should this be in system manager instead?
+    */
 }
 
 void TelemetryManager::translateToMavlinkThread(void *pvParameters) {
@@ -42,7 +50,10 @@ void TelemetryManager::translateToMavlinkThread(void *pvParameters) {
     while (true) {
         MT.bytesToMavlinkMsg(GSC.DMAReceiveBuffer);
 
-        vTaskDelay(pdMS_TO_TICKS(10));  // Adjust the delay as necessary
+        /* task.h is causing errors during compilation says it is not found. Just uncomment this
+           once fixed
+           vTaskDelay(pdMS_TO_TICKS(10));  // Adjust the delay as necessary
+        */
     }
 }
 
@@ -52,7 +63,9 @@ void TelemetryManager::mavlinkToBytesThread(void *pvParameters) {
 
         // END: fill GSC.lowPriorityTransmitBuffer with data to transmit
 
-        vTaskDelay(pdMS_TO_TICKS(10));  // Adjust the delay as necessary
+        /* task.h is causing errors during compilation says it is not found. Just uncomment this
+           once fixed vTaskDelay(pdMS_TO_TICKS(10));  // Adjust the delay as necessary
+        */
     }
 }
 

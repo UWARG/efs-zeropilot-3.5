@@ -14,15 +14,13 @@
 #ifndef TM_H
 #define TM_H
 
-#include "FreeRTOS.h"
 #include "GroundStationComms.hpp"
 #include "MavlinkTranslator.hpp"
 #include "TimerInterrupt.hpp"
-#include "task.h"
 
 class TelemetryManager {
     TelemetryManager();
-    ~TelemetryManager() {};
+    ~TelemetryManager();
 
    public:
     GroundStationComms GSC;

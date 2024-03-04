@@ -30,7 +30,7 @@ class GroundStationComms {
      *
      */
     GroundStationComms();
-    ~GroundStationComms(){};
+    ~GroundStationComms();
 
    public:
     /*
