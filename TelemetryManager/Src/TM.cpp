@@ -1,112 +1,71 @@
+#include "TM.hpp"
 
-#include "GroundStationComms.hpp"
-#include "MavlinkTranslator.hpp"
-#include "TimerInterrupt.hpp"
-
-#include "FreeRTOS.h"
-#include "task.h"
-
-
-GroundStationComms GSC;
-
-MavlinkTranslator MT;
-
-TimerInterrupt TI;
-
-// Forward declaration of the task functions
-void translateToMavlinkThread(void *pvParameters);
-void mavlinkToBytesThread(void *pvParameters);
-
-
-/**
- * @brief Initialize TM threads and timer interrupts. 
- * 
- */
-void init()
-{
+void TelemetryManager::init() {
+    GroundStationComms GSC = getInstance().GSC;
+    TimerInterrupt TI = getInstance().TI;
+    MavlinkTranslator MT = getInstance().MT;
 
     // initialize the timer interrupts
-    TI.registerTimerInterrupt(500, TimerISR500ms);
     TI.registerTimerInterrupt(1000, TimerISR1000ms);
 
     // Initialize translateToMavlinkThread as a FreeRTOS task
-    xTaskCreate(
-        translateToMavlinkThread,                  // Task function
-        "translateToMavlinkThread",                // Task name
-        configMINIMAL_STACK_SIZE, // Stack size
-        NULL,                     // Task parameters
-        tskIDLE_PRIORITY + 1,     // Task priority
-        NULL                      // Task handle
+    xTaskCreate(mavlinkToBytesThread,  // Task function
+                "translateToMavlinkThread",  // Task name
+                configMINIMAL_STACK_SIZE,    // Stack size
+                NULL,                        // Task parameters
+                tskIDLE_PRIORITY + 1,        // Task priority
+                NULL                         // Task handle
     );
 
     // Initialize mavlinkToBytesThread as a FreeRTOS task
-    xTaskCreate(
-        mavlinkToBytesThread,                  // Task function
-        "mavlinkToBytesThread",                // Task name
-        configMINIMAL_STACK_SIZE, // Stack size
-        NULL,                     // Task parameters
-        tskIDLE_PRIORITY + 1,     // Task priority
-        NULL                      // Task handle
+    xTaskCreate(mavlinkToBytesThread,  // Task function
+                "mavlinkToBytesThread",      // Task name
+                configMINIMAL_STACK_SIZE,    // Stack size
+                NULL,                        // Task parameters
+                tskIDLE_PRIORITY + 1,        // Task priority
+                NULL                         // Task handle
     );
 
     // Start the scheduler
-    vTaskStartScheduler(); //should this be in system manager instead?
+    vTaskStartScheduler();  // should this be in system manager instead?
 }
 
-/**
- * @brief This thread is responsible for taking the bytes from the GSC.DMAReceiveBuffer and
- * converting them to Mavlink messages/triggering the callbacks associated with each Mavlink
- * message.
- */
-void translateToMavlinkThread(void *pvParameters)
-{
-    while (true)
-    {
+void TelemetryManager::translateToMavlinkThread(void *pvParameters) {
+    //give access to any of the TM's members statically
+    MavlinkTranslator MT = getInstance().MT;
+    GroundStationComms GSC = getInstance().GSC;
+
+    while (true) {
         MT.bytesToMavlinkMsg(GSC.DMAReceiveBuffer);
 
-        vTaskDelay(pdMS_TO_TICKS(10)); // Adjust the delay as necessary
+        vTaskDelay(pdMS_TO_TICKS(10));  // Adjust the delay as necessary
     }
 }
 
-/**
- * @brief This thread is responsible for taking data from other managers and converting
- * them to Mavlink bytes, then putting them into GSC.lowPriorityTransmitBuffer.
- */
-void mavlinkToBytesThread(void *pvParameters)
-{
-    while (true)
-    {
+void TelemetryManager::mavlinkToBytesThread(void *pvParameters) {
+    while (true) {
         // START: fill GSC.lowPriorityTransmitBuffer with data to transmit
 
         // END: fill GSC.lowPriorityTransmitBuffer with data to transmit
 
-        vTaskDelay(pdMS_TO_TICKS(10)); // Adjust the delay as necessary
+        vTaskDelay(pdMS_TO_TICKS(10));  // Adjust the delay as necessary
     }
 }
 
-/**
- * @brief This interrupt service routine is called every 500ms. It is responsible for
- * sending non routine data to the ground station. Such as arm disarmed message status,
- * fulfilling data requests from the ground station etc. This is the lowest priority data
- * in the GSC.lowPriorityTransmitBuffer.
- */
-void TimerISR500ms()
-{
+void TelemetryManager::sendLowPriorityData() {
+
+//there will be some kind of trigger for this function to be called. not sure what it is yet.
+
+    GroundStationComms GSC = getInstance().GSC;
     // transmit low priority the data via GSC.sendToGroundStation(); function
     GSC.sendToGroundStation(GSC.lowPriorityTransmitBuffer);
 }
 
-/**
- * @brief This interrupt service routine is called every 1000ms. It is responsible for
- * sending the highest priority drone "state" data to the ground station. Data such as
- * heartbeat message, altitude, attitude, latitude, longitude... And anything else deemed
- * important enough to be transmitted at a regular interval. This is the highest priority
- * data in the GSC.highPriorityTransmitBuffer.
- *
- */
-void TimerISR1000ms()
-{
+void TelemetryManager::TimerISR1000ms() {
 
+    //give access to any of the TM's members statically
+    GroundStationComms GSC = getInstance().GSC;
+    
     // START: ingest drone state data and pack bytes into GSC.highPriorityTransmitBuffer
 
     // END: ingest drone state data and pack bytes into GSC.highPriorityTransmitBuffer

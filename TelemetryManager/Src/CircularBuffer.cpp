@@ -20,4 +20,14 @@
         // Enqueue the byte
     }
 
+    int CircularBuffer::lastFullMessageEndIndex()
+    {
+        return -1;
+    }
+
+    int CircularBuffer::currentIndex()
+    {
+        return -1;
+    }
+
     
