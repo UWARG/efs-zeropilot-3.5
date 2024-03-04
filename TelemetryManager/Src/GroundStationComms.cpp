@@ -32,6 +32,7 @@ void GroundStationComms::receiveFromGroundStationISR() {
     }
     else{
         // discard the new data
+        //not a great way to handle this, but it's a start
     }
 
     // end of ISR

@@ -4,7 +4,6 @@ TelemetryManager::~TelemetryManager() {
     // Destructor
 }
 
-
 void TelemetryManager::init() {
     GroundStationComms GSC = getInstance().GSC;
     TimerInterrupt TI = getInstance().TI;
@@ -14,7 +13,7 @@ void TelemetryManager::init() {
     TI.registerTimerInterrupt(1000, TimerISR1000ms);
 
     // Initialize translateToMavlinkThread as a FreeRTOS task
-    xTaskCreate(mavlinkToBytesThread,  // Task function
+    xTaskCreate(mavlinkToBytesThread,        // Task function
                 "translateToMavlinkThread",  // Task name
                 configMINIMAL_STACK_SIZE,    // Stack size
                 NULL,                        // Task parameters
@@ -23,12 +22,12 @@ void TelemetryManager::init() {
     );
 
     // Initialize mavlinkToBytesThread as a FreeRTOS task
-    xTaskCreate(mavlinkToBytesThread,  // Task function
-                "mavlinkToBytesThread",      // Task name
-                configMINIMAL_STACK_SIZE,    // Stack size
-                NULL,                        // Task parameters
-                tskIDLE_PRIORITY + 1,        // Task priority
-                NULL                         // Task handle
+    xTaskCreate(mavlinkToBytesThread,      // Task function
+                "mavlinkToBytesThread",    // Task name
+                configMINIMAL_STACK_SIZE,  // Stack size
+                NULL,                      // Task parameters
+                tskIDLE_PRIORITY + 1,      // Task priority
+                NULL                       // Task handle
     );
 
     // Start the scheduler
@@ -36,7 +35,7 @@ void TelemetryManager::init() {
 }
 
 void TelemetryManager::translateToMavlinkThread(void *pvParameters) {
-    //give access to any of the TM's members statically
+    // give access to any of the TM's members statically
     MavlinkTranslator MT = getInstance().MT;
     GroundStationComms GSC = getInstance().GSC;
 
@@ -58,8 +57,7 @@ void TelemetryManager::mavlinkToBytesThread(void *pvParameters) {
 }
 
 void TelemetryManager::sendLowPriorityData() {
-
-//there will be some kind of trigger for this function to be called. not sure what it is yet.
+    // there will be some kind of trigger for this function to be called. not sure what it is yet.
 
     GroundStationComms GSC = getInstance().GSC;
     // transmit low priority the data via GSC.sendToGroundStation(); function
@@ -67,10 +65,9 @@ void TelemetryManager::sendLowPriorityData() {
 }
 
 void TelemetryManager::TimerISR1000ms() {
-
-    //give access to any of the TM's members statically
+    // give access to any of the TM's members statically
     GroundStationComms GSC = getInstance().GSC;
-    
+
     // START: ingest drone state data and pack bytes into GSC.highPriorityTransmitBuffer
 
     // END: ingest drone state data and pack bytes into GSC.highPriorityTransmitBuffer

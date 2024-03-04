@@ -17,6 +17,12 @@ void CircularBuffer::enqueue(MAVLinkByte byte) {
     // Enqueue the byte
 }
 
-int CircularBuffer::lastFullMessageEndIndex() { return -1; }
+int CircularBuffer::lastFullMessageEndIndex() {
+    /*
+    Rahul: This one is a bit tricky cause you need to know the structure of the MAVLink message. 
+    I can help you with this one if you want.
+    */
+    return -1;
+}
 
 int CircularBuffer::currentIndex() { return -1; }
