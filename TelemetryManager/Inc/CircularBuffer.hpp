@@ -1,6 +1,16 @@
-//
-// Created by Yarema Dzulynsky on 2023-08-24.
-//
+/**
+ * @file CircularBuffer.hpp
+ * @brief What does this file do?
+ *
+ * @note Anything future maintainers should know about this file?
+ *
+ * @version 1.0
+ * @date 2023-08-24
+ * @author Yarema Dzulynsky: initial structure
+ * @author Rahul Ramkumar: implementation
+ * 
+ * @warning Any issues you think are important/foresee in the future?
+ */
 
 #ifndef CIRCULARBUFFER_H
 #define CIRCULARBUFFER_H

@@ -2,6 +2,15 @@
 
 #include "GroundStationComms.hpp"
 
+
+GroundStationComms::GroundStationComms() {
+    // Constructor
+}
+
+GroundStationComms::~GroundStationComms() {
+    // Destructor
+}
+
 // ** Implement sendToGroundStation first **
 
 void GroundStationComms::sendToGroundStation(CircularBuffer &transmissionBuffer) {

@@ -1,5 +1,10 @@
 #include "TM.hpp"
 
+TelemetryManager::~TelemetryManager() {
+    // Destructor
+}
+
+
 void TelemetryManager::init() {
     GroundStationComms GSC = getInstance().GSC;
     TimerInterrupt TI = getInstance().TI;

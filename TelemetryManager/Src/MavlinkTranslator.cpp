@@ -1,5 +1,15 @@
 #include "MavlinkTranslator.hpp"
 
+MavlinkTranslator::MavlinkTranslator()
+{
+    // Constructor
+}
+
+MavlinkTranslator::~MavlinkTranslator()
+{
+    // Destructor
+}
+
 void MavlinkTranslator::bytesToMavlinkMsg(CircularBuffer &rxFromGroundByteQueue)
 {
 
