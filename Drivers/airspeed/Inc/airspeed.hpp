@@ -7,13 +7,13 @@
 
 #define MS4525DO_I2C_ADDR 0x28
 
-#define MAX_TEMP 150 // Deg C
-#define MIN_TEMP -50 // Deg C
+#define MAX_TEMP 150.0 // Deg C
+#define MIN_TEMP -50.0 // Deg C
 
 #define MAX_COUNT_TEMP 0x07FF
 
 // 001 model, so range is 1 PSI
-#define PRESSURE_RANGE 1 // PSI
+#define PRESSURE_RANGE 1.0 // PSI
 
 // Differential pressure type model
 #define MAX_PRESSURE PRESSURE_RANGE
@@ -51,7 +51,7 @@ public:
   MS4525DO(I2C_HandleTypeDef* hi2c);
   
   bool init(void);
-  void get_data(airspeed_data_t* airspeedData);  
+  airspeed_data_t* get_data(void);
   void update_data(void);
   
 private:

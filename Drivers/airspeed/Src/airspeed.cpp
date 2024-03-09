@@ -13,10 +13,9 @@ bool MS4525DO::init()
     return airspeedData.status == STATUS_FAIL;
 }
 
-void MS4525DO::get_data(airspeed_data_t* airspeedDataOut)
+airspeed_data_t* MS4525DO::get_data(void)
 {
-    airspeedDataOut = &airspeedData;
-    update_data();
+    return &airspeedData;
 }
 
 void MS4525DO::update_data(void)
@@ -53,7 +52,7 @@ void MS4525DO::update_airspeed(void)
     // Pa = kg / (ms^2)
 
     float pressure = PSI_TO_PA(airspeedData.pressure);
-    float airspeed = sqrt( 2/RHO * pressure );
+    airspeedData.airspeed = sqrt( 2/RHO * pressure );
 }
 
 void MS4525DO::read_data(void)
@@ -80,8 +79,7 @@ void MS4525DO::read_data(void)
     pressureReading = uint16_t((rxBuffer[0] & statusMask) << 8 | rxBuffer[1]);
 
     uint8_t tempMask = 0xE0U; // 0b11100000
-    tempratureReading = uint16_t(rxBuffer[2] << 8 | rxBuffer[3] & tempMask);
+    tempratureReading = uint16_t((rxBuffer[2] << 8 | rxBuffer[3] & tempMask) >> 5);
 }
-
 
 }
