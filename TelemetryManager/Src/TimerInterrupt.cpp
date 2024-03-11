@@ -1,20 +1,21 @@
 
 #include "TimerInterrupt.hpp"
 
-TimerInterrupt::TimerInterrupt()
-{
-    // Constructor
+TimerInterrupt::TimerInterrupt(const char *taskName, int stackSize, UBaseType_t uxPriority,
+                               TickType_t intervalMs, TelemetryManager &tm, Callback cbLambda)
+    : tm(tm), cbLambda(cbLambda), xHandle(nullptr) {
+
+    // Below is just an example of creating a task with the TaskTrampoline. This is not the actual implementation.
+    xTaskCreate(&TimerInterrupt::TaskTrampoline, taskName, stackSize, this, uxPriority, &xHandle);
+
+    // START: Implement the actual timer interrupt and call the callback function every intervalMs
+
+    // END: Implement the actual timer interrupt and call the callback function every intervalMs
 }
 
-TimerInterrupt::~TimerInterrupt()
-{
-    // Destructor
+TimerInterrupt::~TimerInterrupt() {
+    if (eTaskGetState(xHandle) != eDeleted) {
+        vTaskDelete(xHandle);
+    }
 }
 
-
-void TimerInterrupt::registerTimerInterrupt(int timeIntervalMs, void (*function)())
-{
-    // execute the function every timeIntervalMs using a timer interrupt on the STM32
-    //likely some STM32 specific code here or FreeRTOS code. Not 100% sure what the best way to do this is.
-    function();
-}

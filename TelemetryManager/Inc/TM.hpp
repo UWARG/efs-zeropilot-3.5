@@ -7,69 +7,71 @@
  * @version 1.0
  * @date 2023-08-24
  * @author Yarema Dzulynsky: initial structure & Implementation
- * 
+ *
  * @warning Any issues you think are important/foresee in the future?
  */
 
 #ifndef TM_H
 #define TM_H
 
+    /**
+     * @brief This is essentially a compatibility/wrapper function that allows us to turn 
+     * a member function into a static function. This is necessary because FreeRTOS tasks
+     * can only take static functions as arguments.
+     * @param memberFunction - The member function to be turned into a static function.
+     * Note that the Macro simply takes the name in ANSI text of the member function and 
+     * appends "Static" to it. All you need to do is pass the name of the member function.
+     */
+#define TRANSLATE_TO_STATIC(memberFunction)               \
+    static void memberFunction##Static(void* pvParameters) {           \
+        auto* tmInstance = static_cast<TelemetryManager*>(pvParameters); \
+        tmInstance->memberFunction();                                  \
+    }
+
 #include "GroundStationComms.hpp"
 #include "MavlinkTranslator.hpp"
 #include "TimerInterrupt.hpp"
 
 class TelemetryManager {
+
+/**
+ * @brief Construct a new Telemetry Manager object. Does not initialize the threads or timer interrupts.
+ * To do so call the init() method.
+ * 
+ * @param GSC - The GroundStationComms object.
+ * @param MT - The MavlinkTranslator object.
+ * @param TI - 
+ */
     TelemetryManager();
     ~TelemetryManager();
 
    public:
     GroundStationComms GSC;
     MavlinkTranslator MT;
-    TimerInterrupt TI;
-
-/**
- * @brief Allows access to the TelemetryManager instance statically. This can be done because
- * we will only ever have one instance of the TelemetryManager. This is a singleton pattern.
- * 
- * @return TelemetryManager& Reference to the static TelemetryManager instance.
- */
-    static TelemetryManager &getInstance() {
-        static TelemetryManager instance;
-        return instance;
-    }
-
-    TelemetryManager(const TelemetryManager &) = delete;             // Prevent copying
-    TelemetryManager &operator=(const TelemetryManager &) = delete;  // Prevent assignment
-    
 
     /**
      * @brief Initialize TM threads and timer interrupts.
      *
      */
-    static void init();
+    void init();
 
     /**
      * @brief This thread is responsible for taking the bytes from the GSC.DMAReceiveBuffer and
      * converting them to Mavlink messages/triggering the callbacks associated with each Mavlink
      * message.
      */
-    static void translateToMavlinkThread(void *pvParameters);
+    void translateToMavlinkThread();
+    // Create a static version of the translateToMavlinkThread function to be used as a callback for the FreeRTOS task.
+    TRANSLATE_TO_STATIC(translateToMavlinkThread);
 
     /**
      * @brief This thread is responsible for taking data from other managers and converting
      * them to Mavlink bytes, then putting them into GSC.lowPriorityTransmitBuffer.
      */
-    static void mavlinkToBytesThread(void *pvParameters);
+    void mavlinkToBytesThread();
+    // Create a static version of the mavlinkToBytesThread function to be used as a callback for the FreeRTOS task.
+    TRANSLATE_TO_STATIC(mavlinkToBytesThread);
 
-    /**
-     * @brief This interrupt service routine is called every 1000ms. It is responsible for
-     * sending the highest priority drone "state" data to the ground station. Data such as
-     * heartbeat message, altitude, attitude, latitude, longitude... And anything else deemed
-     * important enough to be transmitted at a regular interval. This is the highest priority
-     * data in the GSC.highPriorityTransmitBuffer.
-     *
-     */
-    static void TimerISR1000ms();
 
     /**
      * @brief This method is responsible for
@@ -77,7 +79,9 @@ class TelemetryManager {
      * fulfilling data requests from the ground station etc. This is the lowest priority data
      * in the GSC.lowPriorityTransmitBuffer.
      */
-    static void sendLowPriorityData();
+    void sendLowPriorityData();
+
+    void createTimerInterrupts();
 };
 
 #endif
