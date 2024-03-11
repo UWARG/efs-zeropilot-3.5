@@ -76,7 +76,7 @@ file(GLOB TM_CODE
     "${TM_FOLDER}/Tests/generic_test.cpp"
 
     # add necessary TelemetryManager source files below
-    "${TM_SRC}/*.cpp"
+    # "${TM_SRC}/*.cpp"
 )
 
 # Drivers
