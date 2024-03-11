@@ -14,18 +14,18 @@
 #ifndef TM_H
 #define TM_H
 
-    /**
-     * @brief This is essentially a compatibility/wrapper function that allows us to turn 
-     * a member function into a static function. This is necessary because FreeRTOS tasks
-     * can only take static functions as arguments.
-     * @param memberFunction - The member function to be turned into a static function.
-     * Note that the Macro simply takes the name in ANSI text of the member function and 
-     * appends "Static" to it. All you need to do is pass the name of the member function.
-     */
-#define TRANSLATE_TO_STATIC(memberFunction)               \
-    static void memberFunction##Static(void* pvParameters) {           \
+/**
+ * @brief This is essentially a compatibility/wrapper function that allows us to turn
+ * a member function into a static function. This is necessary because FreeRTOS tasks
+ * can only take static functions as arguments.
+ * @param memberFunction - The member function to be turned into a static function.
+ * Note that the Macro simply takes the name in ANSI text of the member function and
+ * appends "Static" to it. All you need to do is pass the name of the member function.
+ */
+#define TRANSLATE_TO_STATIC(memberFunction)                              \
+    static void memberFunction##Static(void* pvParameters) {             \
         auto* tmInstance = static_cast<TelemetryManager*>(pvParameters); \
-        tmInstance->memberFunction();                                  \
+        tmInstance->memberFunction();                                    \
     }
 
 #include "GroundStationComms.hpp"
@@ -33,15 +33,10 @@
 #include "TimerInterrupt.hpp"
 
 class TelemetryManager {
-
-/**
- * @brief Construct a new Telemetry Manager object. Does not initialize the threads or timer interrupts.
- * To do so call the init() method.
- * 
- * @param GSC - The GroundStationComms object.
- * @param MT - The MavlinkTranslator object.
- * @param TI - 
- */
+    /**
+     * @brief Construct a new Telemetry Manager object. Does not initialize the threads or timer
+     * interrupts. To do so call the init() method.
+     */
     TelemetryManager();
     ~TelemetryManager();
 
@@ -61,7 +56,11 @@ class TelemetryManager {
      * message.
      */
     void translateToMavlinkThread();
-    // Create a static version of the translateToMavlinkThread function to be used as a callback for the FreeRTOS task.
+
+    /*
+    Create a static version of the translateToMavlinkThread function to be used as a callback for
+    the FreeRTOS task.
+    */
     TRANSLATE_TO_STATIC(translateToMavlinkThread);
 
     /**
@@ -69,9 +68,12 @@ class TelemetryManager {
      * them to Mavlink bytes, then putting them into GSC.lowPriorityTransmitBuffer.
      */
     void mavlinkToBytesThread();
-    // Create a static version of the mavlinkToBytesThread function to be used as a callback for the FreeRTOS task.
-    TRANSLATE_TO_STATIC(mavlinkToBytesThread);
 
+    /*
+    Create a static version of the mavlinkToBytesThread function to be used as a callback for the
+    FreeRTOS task.
+    */
+    TRANSLATE_TO_STATIC(mavlinkToBytesThread);
 
     /**
      * @brief This method is responsible for
@@ -81,7 +83,17 @@ class TelemetryManager {
      */
     void sendLowPriorityData();
 
-    void createTimerInterrupts();
+    /**
+     * @brief Create the timer interrupts for the TelemetryManager.
+     *
+     */
+    void initTimerInterrupts();
+
+    /**
+     * @brief Create and configure the threads for the TelemetryManager.
+     *
+     */
+    void initTasks();
 };
 
 #endif

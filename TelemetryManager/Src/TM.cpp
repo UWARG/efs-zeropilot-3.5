@@ -1,12 +1,16 @@
+#include "FreeRTOS.h"
 #include "GroundStationComms.hpp"
 #include "MavlinkTranslator.hpp"
 #include "TimerInterrupt.hpp"
-#include "FreeRTOS.h"
 #include "task.h"
 
 TelemetryManager::TelemetryManager() {
     this->MT = MavlinkTranslator();
     this->GSC = GroundStationComms();
+}
+
+TelemetryManager::~TelemetryManager() {
+    // Destructor
 }
 
 /**
@@ -15,8 +19,39 @@ TelemetryManager::TelemetryManager() {
  */
 void TelemetryManager::init() {
     // initialize the timer interrupts
-    createTimerInterrupts();
+    initTimerInterrupts();
 
+    // Init TM tasks
+    initTasks();
+
+    // Start the scheduler
+    vTaskStartScheduler();  // should this be in system manager instead?
+}
+
+void TelemetryManager::initTimerInterrupts() {
+    /**
+     * @brief This interrupt service routine is called every 1000ms. It is responsible for
+     * sending the highest priority drone "state" data to the ground station. Data such as
+     * heartbeat message, altitude, attitude, latitude, longitude... And anything else deemed
+     * important enough to be transmitted at a regular interval. This is the highest priority
+     * data in the GSC.highPriorityTransmitBuffer.
+     *
+     */
+    TimerInterrupt dispatchHighPriorityInterrupt1000Ms(
+        "dispatchHighPriority1000Ms", configMINIMAL_STACK_SIZE, tskIDLE_PRIORITY, 500, *this,
+        [](TelemetryManager& tm) -> void {
+            auto GSC = tm.GSC;
+
+            // START: ingest drone state data and pack bytes into GSC.highPriorityTransmitBuffer
+
+            // END: ingest drone state data and pack bytes into GSC.highPriorityTransmitBuffer
+
+            // transmit the data via GSC.sendToGroundStation(); function
+            GSC.sendToGroundStation(GSC.highPriorityTransmitBuffer);
+        });
+}
+
+void TelemetryManager::initTasks() {
     // Initialize translateToMavlinkThread as a FreeRTOS task
     xTaskCreate(TelemetryManager::translateToMavlinkThreadStatic,  // Task function
                 "translateToMavlinkThread",                        // Task name
@@ -34,9 +69,6 @@ void TelemetryManager::init() {
                 tskIDLE_PRIORITY + 1,                          // Task priority
                 NULL                                           // Task handle
     );
-
-    // Start the scheduler
-    vTaskStartScheduler();  // should this be in system manager instead?
 }
 
 /**
@@ -75,27 +107,4 @@ void TelemetryManager::mavlinkToBytesThread() {
 void TelemetryManager::sendLowPriorityData() {
     // transmit low priority the data via GSC.sendToGroundStation(); function
     GSC.sendToGroundStation(GSC.lowPriorityTransmitBuffer);
-}
-
-void TelemetryManager::createTimerInterrupts() {
-    /**
-     * @brief This interrupt service routine is called every 1000ms. It is responsible for
-     * sending the highest priority drone "state" data to the ground station. Data such as
-     * heartbeat message, altitude, attitude, latitude, longitude... And anything else deemed
-     * important enough to be transmitted at a regular interval. This is the highest priority
-     * data in the GSC.highPriorityTransmitBuffer.
-     *
-     */
-    TimerInterrupt dispatchHighPriorityInterrupt1000Ms(
-        "dispatchHighPriority1000Ms", configMINIMAL_STACK_SIZE, tskIDLE_PRIORITY, 500, *this,
-        [](TelemetryManager& tm) -> void {
-            auto GSC = tm.GSC;
-
-            // START: ingest drone state data and pack bytes into GSC.highPriorityTransmitBuffer
-
-            // END: ingest drone state data and pack bytes into GSC.highPriorityTransmitBuffer
-
-            // transmit the data via GSC.sendToGroundStation(); function
-            GSC.sendToGroundStation(GSC.highPriorityTransmitBuffer);
-        });
 }
