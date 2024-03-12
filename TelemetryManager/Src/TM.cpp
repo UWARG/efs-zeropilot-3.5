@@ -23,9 +23,6 @@ void TelemetryManager::init() {
 
     // Init TM tasks
     initTasks();
-
-    // Start the scheduler
-    vTaskStartScheduler();  // should this be in system manager instead?
 }
 
 void TelemetryManager::initTimerInterrupts() {

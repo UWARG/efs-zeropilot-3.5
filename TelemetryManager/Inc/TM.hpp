@@ -33,6 +33,8 @@
 #include "TimerInterrupt.hpp"
 
 class TelemetryManager {
+
+    public:
     /**
      * @brief Construct a new Telemetry Manager object. Does not initialize the threads or timer
      * interrupts. To do so call the init() method.
