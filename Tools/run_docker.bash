@@ -5,18 +5,18 @@ SCRIPT_PATH=$(dirname -- "$0")
 
 # Build image if it doesn't exist
 IMAGES=$(docker image ls)
-if [[ $IMAGES != "*efs_image*" ]] {
+if [[ $IMAGES != *efs_image* ]]; then
     docker build -t efs_image -f $SCRIPT_PATH/Dockerfile .
-}
+fi
 
 # Create container if it doesn't exist
 CONTAINERS=$(docker ps -a)
-if [[ $CONTAINERS != "*efs_container*" ]] {
-    docker run -tid --name=efs_container stanleytang17/efs_build bash
-} else {
+if [[ $CONTAINERS != *efs_container* ]]; then
+    docker run -tid --name=efs_container efs_image bash
+else
     # Start container
     docker start efs_container
-}
+fi
 
 docker cp $SCRIPT_PATH/../. efs_container:/src/
 
