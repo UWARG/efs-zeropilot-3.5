@@ -21,7 +21,7 @@ public:
     ~SystemManager();
 
     /* Class Functions */
-    void flyManually();
+    void setup();
     
 
 private:

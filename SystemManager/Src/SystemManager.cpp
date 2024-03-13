@@ -12,6 +12,7 @@
 #include "tim.h"
 #include "cmsis_os.h"
 #include "FreeRTOS.h"
+#include <iostream>
 
 
 
@@ -57,8 +58,30 @@ void SystemManager::systemCheckTask(void *pvParameters){
         } else {
         	DisconnectionCount = 0; //if the data has changed we want to reset out counter
         }
-
+        std::cout<<"system check"<<'\n';
         watchdog_.refreshWatchdog(); // always hit the dog
+
+        //rc inputs need to go to AM
+        //AM has buffer
+        if(this->rcInputs_.arm >= (SBUS_MAX/2)) {
+        		this->throttleMotorChannel_.set(rcInputs_.throttle);
+        		this->yawMotorChannel_.set(rcInputs_.yaw);
+        		this->rollMotorChannel_.set(SBUS_MAX - rcInputs_.roll);
+        		this->pitchMotorChannel_.set(SBUS_MAX - rcInputs_.pitch);
+        		this->invertedRollMotorChannel_.set(SBUS_MAX - rcInputs_.roll);
+
+        		prevthrottle = rcInputs_.throttle;
+        		prevyaw = rcInputs_.yaw;
+        		prevroll = rcInputs_.roll;
+        		prevpitch = rcInputs_.pitch;
+        }
+        else{
+            this->throttleMotorChannel_.set(0);
+            this->yawMotorChannel_.set(SBUS_MAX/2);
+            this->rollMotorChannel_.set(SBUS_MAX/2);
+            this->pitchMotorChannel_.set(SBUS_MAX/2);
+            this->invertedRollMotorChannel_.set(SBUS_MAX/2);
+        }
     }
 }
 
@@ -72,6 +95,7 @@ void SystemManager::systemCheckTaskWrapper(void *pvParameters) {
 void SystemManager::attitudeManagerTask(void *pvParameters){
     for(;;){
         //call AM
+        std::cout<<"AM"<<'\n';
         watchdog_.refreshWatchdog(); // always hit the dog
     }
 }
@@ -84,6 +108,7 @@ void SystemManager::attitudeManagerTaskWrapper(void* pvParameters){
 void SystemManager::telemetryManagerTask(void *pvParameters){
     for(;;){
         //call TM
+        std::cout<<"TM"<<'\n';
         watchdog_.refreshWatchdog(); // always hit the dog
     }
 }
@@ -94,7 +119,7 @@ void SystemManager::telemetryManagerTaskWrapper(void* pvParameters){
 }
 
 
-void SystemManager::flyManually() {
+void SystemManager::setup() {
     TaskHandle_t hSystemCheck = NULL;
 
     //BaseType_t xTaskCreate( TaskFunction_t pvTaskCode, const char * const pcName, configSTACK_DEPTH_TYPE usStackDepth, void * pvParameters, UBaseType_t uxPriority, TaskHandle_t * pxCreatedTask ); 
@@ -107,5 +132,6 @@ void SystemManager::flyManually() {
     TaskHandle_t hTM = NULL;
     xTaskCreate(telemetryManagerTaskWrapper, "Telemetry Manager", 500U, NULL, osPriorityNormal, &hTM);
 
-    vTaskStartScheduler();
+
+    //vTaskStartScheduler();
 }

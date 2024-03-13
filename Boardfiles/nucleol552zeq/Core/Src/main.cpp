@@ -71,11 +71,11 @@ extern "C" {
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void SMTask(void *pvParameters) {
-    SystemManager SM;
-    SM.flyManually();
+// void SMTask(void *pvParameters) {
+//     SystemManager SM;
+//     SM.flyManually();
 
-}
+// }
 /* USER CODE END 0 */
 
 /**
@@ -132,9 +132,10 @@ int main(void)
 
 
 
-  TaskHandle_t hSM = NULL;
-  xTaskCreate(SMTask, "SM", 500U, NULL, osPriorityNormal, &hSM);
-
+  //TaskHandle_t hSM = NULL;
+  //xTaskCreate(SMTask, "SM", 500U, NULL, osPriorityNormal, &hSM);
+  SystemManager SM;
+  SM.setup();
 
   /* USER CODE END 2 */
 
