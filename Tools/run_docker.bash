@@ -3,6 +3,18 @@
 # define path to this bash script
 SCRIPT_PATH=$(dirname -- "$0")
 
+# Help message
+if [[ $1 == "help" ]]; then
+    echo "run_docker.bash help          | show this message"
+    echo "run_docker.bash compile       | compile/build ZeroPilot and return build files in Firmware/build/"
+    echo "run_docker.bash clang-tidy    | lint code with clang-tidy and return linting log in LintOutput/"
+    echo "run_docker.bash clang-format  | reformat and return source files with clang-format"
+    echo "                                in LintOutput/formatted_files"
+    echo "run_docker.bash cppcheck      | lint code with cppcheck and return linting log in LintOutput/"
+    echo "run_docker.bash shell         | launch a bash shell in the Docker container"
+    exit
+fi
+
 # Build image if it doesn't exist
 IMAGES=$(docker image ls)
 if [[ $IMAGES != *efs_image* ]]; then

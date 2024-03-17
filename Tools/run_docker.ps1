@@ -1,3 +1,15 @@
+# Help message
+if ( $args[0] -eq "help" ) {
+    echo "run_docker.ps1 help          | show this message"
+    echo "run_docker.ps1 compile       | compile/build ZeroPilot and return build files in Firmware/build/"
+    echo "run_docker.ps1 clang-tidy    | lint code with clang-tidy and return linting log in LintOutput/"
+    echo "run_docker.ps1 clang-format  | reformat and return source files with clang-format"
+    echo "                               in LintOutput/formatted_files"
+    echo "run_docker.ps1 cppcheck      | lint code with cppcheck and return linting log in LintOutput/"
+    echo "run_docker.ps1 shell         | launch a bash shell in the Docker container"
+    exit
+}
+
 # Build image if it doesn't exist
 $images = docker image ls
 if ( -not ( $images -like "*efs_image*" ) ) {

@@ -1,3 +1,25 @@
+# ZeroPilot 3.5 Docker
+
+Docker is our recommended way of compiling, linting and testing code, since it's cross platform and easy to use.
+
+To get started, install Docker from their [official website](https://docs.docker.com/get-docker/) and run our docker script. It will take some time to build the Docker image and container when you run it for the first time.
+
+## Docker Scripts
+- Windows: `run_docker.ps1`
+- Linux and MacOS: `run_docker.bash`
+
+To compile the code, simply run with the `compile` option:
+```
+./run_docker.ps1 compile  # Windows
+./run_docker.bash compile # Linux and MacOS
+```
+
+Run with the `help` option to see more options such as linting and Docker container shell
+```
+./run_docker.ps1 help  # Windows
+./run_docker.bash help # Linux and MacOS
+```
+
 # ZeroPilot 3.5 Compile Commands
 
 - A powershell script is provided for Windows
