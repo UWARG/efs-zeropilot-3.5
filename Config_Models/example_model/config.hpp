@@ -3,6 +3,7 @@
 
 #include "config_foundation.hpp"
 #include "ZP_D_PWMChannel.hpp"
+#include "manual.hpp"
 #include "tim.h"
 
 namespace config
@@ -39,7 +40,7 @@ namespace config
             .driverConstructor = constructObject<RCInputDriver, TempSBusDriver>
         }
     };
-    
+
     constexpr uint8_t NUM_RC_INPUTS = sizeof(RCInputs)/sizeof(RCInput_t);
 
 
@@ -55,7 +56,7 @@ namespace config
             .driverConstructor = constructObject<GPSDriver, otherGPSDriver>
         }
     };
-    
+
     constexpr uint8_t NUM_GPS = sizeof(GPSArray)/sizeof(GPS_t);
 
 
@@ -80,7 +81,7 @@ namespace config
                     }
                 }
             },
-            .flightmodeConstructor = constructObject<AM::Flightmode, ExampleFlightmode1>
+            .flightmodeConstructor = constructObject<AM::Flightmode, ManualFlightmode>
         },
         {   //Flightmode2
             .tuningData{
@@ -109,7 +110,7 @@ namespace config
                     }
                 }
             },
-            .flightmodeConstructor = constructObject<AM::Flightmode, ExampleFlightmode2>
+            .flightmodeConstructor = constructObject<AM::Flightmode, ManualFlightmode>
         }
     };
 

@@ -108,7 +108,7 @@ include_directories(${COMMON_INC})
 file(GLOB COMMON_CODE
     "${COMMON_FOLDER}/Tests/*.cpp"
 
-    # add necessary TelemetryManager source files below
+    # add necessary common source files below
     # "${COMMON_SRC}/foo.cpp"
 )
 
