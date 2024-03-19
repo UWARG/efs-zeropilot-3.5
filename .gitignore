@@ -23,5 +23,6 @@
 .vscode/
 .DS_Store/
 Tools/*/build
+Tools/LintOutput
 Debug/
 /.metadata/
