@@ -1,19 +1,19 @@
 
 
-#include "GroundStationComms.hpp"
+#include "GroundStationCommunication.hpp"
 
 
-GroundStationComms::GroundStationComms() {
+GroundStationCommunication::GroundStationCommunication() {
     // Constructor
 }
 
-GroundStationComms::~GroundStationComms() {
+GroundStationCommunication::~GroundStationCommunication() {
     // Destructor
 }
 
-// ** Implement sendToGroundStation first **
+// ** Implement transmit first **
 
-void GroundStationComms::sendToGroundStation(CircularBuffer &transmissionBuffer) {
+void GroundStationCommunication::transmit(CircularBuffer &transmissionBuffer) {
     // START: Send the bytes in transmissionBuffer to the ground station via RFD900
 
     // END: Send the bytes in transmissionBuffer to the ground station via RFD900
@@ -21,7 +21,7 @@ void GroundStationComms::sendToGroundStation(CircularBuffer &transmissionBuffer)
     return;
 }
 
-void GroundStationComms::receiveFromGroundStationISR() {
+void GroundStationCommunication::receiveInterruptServiceRoutine() {
 
     int bytesReceived = 0; // replace with actual number of bytes received
 

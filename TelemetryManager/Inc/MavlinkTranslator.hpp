@@ -31,7 +31,6 @@ class MavlinkTranslator {
      */
     ~MavlinkTranslator();
 
-   public:
     /**
      * @brief Ingests bytes from the rxFromGroundByteQueue and converts them to Mavlink messages.
      * The Mavlink message, associated callbacks are then triggered.
@@ -39,7 +38,7 @@ class MavlinkTranslator {
      * @param rxFromGroundByteQueue The CircularBuffer containing the bytes received from the ground
      * station. waiting to be decoded.
      */
-    virtual void bytesToMavlinkMsg(CircularBuffer &rxFromGroundByteQueue);
+    void bytesToMavlinkMsg(CircularBuffer &rxFromGroundByteQueue);
 
     /**
      * @brief Converts Mavlink messages to bytes and adds them to the txToGroundByteQueue.
@@ -48,7 +47,7 @@ class MavlinkTranslator {
      * @param txToGroundByteQueue The CircularBuffer containing the bytes to be sent to the ground
      * station.
      */
-    virtual void addMavlinkMsgToByteQueue(mavlink_message_t &msg,
+    void addMavlinkMsgToByteQueue(mavlink_message_t &msg,
                                           CircularBuffer &txToGroundByteQueue);
 };
 

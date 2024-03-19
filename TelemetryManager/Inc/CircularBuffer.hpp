@@ -32,27 +32,26 @@ class CircularBuffer {
      */
     ~CircularBuffer();
 
-   public:
     /**
      * @brief Provides the number of bytes available in the queue
      *
      * @return int The number of bytes available in the queue.
      */
-    virtual int remainingMemory();
+    int remainingMemory();
 
     /**
      * @brief Dequeue a byte from the queue
      *
      * @return MAVLinkByte The byte that was dequeued
      */
-    virtual MAVLinkByte dequeue();
+    MAVLinkByte dequeue();
 
     /**
      * @brief Enqueue a byte into the queue
      *
      * @param byte The byte to be enqueued
      */
-    virtual void enqueue(MAVLinkByte byte);
+    void enqueue(MAVLinkByte byte);
 
     /**
      * @brief Get the index of the last full message in the queue determined by the end flag
@@ -65,7 +64,7 @@ class CircularBuffer {
      * in the MAVLink message. 
      * 
      */
-    virtual int lastFullMessageEndIndex();
+    int lastFullMessageEndIndex();
 
 /**
  * @brief Returns the index of the current byte in the queue. This is useful for when we want to 
@@ -75,7 +74,7 @@ class CircularBuffer {
  * 
  * @return int The index of the current byte in the queue.
  */
-    virtual int currentIndex();
+    int currentIndex();
 };
 
 #endif

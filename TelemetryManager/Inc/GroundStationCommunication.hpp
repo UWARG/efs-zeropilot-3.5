@@ -1,5 +1,5 @@
 /**
- * @file GroundStationComms.hpp
+ * @file GroundStationCommunication.hpp
  * @brief What does this file do?
  *
  * @note Anything future maintainers should know about this file?
@@ -7,14 +7,14 @@
  * @version 1.0
  * @date 2023-08-24
  * @author Yarema Dzulynsky: initial structure
- * @author Hunter Adams: implementation
+ * @author Roni Kant: implementation
  * 
  * @warning Any issues you think are important/foresee in the future?
  */
 
 #include "CircularBuffer.hpp"
-#ifndef GROUNDSTATIONCOMMS_H
-#define GROUNDSTATIONCOMMS_H
+#ifndef GROUNDSTATIONCOMMUNICATION_H
+#define GROUNDSTATIONCOMMUNICATION_H
 
 /**
  * @brief This class is responsible for handling the communication between the ground station
@@ -23,26 +23,25 @@
  * because it allows us to define the behaviour of the RFD 900 send/receive function before its
  * implementation.
  */
-class GroundStationComms {
+class GroundStationCommunication {
    public:
     /**
-     * @brief Construct a new Ground Station Comms object. Do whatever needs to be done here.
+     * @brief Construct a new Ground Station Communication object. Do whatever needs to be done here.
      *
      */
-    GroundStationComms();
-    ~GroundStationComms();
+    GroundStationCommunication();
+    ~GroundStationCommunication();
 
-   public:
     /*
      * When the DMA interrupt is triggered the data should be stored in the DMAReceiveBuffer
      * IF there is space.
      */
     CircularBuffer DMAReceiveBuffer;
 
-    // low priority Mavlink bytes to be sent to the ground station.
+    // low priority/Non routine Mavlink bytes to be sent to the ground station.
     CircularBuffer lowPriorityTransmitBuffer;
 
-    // high priority Mavlink bytes to be sent to the ground station.
+    // high priority/Routine Mavlink bytes to be sent to the ground station.
     CircularBuffer highPriorityTransmitBuffer;
 
     /**
@@ -57,14 +56,14 @@ class GroundStationComms {
      * @param transmissionBuffer A CircularBuffer containing the data/MAVLink bytes to be sent
      * to the ground station
      */
-    virtual void sendToGroundStation(CircularBuffer &transmissionBuffer);
+    void transmit(CircularBuffer &transmissionBuffer);
 
     /**
      * @brief This is the Interrupt Service Routine (ISR) for when the RFD 900 receives data from
      * the ground station and stores bytes from the transmission into the GSC.DMAReceiveBuffer if
      * there is space. Otherwise the data is discarded.
      */
-    virtual void receiveFromGroundStationISR();
+    void receiveInterruptServiceRoutine();
 };
 
 #endif  // GROUNDSTATIONCOMMS_H
