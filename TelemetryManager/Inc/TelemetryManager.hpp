@@ -23,6 +23,18 @@ class TelemetryManager {
     GroundStationCommunication GSC;
     MavlinkTranslator MT;
 
+    /**
+     * @brief Create and configure FreeRTOS tasks.
+     *
+     */
+    void spinUpTasks();
+
+    /**
+     * @brief Destroy FreeRTOS tasks and free up memory.
+     *
+     */
+    void teardownTasks();
+
    public:
     /**
      * @brief Construct a new Telemetry Manager object. Does not initialize the tasks.
@@ -44,19 +56,6 @@ class TelemetryManager {
      *
      */
     void update();
-
-   private:
-    /**
-     * @brief Create and configure FreeRTOS tasks.
-     *
-     */
-    void spinUpTasks();
-
-    /**
-     * @brief Destroy FreeRTOS tasks and free up memory.
-     *
-     */
-    void teardownTasks();
 };
 
 #endif

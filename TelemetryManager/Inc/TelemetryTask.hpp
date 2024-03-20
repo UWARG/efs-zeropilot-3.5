@@ -33,6 +33,15 @@ class TelemetryTask {
     // Handle to the task. Or should this be something else? Since we are doing a timer interrupt?
     TaskHandle_t xHandle;
 
+    /**
+     * @brief This is essentially a compatibility/wrapper function that allows us to use a lambda
+     * function which has a class instance as an argument as a callback for the timer interrupt.
+     * This allows us to access TM within the lambda function.
+     *
+     * @param pvParameters - The TelemetryTask object.
+     */
+    static void TaskTrampoline(void* pvParameters);
+
    public:
     /**
      * @brief Construct a new Timer TelemetryTask object which will call the given lambda function
@@ -53,16 +62,6 @@ class TelemetryTask {
      *
      */
     ~TelemetryTask();
-
-   private:
-    /**
-     * @brief This is essentially a compatibility/wrapper function that allows us to use a lambda
-     * function which has a class instance as an argument as a callback for the timer interrupt.
-     * This allows us to access TM within the lambda function.
-     *
-     * @param pvParameters - The TelemetryTask object.
-     */
-    static void TaskTrampoline(void* pvParameters);
 };
 
 #endif
