@@ -84,10 +84,12 @@ class PIDController {
      * @return					The result of the PID
      * computation.
      */
+   
    float execute();
    float execute_p();
    float execute_i();
    float execute_d();
+   void updatePIDGains(float _kp, float _ki, float _kd);
    
    void setKi(float _ki) { pid.ki = _ki; };
    void setKp(float _kp) { pid.kp = _kp; };
@@ -96,14 +98,7 @@ class PIDController {
    void setActual(float _actual) { pid.actual = _actual; };
    void setActualRate(float _actualRate) { pid.actualRate = _actualRate; };
 
-   bool getStopFlag() { return stopTaskFlag; }
-   uint32_t getTaskUpdateFrequency() { return taskUpdateFrequency; }
-
-   void setStopFlag(bool _stopFlag) { stopTaskFlag = _stopFlag; }
-   void setTaskUpdateFrequency(uint32_t _taskUpdateFrequency) { taskUpdateFrequency = _taskUpdateFrequency; }
-
    float map(float x, float in_min, float in_max, float out_min, float out_max);
-   void updatePid(PIDValues values, TickType_t updateFreq, volatile bool& stopFlag);
 
    void setNewPid(PID _pid) { pid = _pid; }
    void setNewPid(float _kp, float _ki, float _kd, float _i_max, float _min_output,
@@ -116,8 +111,18 @@ class PIDController {
                   .max_output = _max_output};
    }
 
-   static void periodicTask(void* pvParameters);
+   //Functions for running PID at fixed frequency. Will be used later
+   bool getStopFlag() { return stopTaskFlag; }
+   uint32_t getTaskUpdateFrequency() { return taskUpdateFrequency; }
+   void setStopFlag(bool _stopFlag) { stopTaskFlag = _stopFlag; }
+   void setTaskUpdateFrequency(uint32_t _taskUpdateFrequency) { taskUpdateFrequency = _taskUpdateFrequency; }
+   //to run PID in a separate task
+   void updatePidFixedFreq(PIDValues values, TickType_t updateFreq, volatile bool& stopFlag);
+   //running fixed frequency update task
+   static void periodicTask(void* pvParameters); 
+   //creates fixed frequency update task
    void createPeriodicTask(uint32_t updateFrequency);
+   //stops fixed frequency update task
    void stopUpdateTask();
 
    private:

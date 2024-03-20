@@ -1,6 +1,6 @@
 /**
  * @file PID.cpp
- * @authors Ian Frosst, Anthony Berbari
+ * @authors Ian Frosst, Anthony Berbari, Camron Sabahi
  */
 
 #include "../Inc/PID.hpp"
@@ -74,12 +74,17 @@ float PIDController::execute_d() {
     return pid.kd * derivative;
 }
 
+void PIDController::updatePIDGains(float _kp, float _ki, float _kd) {
+    pid.kp = _kp;
+    pid.ki = _ki;
+    pid.kd = _kd;
+}
 
 float PIDController:: map(float x, float in_min, float in_max, float out_min, float out_max) {
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
-void PIDController::updatePid( PIDValues values, TickType_t updateFreq, volatile bool& stopFlag) {
+void PIDController::updatePidFixedFreq( PIDValues values, TickType_t updateFreq, volatile bool& stopFlag) {
     
     pid.desired = values.desired;
     pid.actual = values.actual;
