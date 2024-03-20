@@ -13,10 +13,10 @@
  * @warning Any issues you think are important/foresee in the future?
  */
 
-
-#include "TelemetryManager.hpp"
 #include <functional>
+
 #include "FreeRTOS.h"
+#include "TelemetryManager.hpp"
 #include "task.h"
 #ifndef TELEMETRYTASK_H
 #define TELEMETRYTASK_H
@@ -25,19 +25,19 @@ class TelemetryTask {
     // Simple alias for a lambda function that takes a TelemetryManager reference as an argument.
     using Callback = std::function<void(TelemetryManager&)>;
 
-   public:
-
-    //TM instance reference to be used in the callback.
+   private:
+    // TM instance reference to be used in the callback.
     TelemetryManager& tm;
-    //Callback function to be called when the timer interrupt is triggered.
+    // Callback function to be called when the timer interrupt is triggered.
     Callback cbLambda;
-    //Handle to the task. Or should this be something else? Since we are doing a timer interrupt?
+    // Handle to the task. Or should this be something else? Since we are doing a timer interrupt?
     TaskHandle_t xHandle;
 
+   public:
     /**
      * @brief Construct a new Timer TelemetryTask object which will call the given lambda function
-     * at the given interval. This will allow easier scheduling of data transfer or any TM tasks which need
-     * to happen at a regular interval with FreeRTOS.
+     * at the given interval. This will allow easier scheduling of data transfer or any TM tasks
+     * which need to happen at a regular interval with FreeRTOS.
      *
      * @param taskName - The name of the task.
      * @param stackSize - The size of the stack for the task.
@@ -45,7 +45,8 @@ class TelemetryTask {
      * @param tm - The TelemetryManager object.
      * @param cbLambda - The callback function to be called when the timer interrupt is triggered.
      */
-    TelemetryTask(const char* taskName, int stackSize, UBaseType_t uxPriority, TelemetryManager& tm, Callback cbLambda);
+    TelemetryTask(const char* taskName, int stackSize, UBaseType_t uxPriority, TelemetryManager& tm,
+                  Callback cbLambda);
 
     /**
      * @brief Destroy the Timer Interrupt object.
@@ -53,10 +54,11 @@ class TelemetryTask {
      */
     ~TelemetryTask();
 
+   private:
     /**
      * @brief This is essentially a compatibility/wrapper function that allows us to use a lambda
-     * function which has a class instance as an argument as a callback for the timer interrupt. 
-     * This allows us to access TM within the lambda function. 
+     * function which has a class instance as an argument as a callback for the timer interrupt.
+     * This allows us to access TM within the lambda function.
      *
      * @param pvParameters - The TelemetryTask object.
      */

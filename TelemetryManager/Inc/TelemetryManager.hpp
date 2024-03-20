@@ -19,17 +19,17 @@
 #include "TelemetryTask.hpp"
 
 class TelemetryManager {
+   private:
+    GroundStationCommunication GSC;
+    MavlinkTranslator MT;
 
-    public:
+   public:
     /**
-     * @brief Construct a new Telemetry Manager object. Does not initialize the tasks. 
+     * @brief Construct a new Telemetry Manager object. Does not initialize the tasks.
      * To do so call the init() method.
      */
     TelemetryManager();
     ~TelemetryManager();
-
-    GroundStationCommunication GSC;
-    MavlinkTranslator MT;
 
     /**
      * @brief Initialize TM.
@@ -38,13 +38,14 @@ class TelemetryManager {
     void init();
 
     /**
-     * @brief This method is responsible for
-     * sending non routine data to the ground station. Such as arm disarmed message status,
-     * fulfilling data requests from the ground station etc. This is the lowest priority data
-     * in the GSC.lowPriorityTransmitBuffer.
+     * @brief Anything that is managed by SM should be updated here. This is basically the main loop
+     * of TM.
+     *
+     *
      */
-    void transmitNonRoutineData();
+    void update();
 
+   private:
     /**
      * @brief Create and configure FreeRTOS tasks.
      *
@@ -53,7 +54,7 @@ class TelemetryManager {
 
     /**
      * @brief Destroy FreeRTOS tasks and free up memory.
-     * 
+     *
      */
     void teardownTasks();
 };

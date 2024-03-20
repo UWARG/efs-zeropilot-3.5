@@ -10,19 +10,6 @@
  */
 TelemetryTask* routineDataTransmission;
 
-/**
- * @brief This thread is responsible for taking data from other managers and converting
- * them to Mavlink bytes, then putting them into GSC.lowPriorityTransmitBuffer.
- */
-TelemetryTask* translateToMavlink;
-
-/**
- * @brief This thread is responsible for taking the bytes from the GSC.DMAReceiveBuffer and
- * converting them to Mavlink messages/triggering the callbacks associated with each Mavlink
- * message.
- */
-TelemetryTask* translateFromMavlink;
-
 TelemetryManager::TelemetryManager() {
     this->MT = MavlinkTranslator();
     this->GSC = GroundStationCommunication();
@@ -62,45 +49,34 @@ void TelemetryManager::spinUpTasks() {
                                   vTaskDelay(pdMS_TO_TICKS(500));  // Adjust the delay as necessary
                               }
                           });
-
-    translateToMavlink =
-        new TelemetryTask("translateToMavlink", configMINIMAL_STACK_SIZE, tskIDLE_PRIORITY, *this,
-                          [](TelemetryManager& tm) -> void {
-                              auto MT = tm.MT;
-                              auto GSC = tm.GSC;
-
-                              while (true) {
-                                  MT.bytesToMavlinkMsg(GSC.DMAReceiveBuffer);
-                                  vTaskDelay(pdMS_TO_TICKS(10));  // Adjust the delay as necessary
-                              }
-                          });
-
-    translateFromMavlink =
-        new TelemetryTask("translateFromMavlink", configMINIMAL_STACK_SIZE, tskIDLE_PRIORITY, *this,
-                          [](TelemetryManager& tm) -> void {
-                              while (true) {
-                                  // START: fill GSC.lowPriorityTransmitBuffer with data to transmit
-
-                                  // END: fill GSC.lowPriorityTransmitBuffer with data to transmit
-
-                                  vTaskDelay(pdMS_TO_TICKS(10));  // Adjust the delay as necessary
-                              }
-                          });
+                          
 }
 
-void TelemetryManager::teardownTasks() {
-    delete routineDataTransmission;
-    delete translateToMavlink;
-    delete translateFromMavlink;
-}
+void TelemetryManager::update() {
+    /* 
+     * @brief the following code up to END is responsible for taking data from other managers and converting
+     * them to Mavlink bytes, then putting them into GSC.lowPriorityTransmitBuffer.
+     */
 
-/**
- * @brief This function is responsible for
- * sending non routine data to the ground station. Such as arm disarmed message status,
- * fulfilling data requests from the ground station etc. This is the lowest priority data
- * in the GSC.lowPriorityTransmitBuffer.
- */
-void TelemetryManager::transmitNonRoutineData() {
+    // START: fill GSC.lowPriorityTransmitBuffer with data to transmit
+
+    // END: fill GSC.lowPriorityTransmitBuffer with data to transmit
+
+
+
+
+    /*
+     * the following code up to END is responsible for taking the bytes from the GSC.DMAReceiveBuffer and
+     * converting them to Mavlink messages/triggering the callbacks associated with each Mavlink
+     * message.
+     */
+    //START: convert bytes from GSC.DMAReceiveBuffer to Mavlink messages
+    MT.bytesToMavlinkMsg(GSC.DMAReceiveBuffer);
+    //END: convert bytes from GSC.DMAReceiveBuffer to Mavlink messages
+
+
     // transmit non routine data via GSC.transmit(); function
     GSC.transmit(GSC.lowPriorityTransmitBuffer);
 }
+
+void TelemetryManager::teardownTasks() { delete routineDataTransmission; }
