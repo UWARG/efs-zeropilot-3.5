@@ -19,9 +19,10 @@
 # Executables
 *.exe *.out *.app 
 
+.DS_Store
+
 .idea/
 .vscode/
-.DS_Store/
-Tools/*/build
+Tools/*/build/
 Debug/
 /.metadata/
