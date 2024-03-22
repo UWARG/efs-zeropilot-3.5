@@ -3,6 +3,8 @@
  *
  *  Created on: May 27, 2022
  *      Author: Anthony (anni) Luo
+ *  Restructured: Mar 2024
+ *      Author: Camron Sabahi
  */
 
 #ifndef PID_HPP
@@ -17,12 +19,29 @@
  * Prototypes
  **********************************************************************************************************************/
 
-struct PIDValues
-{ 
+struct ControlData{ 
    /* data */
    float desired;
    float actual;
    float actualRate;
+};
+
+struct Gains{
+   float kp;
+   float ki;
+   float kd;
+};
+
+struct PIDValues{
+   float kp;
+   float ki;
+   float kd;
+   float desired;
+   float actual;
+   float actualRate;
+   float max_output;
+   float min_output;
+   float i_max;
 };
 
 
@@ -48,17 +67,16 @@ class PIDController {
      * value.
      */
       //Constructor taking individual parameters
-      PIDController(float _kp, float _ki, float _kd, float _i_max, float _min_output,
-                  float _max_output, float _desired, float _actual, float _actualRate)
-         : pid{.kp = _kp,
-               .kd = _kd,
-               .ki = _ki,
-               .i_max = _i_max,
-               .min_output = _min_output,
-               .max_output = _max_output,
-               .desired = _desired,
-               .actual = _actual,
-               .actualRate = _actualRate},
+      PIDController( PIDValues _data)
+         : pid{.kp = _data.kp,
+               .kd = _data.kd,
+               .ki = _data.ki,
+               .i_max = _data.i_max,
+               .min_output = _data.min_output,
+               .max_output = _data.max_output,
+               .desired = _data.desired,
+               .actual = _data.actual,
+               .actualRate = _data.actualRate},
                integral(0.0f),
                prevError(0.0f),
                // taskUpdateFrequency(0),
@@ -86,20 +104,20 @@ class PIDController {
      * computation.
      */
    
-   float execute(float _desired, float _actual, float _actualRate);
-   float execute_p(float _desired, float _actual);
-   float execute_i(float _desired, float _actual, float _actualRate);
+   float execute(ControlData _data);
+   float execute_p(ControlData _data);
+   float execute_i(ControlData _data);
 
    //2 derivative calculations to compare historical calculation vs back calculation
    
    //Derivative calculation using historical data
-   float execute_d_hist(float _desired, float _actual, float _actualRate);
+   float execute_d_hist(ControlData _data);
 
    //Derivative calculation using back calculation
-   float execute_d_back(float _desired, float _actual, float _actualRate);
+   float execute_d_back(ControlData _data);
    
    
-   void updatePIDGains(float _kp, float _ki, float _kd);
+   void updatePIDGains(Gains _gains);
    
    float getIntegral() { return integral; };
    void setKi(float _ki) { pid.ki = _ki; };
