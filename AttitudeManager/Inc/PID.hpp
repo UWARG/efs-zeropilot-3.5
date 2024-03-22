@@ -60,7 +60,8 @@ class PIDController {
                .actual = _actual,
                .actualRate = _actualRate},
                integral(0.0f),
-               taskUpdateFrequency(0),
+               prevError(0.0f),
+               // taskUpdateFrequency(0),
                stopTaskFlag(false) {}
 
    //Constructor taking pre-constructed PID structure
@@ -85,12 +86,22 @@ class PIDController {
      * computation.
      */
    
-   float execute();
-   float execute_p();
-   float execute_i();
-   float execute_d();
+   float execute(float _desired, float _actual, float _actualRate);
+   float execute_p(float _desired, float _actual);
+   float execute_i(float _desired, float _actual, float _actualRate);
+
+   //2 derivative calculations to compare historical calculation vs back calculation
+   
+   //Derivative calculation using historical data
+   float execute_d_hist(float _desired, float _actual, float _actualRate);
+
+   //Derivative calculation using back calculation
+   float execute_d_back(float _desired, float _actual, float _actualRate);
+   
+   
    void updatePIDGains(float _kp, float _ki, float _kd);
    
+   float getIntegral() { return integral; };
    void setKi(float _ki) { pid.ki = _ki; };
    void setKp(float _kp) { pid.kp = _kp; };
    void setKd(float _kd) { pid.kd = _kd; };
@@ -129,6 +140,7 @@ class PIDController {
       PID pid;
 
       float integral = 0.0f;
+      float prevError = 0.0f;
       float historicalValue[3] = {0.0f};  // Allows us to compute our derivative
       uint32_t taskUpdateFrequency;
       bool stopTaskFlag = false;
