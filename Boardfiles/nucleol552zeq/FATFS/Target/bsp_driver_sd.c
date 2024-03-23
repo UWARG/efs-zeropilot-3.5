@@ -5,6 +5,7 @@
 
 /* Extern variables ---------------------------------------------------------*/
 extern SD_HandleTypeDef hsd1;
+extern osMessageQueueId_t SDQueueID;
 
 DSTATUS SD_CheckStatus(BYTE lun)
 {
@@ -126,4 +127,26 @@ int SD_CheckStatusWithTimeout(DWORD timeout) {
 void BSP_SD_GetCardInfo(BSP_SD_CardInfo *CardInfo) {
   // Get SD card Information
   HAL_SD_GetCardInfo(&hsd1, CardInfo);
+}
+
+/**
+  * @brief Tx Transfer completed callback
+  * @param hsd: SD handle
+  * @retval None
+  */
+void HAL_SD_TxCpltCallback(SD_HandleTypeDef *hsd)
+{
+   const uint16_t msg = 2;
+   osMessageQueuePut(SDQueueID, (const void *)&msg, NULL, 0);
+}
+
+/**
+  * @brief Rx Transfer completed callback
+  * @param hsd: SD handle
+  * @retval None
+  */
+void HAL_SD_RxCpltCallback(SD_HandleTypeDef *hsd)
+{
+   const uint16_t msg = 1;
+   osMessageQueuePut(SDQueueID, (const void *)&msg, NULL, 0);
 }

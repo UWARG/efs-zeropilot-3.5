@@ -138,7 +138,6 @@ DRESULT SD_read(BYTE lun, BYTE *buff, DWORD sector, UINT count)
 {
   /* USER CODE BEGIN SD_read */
   DRESULT res = RES_ERROR;
-  DWORD timer;
   WORD event;
 	osStatus_t status;
 
@@ -150,13 +149,8 @@ DRESULT SD_read(BYTE lun, BYTE *buff, DWORD sector, UINT count)
   if (BSP_SD_ReadBlocks_DMA((DWORD*) buff, (DWORD) (sector), count) == MSD_OK) {
 		status = osMessageQueueGet(SDQueueID, (void*) &event, NULL, SD_TIMEOUT);
 		if ((status == osOK) && (event == READ_CPLT_MSG)) {
-			timer = osKernelGetTickCount();
-			// Block until SDIO IP is ready or a timeout occur
-			while (osKernelGetTickCount() - timer < SD_TIMEOUT) {
-        if (BSP_SD_GetCardState() == SD_TRANSFER_OK) {
-					res = RES_OK;
-          break;
-        }
+      if (SD_CheckStatusWithTimeout(SD_TIMEOUT) == 0) {
+        res = RES_OK;
       }
     }
   }
@@ -178,7 +172,6 @@ DRESULT SD_write(BYTE lun, const BYTE *buff, DWORD sector, UINT count)
 {
   /* USER CODE BEGIN SD_write */
   DRESULT res = RES_ERROR;
-  DWORD timer;
 	WORD event;
 	osStatus_t status;
 
@@ -190,13 +183,8 @@ DRESULT SD_write(BYTE lun, const BYTE *buff, DWORD sector, UINT count)
 	if (BSP_SD_WriteBlocks_DMA((DWORD*) buff, (DWORD) (sector), count) == MSD_OK) {
 		status = osMessageQueueGet(SDQueueID, (void*) &event, NULL, SD_TIMEOUT);
 		if ((status == osOK) && (event == WRITE_CPLT_MSG )) {
-			timer = osKernelGetTickCount();
-			// Block until SDIO IP is ready or a timeout occur
-			while (osKernelGetTickCount() - timer < SD_TIMEOUT) {
-				if (BSP_SD_GetCardState() == SD_TRANSFER_OK) {
-					res = RES_OK;
-					break;
-				}
+      if (SD_CheckStatusWithTimeout(SD_TIMEOUT) == 0) {
+        res = RES_OK;
       }
     }
   }  
