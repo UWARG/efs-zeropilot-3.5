@@ -89,7 +89,7 @@ float PIDController::execute_d_back(ControlData _data) {
     return pid.kd * derivative;
 }
 
-void PIDController::updatePIDGains(Gains _gains) {
+void PIDController::updatePIDGains(PIDGains _gains) {
     pid.kp = _gains.kp;
     pid.ki = _gains.ki;
     pid.kd = _gains.kd;

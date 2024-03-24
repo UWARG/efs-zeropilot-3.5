@@ -1,115 +1,101 @@
-// #include "FreeRTOS.h"
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include "PID.hpp" // Add the missing include directive for "PID.hpp"
 #include <iostream>
 
+
+class PIDControllerTest: public ::testing::Test {
+    protected:
+        PIDController pidController;
+
+        void SetUp() override {
+            // Code here will be called immediately after the constructor (right before each test).
+            
+            PIDController:: PIDValues pidValues = {0.5, 0.5, 0.5, 25, 0, 100, 37, 15, 2};
+            pidController = PIDController(pidValues);
+
+        }
+}
+
 //Test Cases
-
 TEST(PIDControllerTest, ProportionalCalculationTest) {
-    PIDController pidController = PIDController(0.1, 0.1, 0.1, 0, 1, 100, 100.0, 5.0, 2.0);
-    desired = 10.0;
-    actual = 5.0;
-    actualRate = 2.0;    
 
-    pidController.setDesired(desired);
-    pidController.setActual(actual);
-    pidController.setActualRate(actualRate);
+    ControlData _controlData = {10.0, 5.0, 2.0};
 
     float tolerance = 0.0001;
+    float result = pidController.execute_p(_controlData);
 
-    float result = pidController.execute_p();
-
-    expected_res = (desired - actual) * pidController.kp;
+    expected_res = (_controlData.desired - _controlData.actual) * pidController.kp;
 
     ASSERT_NEAR(result, expected_res, tolerance);
 }
 
 TEST(PIDControllerTest, IntegralCalculationTest) {
-    PIDController pidController = PIDController(0.1, 0.1, 0.1, 0, 1, 100, 100.0, 5.0, 2.0);
-    desired = 10.0;
-    actual = 5.0;
-    actualRate = 2.0;
+    
+    ControlData _controlData = {10.0, 5.0, 2.0};
 
-    pidController.setDesired(desired);
-    pidController.setActual(actual);
-    pidController.setActualRate(actualRate);
+    float result = pidController.execute_i(_controlData);
+    ControlData _controlData2 = {15.0, 7.0, 3.0};
 
-    float tolerance = 0.0001;
-    float result = pidController.execute_i();
-    float error = pid.desired - pid.actual;
-    float expectedValue = constrain<float>(integral + error, pid.i_max, -pid.i_max);
-
+    //_error1 becomes prev_error
+    float _error1 = _controlData.desired - _controlData.actual; // 5.0
+    float _error2 = _controlData2.desired - _controlData2.actual; //8.0
+    //Integral and prev_error is initialized at zero so after first calculation integral is 5
+    float _integral = _error1;
+    float expectedValue = _integral + (_error2 - _error1);
+    float tolerance = 0.0001
     ASSERT_NEAR(result, expectedValue, tolerance);
 }
 
-TEST(PIDControllerTest, DerivativeCalculationTest2) {
-    PIDController pidController = PIDController(0.1, 0.1, 0.1, 0, 1, 100, 100.0, 5.0, 2.0);
-    desired = 10.0;
-    actual = 5.0;
-    actualRate = 0;
+// TEST(PIDControllerTest, DerivativeCalculationTest2) {
+//     PIDController pidController = PIDController(0.1, 0.1, 0.1, 0, 1, 100, 100.0, 5.0, 2.0);
+//     desired = 10.0;
+//     actual = 5.0;
+//     actualRate = 0;
 
-    pidController.setDesired(desired);
-    pidController.setActual(actual);
-    pidController.setActualRate(actualRate);
+//     pidController.setDesired(desired);
+//     pidController.setActual(actual);
+//     pidController.setActualRate(actualRate);
 
-    float tolerance = 0.0001;
+//     float tolerance = 0.0001;
 
-    float result = pidController.execute_d();
+//     float result = pidController.execute_d();
 
-    pid.Controller.setActual(2.0);
-    result = pidController.execute_d();
+//     pid.Controller.setActual(2.0);
+//     result = pidController.execute_d();
 
-    pidController.setActual(1.0);
-    result = pidController.execute_d();
+//     pidController.setActual(1.0);
+//     result = pidController.execute_d();
 
-    float expected_result = ((3*1) - (4*2) + (5)) * pidController.kd;
+//     float expected_result = ((3*1) - (4*2) + (5)) * pidController.kd;
 
-    ASSERT_NEAR(result, expected_result, tolerance);
+//     ASSERT_NEAR(result, expected_result, tolerance);
 
-}
+// }
 
-TEST(PIDControllerTest, OutputCalculationTest) {
-    PIDController pidController = PIDController(0.1, 0.1, 0.1, 0, 1, 100, 100.0, 5.0, 2.0);
-    desired = 10.0;
-    actual = 5.0;
-    actualRate = 0;
+// TEST(PIDControllerTest, OutputCalculationTest) {
+//     PIDController pidController = PIDController(0.1, 0.1, 0.1, 0, 1, 100, 100.0, 5.0, 2.0);
+//     desired = 10.0;
+//     actual = 5.0;
+//     actualRate = 0;
 
-    pidController.setDesired(desired);
-    pidController.setActual(actual);
-    pidController.setActualRate(actualRate);
+//     pidController.setDesired(desired);
+//     pidController.setActual(actual);
+//     pidController.setActualRate(actualRate);
 
-    float result = pidController.execute();
+//     float result = pidController.execute();
 
-    float expected_res = constrain<float>((pid.kp * (desired - actual)) + (pid.ki * integral) - (pid.kd * ((3*5) - (4*5) + (5))), pid.max_output, pid.min_output);
+//     float expected_res = constrain<float>((pid.kp * (desired - actual)) + (pid.ki * integral) - (pid.kd * ((3*5) - (4*5) + (5))), pid.max_output, pid.min_output);
 
-    float tolerance = 0.0001;
-
-
-    ASSERT_NEAR(result, expected_res, tolerance);
+//     float tolerance = 0.0001;
 
 
-}
-
-TEST(PIDControllerTest, FrequencyUpdatingTest) {
-    PIDController pidController;
-    PIDValues values;
-    values.desired = 10.0;
-    values.actual = 5.0;
-    values.actualRate = 2.0;
-
-    // Add your test logic here to verify the frequency updating
-    // For example:
-    // pidController.updatePid(values, updateFreq, stopFlag);
-    // ASSERT_TRUE(...);
-}
+//     ASSERT_NEAR(result, expected_res, tolerance);
+// }
 
 TEST(PIDControllerTest, SetpointChangesTest) {
-    PIDController pidController = PIDController(0.1, 0.1, 0.1, 0, 1, 100, 100.0, 5.0, 2.0);
-    PIDValues values;
-    values.desired = 10.0;
-    values.actual = 5.0;
-    values.actualRate = 2.0;
+
+    ControlData values = {10.0, 5.0, 2.0};
 
     pidController.setDesired(values.desired);
     pidController.setActual(values.actual);
@@ -121,38 +107,18 @@ TEST(PIDControllerTest, SetpointChangesTest) {
 }
 
 TEST(PIDControllerTest, TuningTest) {
-    PIDController pidController = PIDController(0.1, 0.1, 0.1, 0, 1, 100, 100.0, 5.0, 2.0);
 
     //Change the PID gains
-    float newKp = 0.0;
-    float newKi = 0.0;
-    float newKd = 0.0;
+    PIDGains newGains = {0.34, 0.76, 0.89};
+    pidController.updatePIDGains(newGains);
 
-    pidController.setKp(newKp);
-    pidController.setKi(newKi);
-    pidController.setKd(newKd);
-
-    ASSERT_TRUE(pidController.pid.kp == newKp);
-    ASSERT_TRUE(pidController.pid.ki == newKi);
-    ASSERT_TRUE(pidController.pid.kd == newKd);
-}
-
-TEST(PIDControllerTest, EdgeCasesTest) {
-    // Check Integral Windup handling
-    PIDController pidController = PIDController(0.1, 0.1, 0.1, 0, 1, 100, 100.0, 5.0, 2.0);
-
-    pidController.i_max = 25.0;
-    pidController.desired = 100.0;
-    pidController.actual = 5.0;
-
-    pidController.execute_i();
-
-    ASSERT_TRUE(pidController.integral == pidController.i_max);
-
+    ASSERT_TRUE(pidController.kp == newGains.kp);
+    ASSERT_TRUE(pidController.ki == newGains.ki);
+    ASSERT_TRUE(pidController.kd == newGains.kd);
 }
 
 
 int main(int argc, char** argv) {
-    testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }

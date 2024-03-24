@@ -26,7 +26,7 @@ struct ControlData{
    float actualRate;
 };
 
-struct Gains{
+struct PIDGains{
    float kp;
    float ki;
    float kd;
@@ -85,9 +85,8 @@ class PIDController {
    //Constructor taking pre-constructed PID structure
    PIDController(PIDController::PID _pid) : pid(_pid), integral(0.0f), taskUpdateFrequency(0), stopTaskFlag(false) {}
 
-   ~PIDController() {
-      stopUpdateTask();
-   }
+   //Destructor using C++ default
+   ~PIDController() = default;
    /**
      * Executes a PID computation.
      * The PID algorithm uses the derivative of the actual values, rather than
@@ -117,7 +116,7 @@ class PIDController {
    float execute_d_back(ControlData _data);
    
    
-   void updatePIDGains(Gains _gains);
+   void updatePIDGains(PIDGains _gains);
    
    float getIntegral() { return integral; };
    void setKi(float _ki) { pid.ki = _ki; };
