@@ -44,6 +44,12 @@ struct PIDValues{
    float i_max;
 };
 
+struct AxisPIDs{
+   PIDController pitchPID;
+   PIDController rollPID;
+   PIDController yawPID;
+   PIDController thrustPID;
+};
 
 class PIDController {
    public:
@@ -102,7 +108,6 @@ class PIDController {
      * @return					The result of the PID
      * computation.
      */
-   
    float execute(ControlData _data);
    float execute_p(ControlData _data);
    float execute_i(ControlData _data);
