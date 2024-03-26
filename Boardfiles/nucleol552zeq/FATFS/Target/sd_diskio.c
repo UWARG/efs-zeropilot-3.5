@@ -22,6 +22,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "ff_gen_drv.h"
 #include "sd_diskio.h"
+#include <string.h>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -140,17 +141,48 @@ DRESULT SD_read(BYTE lun, BYTE *buff, DWORD sector, UINT count)
   DRESULT res = RES_ERROR;
   WORD event;
 	osStatus_t status;
+  DWORD aligned_buffer[BLOCKSIZE / 4] = {0};
 
-  // Ensure the SDCard is ready for a new operation
-  if (SD_CheckStatusWithTimeout(SD_TIMEOUT) < 0) {
-		return res;
-	}
+  // DMA can only handle word-aligned pointers
+  // If BYTE* buff is not word aligned
+  if ((((uintptr_t)buff) & 0x3) != 0) {
+    for (UINT i = 0; i < count; i++) {
+      res = RES_ERROR;
 
-  if (BSP_SD_ReadBlocks_DMA((DWORD*) buff, (DWORD) (sector), count) == MSD_OK) {
-		status = osMessageQueueGet(SDQueueID, (void*) &event, NULL, SD_TIMEOUT);
-		if ((status == osOK) && (event == READ_CPLT_MSG)) {
-      if (SD_CheckStatusWithTimeout(SD_TIMEOUT) == 0) {
-        res = RES_OK;
+      // Ensure the SDCard is ready for a new operation
+      if (SD_CheckStatusWithTimeout(SD_TIMEOUT) < 0) {
+        return res;
+      }
+
+      if (BSP_SD_ReadBlocks_DMA(aligned_buffer, (DWORD) (sector), 1) == MSD_OK) {
+        status = osMessageQueueGet(SDQueueID, (void*) &event, NULL, SD_TIMEOUT);
+        if ((status == osOK) && (event == READ_CPLT_MSG)) {
+          if (SD_CheckStatusWithTimeout(SD_TIMEOUT) == 0) {
+            res = RES_OK;
+            memcpy(buff, aligned_buffer, BLOCKSIZE);
+          }
+        }
+      }
+
+      if (res != RES_OK) {
+        return res;
+      }
+
+      buff += BLOCKSIZE;
+      sector++;
+    }
+  } else {
+    // Ensure the SDCard is ready for a new operation
+    if (SD_CheckStatusWithTimeout(SD_TIMEOUT) < 0) {
+      return res;
+    }
+
+    if (BSP_SD_ReadBlocks_DMA((DWORD*) buff, (DWORD) (sector), count) == MSD_OK) {
+      status = osMessageQueueGet(SDQueueID, (void*) &event, NULL, SD_TIMEOUT);
+      if ((status == osOK) && (event == READ_CPLT_MSG)) {
+        if (SD_CheckStatusWithTimeout(SD_TIMEOUT) == 0) {
+          res = RES_OK;
+        }
       }
     }
   }
@@ -174,20 +206,51 @@ DRESULT SD_write(BYTE lun, const BYTE *buff, DWORD sector, UINT count)
   DRESULT res = RES_ERROR;
 	WORD event;
 	osStatus_t status;
+  DWORD aligned_buffer[BLOCKSIZE / 4] = {0};
 
-	// Ensure the SDCard is ready for a new operation
-	if (SD_CheckStatusWithTimeout(SD_TIMEOUT) < 0) {
-		return res;
-	}
+  // DMA can only handle word-aligned pointers
+  // If BYTE* buff is not word aligned
+  if ((((uintptr_t)buff) & 0x3) != 0) {
+    for (UINT i = 0; i < count; i++) {
+      res = RES_ERROR;
+      memcpy(aligned_buffer, buff, BLOCKSIZE);
 
-	if (BSP_SD_WriteBlocks_DMA((DWORD*) buff, (DWORD) (sector), count) == MSD_OK) {
-		status = osMessageQueueGet(SDQueueID, (void*) &event, NULL, SD_TIMEOUT);
-		if ((status == osOK) && (event == WRITE_CPLT_MSG )) {
-      if (SD_CheckStatusWithTimeout(SD_TIMEOUT) == 0) {
-        res = RES_OK;
+      // Ensure the SDCard is ready for a new operation
+      if (SD_CheckStatusWithTimeout(SD_TIMEOUT) < 0) {
+        return res;
+      }
+
+      if (BSP_SD_WriteBlocks_DMA(aligned_buffer, (DWORD) (sector), 1) == MSD_OK) {
+        status = osMessageQueueGet(SDQueueID, (void*) &event, NULL, SD_TIMEOUT);
+        if ((status == osOK) && (event == WRITE_CPLT_MSG )) {
+          if (SD_CheckStatusWithTimeout(SD_TIMEOUT) == 0) {
+            res = RES_OK;
+          }
+        }
+      }
+
+      if (res != RES_OK) {
+        return res;
+      }
+
+      buff += BLOCKSIZE;
+      sector++;
+    }
+  } else {
+    // Ensure the SDCard is ready for a new operation
+    if (SD_CheckStatusWithTimeout(SD_TIMEOUT) < 0) {
+      return res;
+    }
+
+    if (BSP_SD_WriteBlocks_DMA((DWORD*) buff, (DWORD) (sector), count) == MSD_OK) {
+      status = osMessageQueueGet(SDQueueID, (void*) &event, NULL, SD_TIMEOUT);
+      if ((status == osOK) && (event == WRITE_CPLT_MSG )) {
+        if (SD_CheckStatusWithTimeout(SD_TIMEOUT) == 0) {
+          res = RES_OK;
+        }
       }
     }
-  }  
+  }
 
   return res;
   /* USER CODE END SD_write */
