@@ -1,7 +1,7 @@
 
 
 #include "GroundStationCommunication.hpp"
-
+#include "drivers_config.hpp"
 
 GroundStationCommunication::GroundStationCommunication() {
     // Constructor
