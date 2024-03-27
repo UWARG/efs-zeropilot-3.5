@@ -47,51 +47,77 @@ TEST(PIDControllerTest, IntegralCalculationTest) {
     ASSERT_NEAR(result, expectedValue, tolerance);
 }
 
-// TEST(PIDControllerTest, DerivativeCalculationTest2) {
-//     PIDController pidController = PIDController(0.1, 0.1, 0.1, 0, 1, 100, 100.0, 5.0, 2.0);
-//     desired = 10.0;
-//     actual = 5.0;
-//     actualRate = 0;
+// Test back calculation derivative calculation
+TEST(PIDControllerTest, DerivativeCalculationTest){
+    ControlData _controlData = {10.0, 5.0, 2.0};
+    ControlData _controlData2 = {15.0, 7.0, 3.0};
+    float tolerance = 0.0001;
 
-//     pidController.setDesired(desired);
-//     pidController.setActual(actual);
-//     pidController.setActualRate(actualRate);
+    //Function Calculation
+    float result = pidController.execute_d_back(_controlData);
+    result = pidController.execute_d_back(_controlData2);
 
-//     float tolerance = 0.0001;
+    //Expected Calculation
+    float prev_error = _controlData.desired - _controlData.actual; // 5.0
+    float error = _controlData2.desired - _controlData2.actual; //8.0
+    float expected_result = (error - prev_error) * 0.5;
+    
+    ASSERT_NEAR(result, expected_result, tolerance);
+}
 
-//     float result = pidController.execute_d();
+// Test hisotrical derivative calculation
+TEST(PIDControllerTest, DerivativeCalculationTest2) {
+    PIDController pidController = PIDController(0.1, 0.1, 0.1, 0, 1, 100, 100.0, 5.0, 2.0);
+    float tolerance = 0.0001;
 
-//     pid.Controller.setActual(2.0);
-//     result = pidController.execute_d();
+    ControlData _controlData = {10.0, 5.0, 2.0};
+    ControlData _controlData2 = {15.0, 7.0, 3.0};
+    ControlData _controlData3 = {20.0, 10.0, 4.0};
 
-//     pidController.setActual(1.0);
-//     result = pidController.execute_d();
+    //Function Calculation
+    float result = pidController.execute_d_hist(_controlData);
+    result = pidController.execute_d_hist(_controlData2);
+    result = pidController.execute_d_hist(_controlData3);
 
-//     float expected_result = ((3*1) - (4*2) + (5)) * pidController.kd;
+    //Expected Calculation
+    float expected_result = ( (3*_controlData.actual) - (4*_controlData2.actual) + (_controlData3.actual));
+    expected_result *= pidController.kd;
 
-//     ASSERT_NEAR(result, expected_result, tolerance);
+    ASSERT_NEAR(result, expected_result, tolerance);
+}
 
-// }
+TEST(PIDControllerTest, OutputCalculationTest) {
 
-// TEST(PIDControllerTest, OutputCalculationTest) {
-//     PIDController pidController = PIDController(0.1, 0.1, 0.1, 0, 1, 100, 100.0, 5.0, 2.0);
-//     desired = 10.0;
-//     actual = 5.0;
-//     actualRate = 0;
+    //Run calculation twice to check with prev_error != 0
+    ControlData _controlData = {10.0, 5.0, 2.0};
+    ControlData _controlData2 = {15.0, 7.0, 3.0};
 
-//     pidController.setDesired(desired);
-//     pidController.setActual(actual);
-//     pidController.setActualRate(actualRate);
+    //Calculate the PID output
+    float result = pidController.execute(_controlData);
+    result = pidController.execute(_controlData2);
 
-//     float result = pidController.execute();
+    //Calculate the expected result
+    float expected_result, error, prev_error, integral, derivative;
 
-//     float expected_res = constrain<float>((pid.kp * (desired - actual)) + (pid.ki * integral) - (pid.kd * ((3*5) - (4*5) + (5))), pid.max_output, pid.min_output);
+    prev_error = _controlData.desired - _controlData.actual;
+    error = _controlData2.desired - _controlData2.actual;
+    float error_change = error  - prev_error;
+    
+    // intgral = intgral + error + error_change
+    // intgeral and error_change are 0 so integral = error (aka prev_error)
+    integral = prev_error;
+    integral = integral + error + error_change;
+    
+    derivative = _controlData2.actualRate;
 
-//     float tolerance = 0.0001;
+    expected_result = (pidController.kp * error) + (pidController.ki * integral) 
+                        - (pidController.kd * derivative);
 
 
-//     ASSERT_NEAR(result, expected_res, tolerance);
-// }
+    float tolerance = 0.0001;
+
+    ASSERT_NEAR(result, expected_result, tolerance);
+}
 
 TEST(PIDControllerTest, SetpointChangesTest) {
 

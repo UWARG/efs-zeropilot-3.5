@@ -17,7 +17,6 @@ float PIDController::execute(ControlData _data) {
     setActualRate(_data.actualRate);
     integral = getIntegral();
 
-
     if (std::isnan(_data.desired) || std::isnan(_data.actual)) {
         return 0;
     }
@@ -28,8 +27,6 @@ float PIDController::execute(ControlData _data) {
     // avoid integral windup
     float error_change = (error - prevError);
     integral = constrain<float>(integral + error + error_change, pid.i_max, -pid.i_max);
-
-    // integral = constrain<float>(integral + error, pid.i_max, -pid.i_max);
 
     // if we are provided with a measured derivative (say from a gyroscope), it
     // is always less noisy to use that than to compute it ourselves.
@@ -69,15 +66,11 @@ float PIDController::execute_i(ControlData _data) {
 float PIDController::execute_d_hist(ControlData _data) {
     float derivative;
 
-    if (!std::isnan(_data.actualRate)) {
-        derivative = _data.actualRate;
-    } else {
-        historicalValue[2] = historicalValue[1];
-        historicalValue[1] = historicalValue[0];
-        historicalValue[0] = pid.actual;
+    historicalValue[2] = historicalValue[1];
+    historicalValue[1] = historicalValue[0];
+    historicalValue[0] = pid.actual;
 
-        derivative = ((3 * historicalValue[0]) - (4 * historicalValue[1]) + (historicalValue[2]));
-    }
+    derivative = ((3 * historicalValue[0]) - (4 * historicalValue[1]) + (historicalValue[2]));  
 
     return pid.kd * derivative;
 }
