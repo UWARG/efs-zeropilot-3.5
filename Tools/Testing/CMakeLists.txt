@@ -5,8 +5,11 @@ set(CMAKE_C_COMPILER "gcc")
 set(CMAKE_CXX_COMPILER "g++")
 
 # GoogleTest requires at least C++14
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Define TESTING Preprocessor Macro
+add_compile_definitions(TESTING)
 
 # Locate GTest
 find_package(GTest REQUIRED)
@@ -70,23 +73,30 @@ set(TM_SRC "${TM_FOLDER}/Src")
 
 include_directories(${TM_INC})
 file(GLOB TM_CODE
-    "${TM_FOLDER}/Tests/*.cpp"
+    "${TM_FOLDER}/Tests/generic_test.cpp"
 
     # add necessary TelemetryManager source files below
-    # "${TM_SRC}/foo.cpp"
+    "${TM_SRC}/*.cpp"
 )
 
 # Drivers
 set(DRIVERS_FOLDER "${ROOT_DIR}/Drivers")
-set(DRIVERS_INC "${DRIVERS_FOLDER}/Inc")
-set(DRIVERS_SRC "${DRIVERS_FOLDER}/Src")
+set(DRIVERS_INC "${DRIVERS_FOLDER}/Common/Inc")
+set(DRIVERS_SRC "{$DRIVERS_FOLDER}/Src")
+set(MOTORCHANNEL_INC "${DRIVERS_FOLDER}/MotorChannel/Inc")
+set(MOTORCHANNEL_SRC "${DRIVERS_FOLDER}/MotorChannel/Src")
+# Driver Mocks
+set(MOTORCHANNEL_MOCK_INC "${ROOT_DIR}/Testing/Mocks/Inc")
+set(MOTORCHANNEL_MOCK_SRC "${ROOT_DIR}/Testing/Mocks/Src")
 
-include_directories(${DRIVERS_INC})
+include_directories(${DRIVERS_INC} ${MOTORCHANNEL_INC} ${MOTORCHANNEL_MOCK_INC})
 file(GLOB DRIVERS_CODE
     "${DRIVERS_FOLDER}/Tests/*.cpp"
 
     # add necessary Drivers source files below
     # "${DRIVERS_SRC}/foo.cpp"
+    "${DRIVERS_FOLDER}/Common/Src/circular_buffer.cpp"
+    "${MOTORCHANNEL_MOCK_SRC}/*.cpp"
 )
 
 # Common
@@ -98,7 +108,7 @@ include_directories(${COMMON_INC})
 file(GLOB COMMON_CODE
     "${COMMON_FOLDER}/Tests/*.cpp"
 
-    # add necessary TelemetryManager source files below
+    # add necessary common source files below
     # "${COMMON_SRC}/foo.cpp"
 )
 
@@ -111,9 +121,13 @@ set(STUBS_SRC "${STUBS_FOLDER}/Src")
 include_directories(${STUBS_INC})
 file(GLOB STUBS_CODE
     "${STUBS_SRC}/*.cpp"
+    "${STUBS_SRC}/*.c"
 )
 
-include_directories("${ROOT_DIR}/Models")
+#Models
+include_directories("${ROOT_DIR}/Config_Models")
+file(GLOB MODELS_CODE
+)
 
 # --- ZeroPilot File Indexing End ---
 
@@ -125,6 +139,7 @@ add_executable(${PROJECT_NAME}
     ${DRIVERS_CODE}
     ${COMMON_CODE}
     ${STUBS_CODE}
+    ${MODELS_CODE}
 )
 
 target_link_libraries(${PROJECT_NAME}

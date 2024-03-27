@@ -5,27 +5,38 @@ SBUSReceiver::SBUSReceiver(UART_HandleTypeDef* uart) : uart_(uart)
 {
     for(int i = 0; i < SBUS_INPUT_CHANNELS; i++)
     {
-        received_sbus_.ch[i] = 1000;
+        received_sbus_.ch[i] = SBUS_RANGE_MIN;
     }
     received_sbus_.ch17 = false;
     received_sbus_.ch18 = false;
     received_sbus_.failsafe = false;
     received_sbus_.lost_frame = false;
-    received_sbus_.new_data = false;
-
+    received_sbus_.isDataNew = false;
+    is_data_new_ = false;
     HAL_UART_Receive_DMA (uart_, raw_sbus_, SBUS_FRAME_SIZE);
 }
 
 SBus_t SBUSReceiver::GetSBUS(){
-	if(received_sbus_.new_data == false)
+
+	 if(uart_->RxState != HAL_UART_STATE_BUSY_RX) {
 		HAL_UART_Receive_DMA (uart_, raw_sbus_, SBUS_FRAME_SIZE);
+	 }
+
+
+	received_sbus_.isDataNew = is_data_new_;
+	is_data_new_ = false;
     return received_sbus_;
 }
 
 RCControl SBUSReceiver::GetRCControl(){
-	if(received_sbus_.new_data == false)
-		HAL_UART_Receive_DMA (uart_, raw_sbus_, SBUS_FRAME_SIZE);
-    cast_rccontrol();
+
+     if(uart_->RxState != HAL_UART_STATE_BUSY_RX) {
+    	 HAL_UART_Receive_DMA (uart_, raw_sbus_, SBUS_FRAME_SIZE);
+     }
+    	cast_rccontrol();
+    	received_rccontrol_.isDataNew = is_data_new_;
+    	is_data_new_ = false;
+
     return received_rccontrol_;
 }
 
@@ -76,10 +87,10 @@ void SBUSReceiver::parse()
         received_sbus_.lost_frame = raw_sbus_[23] & LOST_FRAME_MASK_;
         received_sbus_.failsafe = raw_sbus_[23] & FAILSAFE_MASK_;
 
-        received_sbus_.new_data = true;
+        received_sbus_.isDataNew = true;
 
     }else{
-    	received_sbus_.new_data = false;
+    	received_sbus_.isDataNew = false;
     }
 }
 

@@ -2,6 +2,7 @@
 #define RC_RECEIVER_DATA_TYPES_H
 
 #include <cstdint>
+#include <algorithm>
 
 #define SBUS_INPUT_CHANNELS	16
 
@@ -10,13 +11,14 @@ typedef struct SBus{
     bool lost_frame;
     bool failsafe;
     bool ch17, ch18;
-    bool new_data;
+    bool isDataNew;
 } SBus_t;
 
 /*  a struct for control signal channel mapping and attribute values*/
 /*  for now, the value range is 0 to 100 float*/
 struct RCControl{
     float ControlSignals[16];
+    bool isDataNew;
     
     float &roll = ControlSignals[0];
     float &pitch = ControlSignals[1];
@@ -37,9 +39,15 @@ struct RCControl{
 
     float &operator[] (int i) { return ControlSignals[i]; }
 
+    RCControl operator=(const RCControl& other){
+        std::copy(other.ControlSignals, other.ControlSignals + SBUS_INPUT_CHANNELS, this->ControlSignals);
+        return *this;
+    }
+
     /*  initial values*/
     RCControl()
     {
+        isDataNew = false;
         roll = 50.0f;
         pitch = 50.0f;
         throttle = 0.0f;

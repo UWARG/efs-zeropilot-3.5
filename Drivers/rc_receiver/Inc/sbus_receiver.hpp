@@ -37,6 +37,7 @@ class SBUSReceiver{
         public variable
     */
         uint8_t raw_sbus_[SBUS_FRAME_SIZE];
+        bool is_data_new_;
 
     private:
 

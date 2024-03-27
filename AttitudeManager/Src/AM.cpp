@@ -35,51 +35,41 @@ AttitudeManagerInput AttitudeManager::getControlInputs() {
     return temp;
 }
 
+AttitudeManager::AttitudeManager(Flightmode* controlAlgorithm,  MotorInstance_t *(&motorInstances)[], uint8_t (&numMotorsPerAxis)[]):
+    controlAlgorithm_(controlAlgorithm),
+    motorInstances_(motorInstances),
+    numMotorsPerAxis_(numMotorsPerAxis)
+{};
 
-SemaphoreHandle_t AttitudeManager::sensor_fusion_mutex = xSemaphoreCreateMutex();
-
-SensorFusionOutput AttitudeManager::SF_data = {
-    .roll = 0.0f,
-    .pitch = 0.0f,
-    .yaw = 0.0f,
-    .throttle = 0.0f
-};
-
-void AttitudeManager::setSensorFusionData(const SensorFusionOutput& new_SF_output) {
-    if (xSemaphoreTake(sensor_fusion_mutex, (TickType_t) portMAX_DELAY) == pdPASS) {
-        SF_data = new_SF_output;
-        xSemaphoreGive(sensor_fusion_mutex);
-    }
-}
-
-SensorFusionOutput AttitudeManager::getSensorFusionData() {
-    SensorFusionOutput latestData {};
-    if (xSemaphoreTake(sensor_fusion_mutex, (TickType_t) portMAX_DELAY) == pdPASS) {
-        latestData = SF_data;
-        xSemaphoreGive(sensor_fusion_mutex);
-    }
-    return latestData;
-}
-
-//TODO: convert AM input format to degrees
-float attitudePercentToDegrees(float input)
-{
-    return input;
-}
-
-//TODO: convert AM output format to percent
-float attitudeDegreesToPercent(float output)
-{
-    return output;
-}
+AttitudeManager::~AttitudeManager()
+{}
 
 void AttitudeManager::runControlLoopIteration() {
     // Process Instructions
+    AttitudeManagerInput control_inputs = getControlInputs();
 
     // Run Control Algorithms
-    AttitudeManagerInput motorOutput = control_algorithm->run(getControlInputs());
+    AttitudeManagerInput motor_outputs = controlAlgorithm_->run(control_inputs);
 
     // Write motor outputs
+    outputToMotor(yaw, static_cast<uint8_t>(motor_outputs.yaw));
+    outputToMotor(pitch, static_cast<uint8_t>(motor_outputs.pitch));
+    outputToMotor(roll, static_cast<uint8_t>(motor_outputs.roll));
+    outputToMotor(throttle, static_cast<uint8_t>(motor_outputs.throttle));
+
+}
+
+void AttitudeManager::outputToMotor(ControlAxis_t axis, uint8_t percent) {
+    // Move through the portion of the motorInstances array that matches the wanted axis.
+    // The motorReferences array holds references to the wanted positions in the motorInstances array
+    for (uint8_t motorCount{0}; motorCount < numMotorsPerAxis_[axis]; ++motorCount) {
+        if (motorInstances_[axis][motorCount].isInverted) {
+            motorInstances_[axis][motorCount].motorInstance->set(100-percent);
+        } else {
+            motorInstances_[axis][motorCount].motorInstance->set(percent);
+        }
+    }
+
 }
 
 }  // namespace AM
