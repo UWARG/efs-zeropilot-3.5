@@ -13,6 +13,7 @@
  */
 
 #include "CircularBuffer.hpp"
+#include "mavlink_types.h"
 #ifndef GROUNDSTATIONCOMMUNICATION_H
 #define GROUNDSTATIONCOMMUNICATION_H
 
@@ -36,13 +37,13 @@ class GroundStationCommunication {
      * When the DMA interrupt is triggered the data should be stored in the DMAReceiveBuffer
      * IF there is space.
      */
-    CircularBuffer DMAReceiveBuffer;
+    TMCircularBuffer DMAReceiveBuffer;
 
     // low priority/Non routine Mavlink bytes to be sent to the ground station.
-    CircularBuffer lowPriorityTransmitBuffer;
+    TMCircularBuffer lowPriorityTransmitBuffer;
 
     // high priority/Routine Mavlink bytes to be sent to the ground station.
-    CircularBuffer highPriorityTransmitBuffer;
+    TMCircularBuffer highPriorityTransmitBuffer;
 
     /**
      * @brief This function sends data from a CircularBuffer to the ground station.
@@ -56,7 +57,7 @@ class GroundStationCommunication {
      * @param transmissionBuffer A CircularBuffer containing the data/MAVLink bytes to be sent
      * to the ground station
      */
-    void transmit(CircularBuffer &transmissionBuffer);
+    void transmit(TMCircularBuffer &transmissionBuffer);
 
     /**
      * @brief This is the Interrupt Service Routine (ISR) for when the RFD 900 receives data from
@@ -64,6 +65,9 @@ class GroundStationCommunication {
      * there is space. Otherwise the data is discarded.
      */
     void receiveInterruptServiceRoutine();
+
+    private:
+    uint8_t internalBuffer_[MAVLINK_MAX_PAYLOAD_LEN*10]; // make this a constant so that all of the buffer sizes can be changed at once
 };
 
 #endif  // GROUNDSTATIONCOMMS_H

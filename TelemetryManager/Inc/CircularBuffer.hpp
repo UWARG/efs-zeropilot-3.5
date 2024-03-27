@@ -15,7 +15,7 @@
 #ifndef CIRCULARBUFFER_H
 #define CIRCULARBUFFER_H
 
-class CircularBuffer {
+class TMCircularBuffer {
     using MAVLinkByte = unsigned char;  // not 100% sure if this is the right type
 
    public:
@@ -23,14 +23,14 @@ class CircularBuffer {
      * @brief Construct a new Circular Buffer object. Do whatever needs to be done here.
      *
      */
-    CircularBuffer();
+    TMCircularBuffer();
 
     /**
      * @brief Destroy and cleanup memory (everything should be static anyways). Do whatever
      * needs to be done here.
      *
      */
-    ~CircularBuffer();
+    ~TMCircularBuffer();
 
     /**
      * @brief Provides the number of bytes available in the queue
@@ -64,7 +64,7 @@ class CircularBuffer {
      * in the MAVLink message. 
      * 
      */
-    int lastFullMessageEndIndex();
+    int bytesUntilLastMessageEnd();
 
 /**
  * @brief Returns the index of the current byte in the queue. This is useful for when we want to 
