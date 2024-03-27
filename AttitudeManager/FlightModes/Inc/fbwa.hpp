@@ -2,7 +2,6 @@
 #define ZPSW3_AM_FBWA_HPP
 
 #include "flightmode.hpp"
-#include "PID.hpp"
 
 namespace AM {
 
@@ -11,7 +10,7 @@ class FBWA : public Flightmode {
     FBWA();
 
     AttitudeManagerInput run(const AttitudeManagerInput& input) override;
-    void updatePid(ControlAxis_t axis, PIDController::PID newPIDVals) override;
+    void updatePid(AxisPIDs _pids, ControlAxis_t axis, PIDGains newPIDVals) override;
 
    private:
     PIDController* pitchPID_;
