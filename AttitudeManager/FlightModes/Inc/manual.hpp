@@ -10,7 +10,7 @@ class Manual : public Flightmode {
     Manual() = default;
 
     AttitudeManagerInput run(const AttitudeManagerInput& input) override;
-    void updatePid(PIDController _pid, PIDGains _gains) override;
+    void updatePid(AxisPIDs _pids, ControlAxis_t controlAxis, GainTerm _whichGain, float desiredGain) override;
 };
 
 }  // namespace AM

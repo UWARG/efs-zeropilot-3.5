@@ -44,6 +44,12 @@ struct PIDValues{
    float i_max;
 };
 
+typedef enum {
+   proportional,
+   integral,
+   derivative
+} GainTerm;
+
 struct AxisPIDs{
    PIDController pitchPID;
    PIDController rollPID;
