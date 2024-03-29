@@ -26,3 +26,6 @@
 Tools/*/build/
 Debug/
 /.metadata/
+
+# build folder
+build/
