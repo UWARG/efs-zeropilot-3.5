@@ -47,7 +47,19 @@ namespace AM {
         return mappedOutputs;
     }
 
-    void FBWA::updatePid() {} //Needs to be implemented
+    void FBWA::updatePid(PIDController _axis, GainTerm whichGain, float desiredGain) {
+        switch (whichGain){
+            case proportional:
+                _axis.setKp(desiredGain);
+                break;
+            case integral:
+                _axis.setKi(desiredGain);
+                break;
+            case derivative:
+                _axis.setKd(desiredGain);
+                break;
+        }
+    } //Needs to be implemented
 
     void FBWA::updatePidGains() {} //Needs to be implemented
 

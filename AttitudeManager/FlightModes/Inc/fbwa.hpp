@@ -9,8 +9,8 @@ class FBWA : public Flightmode {
    public:
     FBWA() = default;
 
-    AttitudeManagerInput run(const AttitudeManagerInput& input) override;
-    void updatePid() override;
+    AttitudeManagerInput run(const AttitudeManagerInput& input, AxisPIDs _pids) override;
+    void updatePid(PIDController _axis, GainTerm whichGain, float desiredGain) override;
     void updatePidGains() override;
     void updateControlLimits(ControlLimits_t limits) override;
 
