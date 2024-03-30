@@ -17,6 +17,8 @@
  * Prototypes
  **********************************************************************************************************************/
 
+class PIDController; // Forward declaration to avoid errors in structs
+
 struct ControlData{ 
    /* data */
    float desired;
@@ -34,12 +36,12 @@ struct PIDValues{
    float kp;
    float ki;
    float kd;
+   float i_max;
+   float min_output;
+   float max_output;
    float desired;
    float actual;
    float actualRate;
-   float max_output;
-   float min_output;
-   float i_max;
 };
 
 typedef enum {
@@ -48,19 +50,6 @@ typedef enum {
    derivative
 } GainTerm;
 
-struct AxisPIDs{
-   PIDController pitchPID;
-   PIDController rollPID;
-   PIDController yawPID;
-   PIDController thrustPID;
-};
-
-class PIDController {
-   public:
-      class PID {
-         public:
-         float kp, kd, ki, i_max, min_output, max_output, desired, actual, actualRate;
-      };
 
       /**
      * Initialises the Pid object.
@@ -76,6 +65,14 @@ class PIDController {
      * output, if computations return larger, the output will be set to this
      * value.
      */
+
+class PIDController {
+   public:
+      class PID {
+         public:
+         float kp, kd, ki, i_max, min_output, max_output, desired, actual, actualRate;
+      };
+
       PIDController(PIDValues _data)
          : pid{.kp = _data.kp,
                .kd = _data.kd,
@@ -135,14 +132,17 @@ class PIDController {
 
 
    void setNewPid(PID _pid) { pid = _pid; }
-   void setNewPid(float _kp, float _ki, float _kd, float _i_max, float _min_output,
-                  float _max_output) {
+   void setNewPid(float _kp, float _ki, float _kd, float _i_max, float _min_output, float _max_output, float _desired, float _actual, float _actualRate) {
       pid = PID{.kp = _kp,
                   .kd = _kd,
                   .ki = _ki,
                   .i_max = _i_max,
                   .min_output = _min_output,
-                  .max_output = _max_output};
+                  .max_output = _max_output,
+                  .desired = _desired,
+                  .actual = _actual,
+                  .actualRate = _actualRate
+};
    }
 
    private:
@@ -153,5 +153,14 @@ class PIDController {
       float historicalValue[3] = {0.0f};  // Allows us to compute our derivative
                                         // if necessary
 };
+
+struct AxisPIDs{
+   PIDController pitch;
+   PIDController roll;
+   PIDController yaw;
+   PIDController thrust;
+};
+
+
 
 #endif /* PID_HPP_ */

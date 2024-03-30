@@ -17,7 +17,7 @@ class Flightmode {
    public:
     virtual ~Flightmode() = default;
 
-    virtual AttitudeManagerInput run(const AttitudeManagerInput& input) = 0;
+    virtual AttitudeManagerInput run(const AttitudeManagerInput& input, AxisPIDs _pids) = 0;
     virtual void updatePid(PIDController _axis, GainTerm whichGain, float desiredGain ) = 0;
     virtual void updatePidGains() = 0;
     virtual void updateControlLimits(ControlLimits_t limits) = 0;

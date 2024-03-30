@@ -4,7 +4,7 @@
 #include <cassert>
 
 namespace AM {
-    AttitudeManagerInput FBWA::run(const AttitudeManagerInput& input) {
+    AttitudeManagerInput FBWA::run(const AttitudeManagerInput& input, AxisPIDs _pids) {
         
         AttitudeManagerInput mappedOutputs;
 
@@ -37,6 +37,13 @@ namespace AM {
             (fbwa_control_limits.throttleLimit.max - fbwa_control_limits.throttleLimit.min) /
             (AM::AttitudeManager::INPUT_MAX - AM::AttitudeManager::INPUT_MIN);
         
+
+        _pids.pitch.setDesired(mappedOutputs.pitch);
+        _pids.roll.setDesired(mappedOutputs.roll);
+        _pids.yaw.setDesired(mappedOutputs.yaw);
+
+        
+
         return mappedOutputs;
     }
 

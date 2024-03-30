@@ -3,7 +3,7 @@
 
 namespace AM {
 
-AttitudeManagerInput Manual::run(const AttitudeManagerInput& input) {
+AttitudeManagerInput Manual::run(const AttitudeManagerInput& input, AxisPIDs _pids) {
     return input;
 }
 
