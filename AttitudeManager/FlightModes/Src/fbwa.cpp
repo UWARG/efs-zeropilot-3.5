@@ -4,7 +4,7 @@
 #include <cassert>
 
 namespace AM {
-    AttitudeManagerInput FBWA::run(const AttitudeManagerInput& input) {
+    AttitudeManagerInput FBWA::run(const AttitudeManagerInput& input, AxisPIDs _pids) {
         
         AttitudeManagerInput mappedOutputs;
 
