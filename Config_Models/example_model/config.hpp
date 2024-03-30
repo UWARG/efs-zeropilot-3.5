@@ -110,7 +110,7 @@ namespace config
                     },
                     .pitchLimit = {
                         .min = -30.0f,
-                        .max = -30.0f
+                        .max = 30.0f
                     }
                 }
             },
