@@ -29,4 +29,6 @@ namespace AM {
     void FBWA::updatePid() {} //Needs to be implemented
 
     void FBWA::updatePidGains() {} //Needs to be implemented
+
+    void FBWA::updateControlLimits() {} //Needs to be implemented
 }
