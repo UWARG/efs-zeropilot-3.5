@@ -116,6 +116,10 @@ namespace config
                     .throttleLimit = {
                         .min = 0.0f,
                         .max = 100.0f
+                    },
+                    .pitchLimit = {
+                        .min = -30.0f,
+                        .max = -30.0f
                     }
                 }
             },
