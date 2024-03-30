@@ -29,15 +29,6 @@ class AttitudeManager {
    public:
 
     //Constants used for mapping values
-    static const int PITCH_LIM_MAX = 30;
-    static const int PITCH_LIM_MIN = -30;
-
-    static const int ROLL_LIM_MAX = 40;
-    static const int ROLL_LIM_MIN = -40;
-
-    static const int YAW_LIM_MAX = 250;
-    static const int YAW_LIM_MIN = 0;
-
     static const int INPUT_MAX = 100;
     static const int INPUT_MIN = -100;
 
