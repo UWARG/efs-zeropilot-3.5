@@ -118,7 +118,7 @@ namespace config
                     }
                 }
             },
-            .flightmodeConstructor = constructObject<AM::Flightmode, ManualFlightmode>
+            .flightmodeConstructor = constructObject<AM::Flightmode, FBWA>
         }
     };
 
