@@ -11,7 +11,7 @@ class FBWA : public Flightmode {
 
     AttitudeManagerInput run(const AttitudeManagerInput& input) override;
     void updatePid() override;
-    void updatePidGains();
+    void updatePidGains() override;
 };
 
 }  // namespace AM
