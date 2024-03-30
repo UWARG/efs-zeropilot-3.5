@@ -19,5 +19,7 @@ namespace AM {
         return mappedOutputs;
     }
 
-    void FBWA::updatePid() {}
+    void FBWA::updatePid() {} //Needs to be implemented
+
+    void FBWA::updatePidGains() {} //Needs to be implemented
 }
