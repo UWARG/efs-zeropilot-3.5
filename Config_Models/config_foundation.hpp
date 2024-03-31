@@ -66,7 +66,7 @@ namespace config
     } ControlPID_t;
 
     typedef struct {
-        percentage_t min = 0.0f;
+        percentage_t min = -100.0f;
         percentage_t max = 100.0f;
     } AxisLimits_t;
 
