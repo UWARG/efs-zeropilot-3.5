@@ -81,7 +81,7 @@ namespace config
                     }
                 }
             },
-            .flightmodeConstructor = constructObject<AM::Flightmode, ManualFlightmode>
+            .flightmodeConstructor = constructObject<AM::Flightmode, AM::Manual>
         },
         {   //Flightmode2
             .tuningData{
@@ -101,16 +101,16 @@ namespace config
                 },
                 .controlLimits = {
                     .yawLimit = {
-                        .min = 5.0f,
+                        .min = -95.0f,
                         .max = 95.0f
-                    },
-                    .rollLimit = {
-                        .min = 0.0f,
-                        .max = 100.0f
                     },
                     .pitchLimit = {
                         .min = -30.0f,
                         .max = 30.0f
+                    },
+                    .rollLimit = {
+                        .min = -100.0f,
+                        .max = 100.0f
                     },
                     .throttleLimit = {
                         .min = 0.0f,
@@ -118,7 +118,7 @@ namespace config
                     }
                 }
             },
-            .flightmodeConstructor = constructObject<AM::Flightmode, FBWA>
+            .flightmodeConstructor = constructObject<AM::Flightmode, AM::FBWA>
         }
     };
 
