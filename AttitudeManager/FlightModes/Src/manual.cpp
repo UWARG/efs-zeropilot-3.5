@@ -7,7 +7,7 @@ AttitudeManagerInput Manual::run(const AttitudeManagerInput& input, AxisPIDs _pi
     return input;
 }
 
-void Manual::updatePid(PIDController _axis, GainTerm whichGain, float desiredGain ) {
+void Manual::updatePidGains(PIDController _axis, GainTerm whichGain, float desiredGain ) {
     switch (whichGain){
         case proportional:
             _axis.setKp(desiredGain);

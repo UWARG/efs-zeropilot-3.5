@@ -11,7 +11,7 @@ class Manual : public Flightmode {
 
     AttitudeManagerInput run(const AttitudeManagerInput& input, AxisPIDs _pids) override;
     void updatePid(PIDController _axis, GainTerm whichGain, float desiredGain ) override;
-    void updatePidGains() override;
+    void updatePidGains(PIDController _axis, GainTerm whichGain, float desiredGain) override;
     void updateControlLimits(ControlLimits_t limits) override;
 };
 
