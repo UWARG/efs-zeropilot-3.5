@@ -2,6 +2,7 @@
 if ( $args[0] -eq "help" ) {
     echo "run_docker.ps1 help          | show this message"
     echo "run_docker.ps1 compile       | compile/build ZeroPilot and return build files in Firmware/build/"
+    echo "run_docker.ps1 test          | compile tests, run tests, and return build files in Testing/build/"
     echo "run_docker.ps1 clang-tidy    | lint code with clang-tidy and return linting log in LintOutput/"
     echo "run_docker.ps1 clang-format  | reformat and return source files with clang-format"
     echo "                               in LintOutput/formatted_files"
@@ -41,6 +42,11 @@ switch ( $args[0] )
     "compile" {
         docker exec efs_container /bin/bash -c "cd /src/Tools && ./tools.bash compile -c"
         docker cp efs_container:/src/Tools/Firmware $PSScriptRoot/
+    }
+
+    "test" {
+        docker exec efs_container /bin/bash -c "cd /src/Tools && ./tools.bash compile -t Testing -c && ./tools.bash run"
+        docker cp efs_container:/src/Tools/Testing $PSScriptRoot/
     }
 
     "clang-format" {

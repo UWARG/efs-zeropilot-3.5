@@ -7,6 +7,7 @@ SCRIPT_PATH=$(dirname -- "$0")
 if [[ $1 == "help" ]]; then
     echo "run_docker.bash help          | show this message"
     echo "run_docker.bash compile       | compile/build ZeroPilot and return build files in Firmware/build/"
+    echo "run_docker.bash test          | compile tests, run tests, and return build files in Testing/build/"
     echo "run_docker.bash clang-tidy    | lint code with clang-tidy and return linting log in LintOutput/"
     echo "run_docker.bash clang-format  | reformat and return source files with clang-format"
     echo "                                in LintOutput/formatted_files"
@@ -43,6 +44,11 @@ case $1 in
     "compile")
         docker exec efs_container /bin/bash -c "cd /src/Tools && ./tools.bash compile -c"
         docker cp efs_container:/src/Tools/Firmware $SCRIPT_PATH/
+    ;;
+
+    "test")
+        docker exec efs_container /bin/bash -c "cd /src/Tools && ./tools.bash compile -t Testing -c && ./tools.bash run"
+        docker cp efs_container:/src/Tools/Testing $SCRIPT_PATH/
     ;;
 
     "clang-format")

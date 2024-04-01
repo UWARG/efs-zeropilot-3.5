@@ -6,8 +6,10 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     xz-utils \
     tar \
     make \
+    cmake \
     ca-certificates \
-    g++
+    g++ \
+    git
 
 ARG ARM_PKG_NAME=arm-gnu-toolchain-12.3.rel1-x86_64-arm-none-eabi
 RUN wget https://developer.arm.com/-/media/Files/downloads/gnu/12.3.rel1/binrel/arm-gnu-toolchain-12.3.rel1-x86_64-arm-none-eabi.tar.xz -O /tmp/$ARM_PKG_NAME.tar.xz && \
@@ -22,6 +24,15 @@ RUN wget https://github.com/danmar/cppcheck/archive/2.13.0.tar.gz -O /tmp/$CPPCH
     tar -xvf /tmp/$CPPCHECK_PKG_NAME.tar.gz -C /tmp/ && \
     (cd /tmp/$CPPCHECK_PKG_NAME && make && make install FILESDIR=/usr/share/cppcheck)
 
+RUN git clone https://github.com/google/googletest.git -b v1.14.0 /tmp/googletest && \
+    cd /tmp/googletest && \
+    mkdir build && \
+    cd build && \
+    mkdir /usr/share/googletest && \
+    cmake .. -DCMAKE_INSTALL_PREFIX=/usr/share/googletest && \
+    make && \
+    make install
+
 
 # Export Stage
 FROM ubuntu:jammy-20240125
@@ -35,6 +46,8 @@ ARG ARM_PKG_NAME=arm-gnu-toolchain-12.3.rel1-x86_64-arm-none-eabi
 COPY --from=build /usr/share/$ARM_PKG_NAME /usr/share/$ARM_PKG_NAME
 COPY --from=build /usr/share/cppcheck /usr/bin/
 COPY --from=build /usr/bin/cppcheck /usr/bin/cppcheck
+COPY --from=build /usr/share/googletest/include /usr/include/
+COPY --from=build /usr/share/googletest/lib /usr/lib/
 COPY --from=build /etc/apt/keyrings/llvm-snapshot.gpg.key /etc/apt/keyrings/
 COPY --from=build /etc/apt/sources.list.d/llvm.list /etc/apt/sources.list.d/
 
@@ -42,13 +55,16 @@ RUN ln -s /usr/share/$ARM_PKG_NAME/bin/arm-none-eabi-gcc /usr/bin/arm-none-eabi-
     ln -s /usr/share/$ARM_PKG_NAME/bin/arm-none-eabi-g++ /usr/bin/arm-none-eabi-g++ && \
     ln -s /usr/share/$ARM_PKG_NAME/bin/arm-none-eabi-gdb /usr/bin/arm-none-eabi-gdb && \
     ln -s /usr/share/$ARM_PKG_NAME/bin/arm-none-eabi-size /usr/bin/arm-none-eabi-size && \
-    ln -s /usr/share/$ARM_PKG_NAME/bin/arm-none-eabi-objcopy /usr/bin/arm-none-eabi-objcopy && \
-    apt-get update && \
+    ln -s /usr/share/$ARM_PKG_NAME/bin/arm-none-eabi-objcopy /usr/bin/arm-none-eabi-objcopy
+
+RUN apt-get update && \
     apt-get -y --no-install-recommends install \
         make \
         cmake \
-        ca-certificates && \
-    chmod 644 /etc/apt/keyrings/llvm-snapshot.gpg.key && \
+        g++ \
+        ca-certificates
+
+RUN chmod 644 /etc/apt/keyrings/llvm-snapshot.gpg.key && \
     chmod 644 /etc/apt/sources.list.d/llvm.list && \
     apt-get update && \
     apt-get -y --no-install-recommends install clang-tidy-18 && \
