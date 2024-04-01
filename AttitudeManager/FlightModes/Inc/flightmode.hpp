@@ -20,7 +20,7 @@ class Flightmode {
     virtual AttitudeManagerInput run(const AttitudeManagerInput& input) = 0;
     virtual void updatePid() = 0;
     virtual void updatePidGains();
-    virtual void updateControlLimits();
+    virtual void updateControlLimits(ControlLimits_t limits);
 
    protected:
     Flightmode() = default;

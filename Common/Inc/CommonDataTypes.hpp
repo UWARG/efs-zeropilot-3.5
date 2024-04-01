@@ -25,4 +25,18 @@ typedef enum {
     throttle,
     NUM_CONTROL_AXIS
 } ControlAxis_t;
+
+using percentage_t = float;
+
+typedef struct {
+    percentage_t min = -100.0f;
+    percentage_t max = 100.0f;
+} AxisLimits_t;
+
+typedef struct {
+    AxisLimits_t yawLimit = {};
+    AxisLimits_t pitchLimit = {};
+    AxisLimits_t rollLimit = {};
+    AxisLimits_t throttleLimit = {};
+} ControlLimits_t;
 #endif  // ZPSW3_COMMON_DATATYPES_HPP

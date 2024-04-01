@@ -2,9 +2,9 @@
 #define ZPSW3_CONFIG_HPP
 
 #include "config_foundation.hpp"
-#include "ZP_D_PWMChannel.hpp"
 #include "manual.hpp"
 #include "tim.h"
+#include "ZP_D_PWMChannel.hpp"
 
 namespace config
 {

@@ -12,7 +12,18 @@ class FBWA : public Flightmode {
     AttitudeManagerInput run(const AttitudeManagerInput& input) override;
     void updatePid() override;
     void updatePidGains() override;
-    void updateControlLimits() override;
+    void updateControlLimits(ControlLimits_t limits) override;
+
+    private:
+    // TODO: FIXME to be a control limit class
+    float yawMin;
+    float yawMax;
+    float rollMin;
+    float rollMax;
+    float pitchMin;
+    float pitchMax;
+    float throttleMin;
+    float throttleMax;
 };
 
 }  // namespace AM
