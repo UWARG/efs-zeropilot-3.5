@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-# define path to this bash script
-SCRIPT_PATH=$(dirname -- "$0")
-JSON_PATH=$SCRIPT_PATH/Firmware/build/compile_commands.json
+# define path to the tools dir
+TOOLS_DIR=$(dirname -- "$0")/..
+JSON_PATH=$TOOLS_DIR/Firmware/build/compile_commands.json
 
 # exclude paths specified in static_analysis_ignore.txt
 EXCLUDE=''
@@ -10,7 +10,7 @@ while IFS=$'\n' read -r line; do
     if [[ $line != *#* && $line != "" ]]; then
         EXCLUDE+="$line|"
     fi
-done < "$SCRIPT_PATH/static_analysis_ignore.txt"
+done < "$TOOLS_DIR/static_analysis_ignore.txt"
 EXCLUDE=${EXCLUDE:0:-1}
 
 ALL_INC_FILES=$(find /src -name "*.h*" | grep -Ev "$EXCLUDE")

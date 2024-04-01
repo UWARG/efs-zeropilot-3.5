@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
-# define path to this bash script
-SCRIPT_PATH=$(dirname -- "$0")
+# define path to the tools dir
+TOOLS_DIR=$(dirname -- "$0")
+# define path to the helper scripts dir in the container
+SCRIPTS_DIR=/src/Tools/HelperScripts
 
 # Help message
 if [[ $1 == "help" ]]; then
@@ -19,7 +21,7 @@ fi
 # Build image if it doesn't exist
 IMAGES=$(docker image ls)
 if [[ $IMAGES != *efs_image* ]]; then
-    docker build -t efs_image -f $SCRIPT_PATH/Dockerfile .
+    docker build -t efs_image -f $TOOLS_DIR/Dockerfile .
 fi
 
 # Create container if it doesn't exist
@@ -31,10 +33,10 @@ else
     docker start efs_container
 fi
 
-docker cp $SCRIPT_PATH/../. efs_container:/src/
+docker cp $TOOLS_DIR/../. efs_container:/src/
 
 # Create directory for linting output if it doesn't exist
-mkdir -p $SCRIPT_PATH/LintOutput
+mkdir -p $TOOLS_DIR/LintOutput
 
 case $1 in
     "shell")
@@ -42,28 +44,28 @@ case $1 in
     ;;
 
     "compile")
-        docker exec efs_container /bin/bash -c "cd /src/Tools && ./tools.bash compile -c"
-        docker cp efs_container:/src/Tools/Firmware $SCRIPT_PATH/
+        docker exec efs_container /bin/bash -c "cd $SCRIPTS_DIR && ./build.bash -c"
+        docker cp efs_container:/src/Tools/Firmware $TOOLS_DIR/
     ;;
 
     "test")
-        docker exec efs_container /bin/bash -c "cd /src/Tools && ./tools.bash compile -t Testing -c && ./tools.bash run"
-        docker cp efs_container:/src/Tools/Testing $SCRIPT_PATH/
+        docker exec efs_container /bin/bash -c "cd $SCRIPTS_DIR && ./build.bash -t Testing -c && ./test.bash"
+        docker cp efs_container:/src/Tools/Testing $TOOLS_DIR/
     ;;
 
     "clang-format")
-        docker exec efs_container /bin/bash -c "cd /src/Tools && ./clang-format.bash"
-        docker cp efs_container:/src/Tools/LintOutput/formatted-files $SCRIPT_PATH/LintOutput/
+        docker exec efs_container /bin/bash -c "cd $SCRIPTS_DIR && ./clang-format.bash"
+        docker cp efs_container:/src/Tools/LintOutput/formatted-files $TOOLS_DIR/LintOutput/
     ;;
 
     "clang-tidy")
-        docker exec efs_container /bin/bash -c "cd /src/Tools && ./clang-tidy.bash"
-        docker cp efs_container:/src/Tools/LintOutput/clang-tidy.txt $SCRIPT_PATH/LintOutput/
+        docker exec efs_container /bin/bash -c "cd $SCRIPTS_DIR && ./clang-tidy.bash"
+        docker cp efs_container:/src/Tools/LintOutput/clang-tidy.txt $TOOLS_DIR/LintOutput/
     ;;
 
     "cppcheck")
-        docker exec efs_container /bin/bash -c "cd /src/Tools && ./cppcheck.bash"
-        docker cp efs_container:/src/Tools/LintOutput/cppcheck.txt $SCRIPT_PATH/LintOutput/
+        docker exec efs_container /bin/bash -c "cd $SCRIPTS_DIR && ./cppcheck.bash"
+        docker cp efs_container:/src/Tools/LintOutput/cppcheck.txt $TOOLS_DIR/LintOutput/
     ;;
 esac
 

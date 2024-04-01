@@ -1,3 +1,6 @@
+# define path to the helper scripts dir in the container
+$SCRIPTS_DIR = "/src/Tools/HelperScripts"
+
 # Help message
 if ( $args[0] -eq "help" ) {
     echo "run_docker.ps1 help          | show this message"
@@ -40,27 +43,27 @@ switch ( $args[0] )
     }
 
     "compile" {
-        docker exec efs_container /bin/bash -c "cd /src/Tools && ./tools.bash compile -c"
+        docker exec efs_container /bin/bash -c "cd $SCRIPTS_DIR && ./build.bash -c"
         docker cp efs_container:/src/Tools/Firmware $PSScriptRoot/
     }
 
     "test" {
-        docker exec efs_container /bin/bash -c "cd /src/Tools && ./tools.bash compile -t Testing -c && ./tools.bash run"
+        docker exec efs_container /bin/bash -c "cd $SCRIPTS_DIR && ./build.bash -t Testing -c && ./test.bash"
         docker cp efs_container:/src/Tools/Testing $PSScriptRoot/
     }
 
     "clang-format" {
-        docker exec efs_container /bin/bash -c "cd /src/Tools && ./clang-format.bash"
+        docker exec efs_container /bin/bash -c "cd $SCRIPTS_DIR && ./clang-format.bash"
         docker cp efs_container:/src/Tools/LintOutput/formatted-files $PSScriptRoot/LintOutput/
     }
 
     "clang-tidy" {
-        docker exec efs_container /bin/bash -c "cd /src/Tools && ./clang-tidy.bash"
+        docker exec efs_container /bin/bash -c "cd $SCRIPTS_DIR && ./clang-tidy.bash"
         docker cp efs_container:/src/Tools/LintOutput/clang-tidy.txt $PSScriptRoot/LintOutput/
     }
 
     "cppcheck" {
-        docker exec efs_container /bin/bash -c "cd /src/Tools && ./cppcheck.bash"
+        docker exec efs_container /bin/bash -c "cd $SCRIPTS_DIR && ./cppcheck.bash"
         docker cp efs_container:/src/Tools/LintOutput/cppcheck.txt $PSScriptRoot/LintOutput/
     }
 }
