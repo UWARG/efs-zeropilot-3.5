@@ -143,7 +143,7 @@ CheckOptions:
   readability-identifier-naming.MemberCase: 'camelBack'
   readability-identifier-naming.MemberSuffix: '_'
   readability-identifier-naming.StructCase: 'CamelCase'
-  readability-identifier-naming.TypedefCase: 'CameCase'
+  readability-identifier-naming.TypedefCase: 'CamelCase'
   readability-identifier-naming.TypedefSuffix: '_t'
   readability-identifier-naming.EnumCase: 'CamelCase'
   readability-identifier-naming.EnumSuffix: '_e'
