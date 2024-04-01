@@ -14,16 +14,9 @@ class FBWA : public Flightmode {
     void updatePidGains() override;
     void updateControlLimits(ControlLimits_t limits) override;
 
-    private:
+   private:
     // TODO: FIXME to be a control limit class
-    float yawMin;
-    float yawMax;
-    float rollMin;
-    float rollMax;
-    float pitchMin;
-    float pitchMax;
-    float throttleMin;
-    float throttleMax;
+    ControlLimits_t fbwa_control_limits;
 };
 
 }  // namespace AM
