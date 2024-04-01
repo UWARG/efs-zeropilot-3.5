@@ -7,4 +7,6 @@ public:
         return input;
     };
     void updatePid(){};
+    void updatePidGains() {};
+    void updateControlLimits(ControlLimits_t limits) {};
 };

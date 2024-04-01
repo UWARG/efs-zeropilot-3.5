@@ -11,6 +11,8 @@ class Manual : public Flightmode {
 
     AttitudeManagerInput run(const AttitudeManagerInput& input) override;
     void updatePid() override;
+    void updatePidGains() override;
+    void updateControlLimits(ControlLimits_t limits) override;
 };
 
 }  // namespace AM
