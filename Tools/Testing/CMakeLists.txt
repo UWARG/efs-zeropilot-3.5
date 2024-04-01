@@ -125,8 +125,8 @@ file(GLOB STUBS_CODE
 )
 
 #Models
-include_directories("${ROOT_DIR}/Config_Models")
-include_directories("${ROOT_DIR}/Config_Models/${MODEL_NAME}")
+include_directories(${ROOT_DIR}/Config_Models)
+include_directories(${ROOT_DIR}/Config_Models/example_model)
 file(GLOB MODELS_CODE
 )
 

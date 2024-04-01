@@ -1,7 +1,7 @@
 #ifndef ZP_D_PWM_CHANNEL_HPP_
 #define ZP_D_PWM_CHANNEL_HPP_
 
-#include "main.h"
+#include "tim.h"
 
 #include "ZP_D_MotorChannel.hpp"
 

@@ -1,7 +1,7 @@
 #include "fbwa.hpp"
 #include "CommonDataTypes.hpp"
 #include "AM.hpp"
-#include "config.hpp"
+#include "config_models.hpp"
 #include <cassert>
 
 namespace AM {
