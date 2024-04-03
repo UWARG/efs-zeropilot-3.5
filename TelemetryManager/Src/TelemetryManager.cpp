@@ -71,6 +71,7 @@ void TelemetryManager::update() {
      * message.
      */
     //START: convert bytes from GSC.DMAReceiveBuffer to Mavlink messages
+    GSC.updateDMAReceiveBuffer();
     MT.bytesToMavlinkMsg(GSC.DMAReceiveBuffer);
     //END: convert bytes from GSC.DMAReceiveBuffer to Mavlink messages
 

@@ -64,7 +64,7 @@ class GroundStationCommunication {
      * the ground station and stores bytes from the transmission into the GSC.DMAReceiveBuffer if
      * there is space. Otherwise the data is discarded.
      */
-    void receiveInterruptServiceRoutine();
+    void updateDMAReceiveBuffer();
 
     private:
     uint8_t internalBuffer_[MAVLINK_MAX_PAYLOAD_LEN*10]; // make this a constant so that all of the buffer sizes can be changed at once

@@ -29,7 +29,7 @@ void GroundStationCommunication::transmit(TMCircularBuffer &transmissionBuffer) 
     return;
 }
 
-void GroundStationCommunication::receiveInterruptServiceRoutine() { // call this method in drivers_callbacks.cpp
+void GroundStationCommunication::updateDMAReceiveBuffer() { // call this method in drivers_callbacks.cpp
 
     int bytesReceived = pRFD900->getAvailDataSize();
 
