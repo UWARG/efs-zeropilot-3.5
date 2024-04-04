@@ -16,6 +16,7 @@
 
 
 
+
 #define TIMEOUT_CYCLES 250000 // 25k = 1 sec fro testing 10/14/2023 => 250k = 10 sec
 
 static uint32_t DisconnectionCount = 0;
@@ -37,7 +38,13 @@ SystemManager::SystemManager():
 SystemManager::~SystemManager() {}
 
 void SystemManager::systemCheckTask(void *pvParameters){
+    uint8_t msg[] = "systemCheckTask running (every second)...\n";
     for(;;){
+        HAL_UART_Transmit(&huart1, msg, sizeof(msg), 100);
+        vTaskDelay(pdMS_TO_TICKS(1000)); 
+
+
+
         this->rcInputs_ = rcController_->GetRCControl();
 
         //TO-DO: need to implement it using is_Data_New;
@@ -93,9 +100,12 @@ void SystemManager::systemCheckTaskWrapper(void *pvParameters) {
 }
 
 void SystemManager::attitudeManagerTask(void *pvParameters){
+    uint8_t msg[] = "AM running (every 2 seconds)...\n";
     for(;;){
         //call AM
-        std::cout<<"AM"<<'\n';
+        HAL_UART_Transmit(&huart1, msg, sizeof(msg), 100);
+        vTaskDelay(pdMS_TO_TICKS(2000)); 
+
         watchdog_.refreshWatchdog(); // always hit the dog
     }
 }
@@ -106,9 +116,12 @@ void SystemManager::attitudeManagerTaskWrapper(void* pvParameters){
 }
 
 void SystemManager::telemetryManagerTask(void *pvParameters){
+    uint8_t msg[] = "TM running (every 3 seconds)...\n";
     for(;;){
         //call TM
-        std::cout<<"TM"<<'\n';
+        HAL_UART_Transmit(&huart1, msg, sizeof(msg), 100);
+        vTaskDelay(pdMS_TO_TICKS(3000)); 
+        
         watchdog_.refreshWatchdog(); // always hit the dog
     }
 }
