@@ -2,9 +2,10 @@
 #define ZPSW3_CONFIG_HPP
 
 #include "config_foundation.hpp"
-#include "ZP_D_PWMChannel.hpp"
 #include "manual.hpp"
+#include "fbwa.hpp"
 #include "tim.h"
+#include "ZP_D_PWMChannel.hpp"
 
 namespace config
 {
@@ -81,7 +82,7 @@ namespace config
                     }
                 }
             },
-            .flightmodeConstructor = constructObject<AM::Flightmode, ManualFlightmode>
+            .flightmodeConstructor = constructObject<AM::Flightmode, AM::Manual>
         },
         {   //Flightmode2
             .tuningData{
@@ -101,16 +102,24 @@ namespace config
                 },
                 .controlLimits = {
                     .yawLimit = {
-                        .min = 5.0f,
+                        .min = -95.0f,
                         .max = 95.0f
                     },
+                    .pitchLimit = {
+                        .min = -30.0f,
+                        .max = 30.0f
+                    },
                     .rollLimit = {
+                        .min = -100.0f,
+                        .max = 100.0f
+                    },
+                    .throttleLimit = {
                         .min = 0.0f,
                         .max = 100.0f
                     }
                 }
             },
-            .flightmodeConstructor = constructObject<AM::Flightmode, ManualFlightmode>
+            .flightmodeConstructor = constructObject<AM::Flightmode, AM::FBWA>
         }
     };
 

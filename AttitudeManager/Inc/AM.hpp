@@ -27,6 +27,11 @@ typedef struct {
 
 class AttitudeManager {
    public:
+
+    //Constants used for mapping values
+    static constexpr float INPUT_MAX = 100;
+    static constexpr float INPUT_MIN = -100;
+
     static void setControlInputs(const AttitudeManagerInput& new_control_inputs);
 
     static AttitudeManagerInput getControlInputs();

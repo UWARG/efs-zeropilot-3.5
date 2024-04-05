@@ -9,7 +9,6 @@
 
 namespace config
 {
-    using percentage_t = float;
 
     //Define factory function to create drivers and flightmodes
     template <class BaseClass, class DerivedClass, auto... args>
@@ -64,18 +63,6 @@ namespace config
         AxisPID_t rollPID = {};
         AxisPID_t throttlePID = {};
     } ControlPID_t;
-
-    typedef struct {
-        percentage_t min = 0.0f;
-        percentage_t max = 100.0f;
-    } AxisLimits_t;
-
-    typedef struct {
-        AxisLimits_t yawLimit = {};
-        AxisLimits_t pitchLimit = {};
-        AxisLimits_t rollLimit = {};
-        AxisLimits_t throttleLimit = {};
-    } ControlLimits_t;
 
     typedef struct {
         ControlPID_t PIDValues = {};

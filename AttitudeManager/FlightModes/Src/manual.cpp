@@ -8,5 +8,7 @@ AttitudeManagerInput Manual::run(const AttitudeManagerInput& input) {
 }
 
 void Manual::updatePid() {}
+void Manual::updatePidGains() {}
+void Manual::updateControlLimits(ControlLimits_t limits) {}
 
 }  // namespace AM
