@@ -8,7 +8,6 @@ namespace AM {
 class FBWA : public Flightmode {
    public:
     FBWA() = default;
-    virtual ~FBWA() = default;
 
     AttitudeManagerInput run(const AttitudeManagerInput& input) override;
     void updatePid() override;

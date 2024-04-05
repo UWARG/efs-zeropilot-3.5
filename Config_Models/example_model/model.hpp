@@ -3,6 +3,7 @@
 
 #include "config_foundation.hpp"
 #include "manual.hpp"
+#include "fbwa.hpp"
 #include "tim.h"
 #include "ZP_D_PWMChannel.hpp"
 

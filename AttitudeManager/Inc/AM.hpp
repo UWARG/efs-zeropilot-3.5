@@ -29,8 +29,8 @@ class AttitudeManager {
    public:
 
     //Constants used for mapping values
-    static const int INPUT_MAX = 100;
-    static const int INPUT_MIN = -100;
+    static constexpr float INPUT_MAX = 100;
+    static constexpr float INPUT_MIN = -100;
 
     static void setControlInputs(const AttitudeManagerInput& new_control_inputs);
 
