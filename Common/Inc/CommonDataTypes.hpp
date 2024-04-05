@@ -28,15 +28,16 @@ typedef enum {
 
 using percentage_t = float;
 
-typedef struct {
-    percentage_t min = -100.0f;
-    percentage_t max = 100.0f;
+typedef struct AxisLimits_t {
+    percentage_t min;
+    percentage_t max;
 } AxisLimits_t;
 
-typedef struct {
-    AxisLimits_t yawLimit = {};
-    AxisLimits_t pitchLimit = {};
-    AxisLimits_t rollLimit = {};
-    AxisLimits_t throttleLimit = {};
+typedef struct ControlLimits_t {
+    AxisLimits_t yawLimit;
+    AxisLimits_t pitchLimit;
+    AxisLimits_t rollLimit;
+    AxisLimits_t throttleLimit;
 } ControlLimits_t;
+
 #endif  // ZPSW3_COMMON_DATATYPES_HPP
