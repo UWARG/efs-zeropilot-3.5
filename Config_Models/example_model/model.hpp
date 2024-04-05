@@ -121,6 +121,10 @@ namespace config
                         .min = -30.0f,
                         .max = 30.0f
                     },
+                    .rollLimit = {
+                        .min = -100.0f,
+                        .max = 100.0f
+                    },
                     .throttleLimit = {
                         .min = 0.0f,
                         .max = 100.0f

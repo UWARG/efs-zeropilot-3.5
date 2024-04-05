@@ -7,18 +7,8 @@ AttitudeManagerInput Manual::run(const AttitudeManagerInput& input, AxisPIDs _pi
     return input;
 }
 
-void Manual::updatePidGains(PIDController _axis, GainTerm whichGain, float desiredGain ) {
-    switch (whichGain){
-        case proportional:
-            _axis.setKp(desiredGain);
-            break;
-        case integral:
-            _axis.setKi(desiredGain);
-            break;
-        case derivative:
-            _axis.setKd(desiredGain);
-            break;
-    }
-}
+void Manual::updatePid() {}
+void Manual::updatePidGains() {}
+void Manual::updateControlLimits(ControlLimits_t limits) {}
 
 }  // namespace AM
