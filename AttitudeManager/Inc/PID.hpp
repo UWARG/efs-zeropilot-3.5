@@ -19,12 +19,6 @@
 
 class PIDController; // Forward declaration to avoid errors in structs
 
-struct ControlData{ 
-   /* data */
-   float desired;
-   float actual;
-   float actualRate;
-};
 
 struct PIDGains{
    float kp;
@@ -107,18 +101,16 @@ class PIDController {
      * @return					The result of the PID
      * computation.
      */
-   float execute(ControlData _data);
-   float execute_p(ControlData _data);
-   float execute_i(ControlData _data);
+   float execute(float _desired, float _actual, float _actualRate);
+   float execute_p(float _desired, float _actual, float _actualRate);
+   float execute_i(float _desired, float _actual, float _actualRate);
 
    // 2 derivative calculations to compare historical calculation vs back calculation
    //Derivative calculation using historical data
-   float execute_d_hist(ControlData _data);
+   float execute_d_hist(float _desired, float _actual, float _actualRate);
 
    //Derivative calculation using back calculation
-   float execute_d_back(ControlData _data);
-
-   void updatePIDGains(PIDGains _gains);
+   float execute_d_back(float _desired, float _actual, float _actualRate);
 
    float getIntegral() { return integral; }
    void setKi(float _ki) {pid.ki = _ki;};
@@ -158,7 +150,7 @@ struct AxisPIDs{
    PIDController pitch;
    PIDController roll;
    PIDController yaw;
-   PIDController thrust;
+   PIDController throttle;
 };
 
 
