@@ -86,13 +86,14 @@ const Diskio_drvTypeDef  SD_Driver =
 
 /**
   * @brief  Initializes a Drive
-  * @param  pdrv : Physical drive number
+  * @param  lun : not used
   * @retval DSTATUS: Operation status
   */
-DSTATUS SD_initialize(BYTE pdrv)
+DSTATUS SD_initialize(BYTE lun)
 {
   /* USER CODE BEGIN SD_initialize */
   Stat = STA_NOINIT;
+  BYTE pdrv = lun; // physical drive number
 
   /* Place for user code (may require BSP functions/defines to be added to the project) */
   if (osKernelGetState() == osKernelRunning) {
@@ -117,12 +118,14 @@ DSTATUS SD_initialize(BYTE pdrv)
 
 /**
   * @brief  Gets Disk Status
-  * @param  pdrv : Physical drive number
+  * @param  lun : not used
   * @retval DSTATUS: Operation status
   */
-DSTATUS SD_status(BYTE pdrv)
+DSTATUS SD_status(BYTE lun)
 {
   /* USER CODE BEGIN SD_status */
+  BYTE pdrv = lun; // physical drive number
+
 	return SD_CheckStatus(pdrv);
   /* USER CODE END SD_status */
 }
