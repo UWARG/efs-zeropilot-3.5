@@ -43,7 +43,7 @@ ARG CPPCHECK_PKG_NAME=cppcheck-2.13.0
 RUN wget https://github.com/danmar/cppcheck/archive/2.13.0.tar.gz -O /tmp/$CPPCHECK_PKG_NAME.tar.gz && \
     tar -xvf /tmp/$CPPCHECK_PKG_NAME.tar.gz -C /tmp/ && \
     cd /tmp/$CPPCHECK_PKG_NAME && \
-    make && \
+    make FILESDIR=/usr/share/cppcheck && \
     make install FILESDIR=/usr/share/cppcheck
 
 # GoogleTest
