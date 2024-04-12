@@ -144,7 +144,7 @@ DRESULT SD_read(BYTE lun, BYTE *buff, DWORD sector, UINT count)
   DRESULT res = RES_ERROR;
   WORD event;
 	osStatus_t status;
-  DWORD aligned_buffer[BLOCKSIZE / 4] = {0};
+  DWORD alignedBuffer[BLOCKSIZE / 4] = {0};
 
   // DMA can only handle word-aligned pointers
   // If BYTE* buff is not word aligned
@@ -157,12 +157,12 @@ DRESULT SD_read(BYTE lun, BYTE *buff, DWORD sector, UINT count)
         return res;
       }
 
-      if (BSP_SD_ReadBlocks_DMA(aligned_buffer, (DWORD) (sector), 1) == MSD_OK) {
+      if (BSP_SD_ReadBlocks_DMA(alignedBuffer, (DWORD) (sector), 1) == MSD_OK) {
         status = osMessageQueueGet(SDQueueID, (void*) &event, NULL, SD_TIMEOUT);
         if ((status == osOK) && (event == READ_CPLT_MSG)) {
           if (SD_CheckStatusWithTimeout(SD_TIMEOUT) == 0) {
             res = RES_OK;
-            memcpy(buff, aligned_buffer, BLOCKSIZE);
+            memcpy(buff, alignedBuffer, BLOCKSIZE);
           }
         }
       }
@@ -209,21 +209,21 @@ DRESULT SD_write(BYTE lun, const BYTE *buff, DWORD sector, UINT count)
   DRESULT res = RES_ERROR;
 	WORD event;
 	osStatus_t status;
-  DWORD aligned_buffer[BLOCKSIZE / 4] = {0};
+  DWORD alignedBuffer[BLOCKSIZE / 4] = {0};
 
   // DMA can only handle word-aligned pointers
   // If BYTE* buff is not word aligned
   if ((((uintptr_t)buff) & 0x3) != 0) {
     for (UINT i = 0; i < count; i++) {
       res = RES_ERROR;
-      memcpy(aligned_buffer, buff, BLOCKSIZE);
+      memcpy(alignedBuffer, buff, BLOCKSIZE);
 
       // Ensure the SDCard is ready for a new operation
       if (SD_CheckStatusWithTimeout(SD_TIMEOUT) < 0) {
         return res;
       }
 
-      if (BSP_SD_WriteBlocks_DMA(aligned_buffer, (DWORD) (sector), 1) == MSD_OK) {
+      if (BSP_SD_WriteBlocks_DMA(alignedBuffer, (DWORD) (sector), 1) == MSD_OK) {
         status = osMessageQueueGet(SDQueueID, (void*) &event, NULL, SD_TIMEOUT);
         if ((status == osOK) && (event == WRITE_CPLT_MSG )) {
           if (SD_CheckStatusWithTimeout(SD_TIMEOUT) == 0) {

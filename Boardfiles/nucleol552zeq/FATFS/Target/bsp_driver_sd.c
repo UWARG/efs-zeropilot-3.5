@@ -21,16 +21,16 @@ DSTATUS SD_CheckStatus(BYTE lun)
 
 BYTE BSP_SD_Init(void)
 {
-  BYTE sd_state = MSD_OK;
+  BYTE sdState = MSD_OK;
   /* Check if the SD card is plugged in the slot */
   if (BSP_SD_IsDetected() != SD_PRESENT)
   {
     return MSD_ERROR_SD_NOT_PRESENT;
   }
   /* HAL SD initialization */
-  sd_state = HAL_SD_Init(&hsd1);
+  sdState = HAL_SD_Init(&hsd1);
 
-  return sd_state;
+  return sdState;
 }
 
 /**
@@ -81,14 +81,14 @@ BYTE BSP_PlatformIsDetected(void) {
   * @retval SD status
   */
 BYTE BSP_SD_ReadBlocks_DMA(DWORD *pData, DWORD ReadAddr, DWORD NumOfBlocks) {
-  BYTE sd_state = MSD_OK;
+  BYTE sdState = MSD_OK;
 
   // Read block(s) in DMA transfer mode
   if (HAL_SD_ReadBlocks_DMA(&hsd1, (uint8_t *)pData, ReadAddr, NumOfBlocks) != HAL_OK) {
-    sd_state = MSD_ERROR;
+    sdState = MSD_ERROR;
   }
 
-  return sd_state;
+  return sdState;
 }
 
 /**
@@ -99,14 +99,14 @@ BYTE BSP_SD_ReadBlocks_DMA(DWORD *pData, DWORD ReadAddr, DWORD NumOfBlocks) {
   * @retval SD status
   */
 BYTE BSP_SD_WriteBlocks_DMA(DWORD *pData, DWORD WriteAddr, DWORD NumOfBlocks) {
-  BYTE sd_state = MSD_OK;
+  BYTE sdState = MSD_OK;
 
   // Write block(s) in DMA transfer mode
   if (HAL_SD_WriteBlocks_DMA(&hsd1, (uint8_t *)pData, WriteAddr, NumOfBlocks) != HAL_OK) {
-    sd_state = MSD_ERROR;
+    sdState = MSD_ERROR;
   }
 
-  return sd_state;
+  return sdState;
 }
 
 int SD_CheckStatusWithTimeout(DWORD timeout) {
