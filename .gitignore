@@ -22,7 +22,7 @@
 .idea/
 .vscode/
 .DS_Store/
-Tools/*/build
-Tools/LintOutput
+tools/*/build
+tools/lint_output
 Debug/
 /.metadata/

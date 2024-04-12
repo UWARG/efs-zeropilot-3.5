@@ -41,7 +41,7 @@ done
 # -----run tests------
 # ====================
 
-TEST_PROGRAM="$TOOLS_DIR/Testing/build/unit_testing"
+TEST_PROGRAM="$TOOLS_DIR/testing/build/unit_testing"
 
 # check for test executable existance
 if [[ ! -f $TEST_PROGRAM  ]]; then

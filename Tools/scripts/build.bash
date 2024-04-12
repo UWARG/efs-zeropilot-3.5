@@ -71,7 +71,7 @@ done
 # ====================
 
 # validate build type
-if [[ $COMPILE_TYPE != "Firmware" ]] && [[ $COMPILE_TYPE != "Testing" ]]; then
+if [[ $COMPILE_TYPE != "firmware" ]] && [[ $COMPILE_TYPE != "testing" ]]; then
     throw_error "Error: Build type $COMPILE_TYPE is undefined."
 fi
 
@@ -89,7 +89,7 @@ fi
 # compile setup
 echo "Building ZeroPilot for $(echo $COMPILE_TYPE | tr '[:upper:]' '[:lower:]')."  
 COMPILE_DIR="$TOOLS_DIR/$COMPILE_TYPE/build" 
-if [[ $COMPILE_TYPE == "Firmware" ]]; then
+if [[ $COMPILE_TYPE == "firmware" ]]; then
     echo "Building for platform $PLATFORM and model $MODEL_NAME."
 fi 
 if [[ $CLEAN == true ]]; then
@@ -101,7 +101,7 @@ fi
 echo ""
 echo "Creating $GENERATOR build system..."
 cmake -E make_directory $COMPILE_DIR
-if [[ $COMPILE_TYPE == "Firmware" ]]; then
+if [[ $COMPILE_TYPE == "firmware" ]]; then
     cmake -E chdir $COMPILE_DIR \
         cmake \
             -G "${GENERATOR}" \

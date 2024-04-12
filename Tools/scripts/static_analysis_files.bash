@@ -2,7 +2,7 @@
 
 # define path to the tools dir
 TOOLS_DIR=$(dirname -- "$0")/..
-JSON_PATH=$TOOLS_DIR/Firmware/build/compile_commands.json
+JSON_PATH=$TOOLS_DIR/firmware/build/compile_commands.json
 
 # exclude paths specified in static_analysis_ignore.txt
 EXCLUDE=''

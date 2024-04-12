@@ -1,6 +1,6 @@
 # --- Compile settings begin ---
 
-COMPILE_TYPE="Firmware"
+COMPILE_TYPE="firmware"
 PLATFORM="nucleol552zeq"
 MODEL_NAME="example_model"
 

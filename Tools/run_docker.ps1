@@ -1,15 +1,15 @@
 # define path to the helper scripts dir in the container
-$SCRIPTS_DIR = "/src/Tools/HelperScripts"
+$SCRIPTS_DIR = "/src/tools/scripts"
 
 # Help message
 if ( $args[0] -eq "help" ) {
     echo "run_docker.ps1 help          | show this message"
-    echo "run_docker.ps1 compile       | compile/build ZeroPilot and return build files in Firmware/build/"
-    echo "run_docker.ps1 test          | compile tests, run tests, and return build files in Testing/build/"
-    echo "run_docker.ps1 clang-tidy    | lint code with clang-tidy and return linting log in LintOutput/"
+    echo "run_docker.ps1 compile       | compile/build ZeroPilot and return build files in firmware/build/"
+    echo "run_docker.ps1 test          | compile tests, run tests, and return build files in testing/build/"
+    echo "run_docker.ps1 clang-tidy    | lint code with clang-tidy and return linting log in lint_output/"
     echo "run_docker.ps1 clang-format  | reformat and return source files with clang-format"
-    echo "                               in LintOutput/formatted_files"
-    echo "run_docker.ps1 cppcheck      | lint code with cppcheck and return linting log in LintOutput/"
+    echo "                               in lint_output/formatted_files"
+    echo "run_docker.ps1 cppcheck      | lint code with cppcheck and return linting log in lint_output/"
     echo "run_docker.ps1 shell         | launch a bash shell in the Docker container"
     exit
 }
@@ -32,8 +32,8 @@ if ( -not ( $containers -like "*efs_container*" ) ) {
 docker cp $PSScriptRoot/../. efs_container:/src/
 
 # Create directory for linting output if it doesn't exist
-if ( -not ( Test-Path $PSScriptRoot/LintOutput ) ) {
-    New-Item -ItemType Directory -Force -Path $PSScriptRoot/LintOutput
+if ( -not ( Test-Path $PSScriptRoot/lint_output ) ) {
+    New-Item -ItemType Directory -Force -Path $PSScriptRoot/lint_output
 }
 
 switch ( $args[0] )
@@ -44,27 +44,27 @@ switch ( $args[0] )
 
     "compile" {
         docker exec efs_container /bin/bash -c "cd $SCRIPTS_DIR && ./build.bash -c"
-        docker cp efs_container:/src/Tools/Firmware $PSScriptRoot/
+        docker cp efs_container:/src/tools/firmware $PSScriptRoot/
     }
 
     "test" {
-        docker exec efs_container /bin/bash -c "cd $SCRIPTS_DIR && ./build.bash -t Testing -c && ./test.bash"
-        docker cp efs_container:/src/Tools/Testing $PSScriptRoot/
+        docker exec efs_container /bin/bash -c "cd $SCRIPTS_DIR && ./build.bash -t testing -c && ./test.bash"
+        docker cp efs_container:/src/tools/testing $PSScriptRoot/
     }
 
     "clang-format" {
         docker exec efs_container /bin/bash -c "cd $SCRIPTS_DIR && ./clang-format.bash"
-        docker cp efs_container:/src/Tools/LintOutput/formatted-files $PSScriptRoot/LintOutput/
+        docker cp efs_container:/src/tools/lint_output/formatted_files $PSScriptRoot/lint_output/
     }
 
     "clang-tidy" {
         docker exec efs_container /bin/bash -c "cd $SCRIPTS_DIR && ./clang-tidy.bash"
-        docker cp efs_container:/src/Tools/LintOutput/clang-tidy.txt $PSScriptRoot/LintOutput/
+        docker cp efs_container:/src/tools/lint_output/clang-tidy.txt $PSScriptRoot/lint_output/
     }
 
     "cppcheck" {
         docker exec efs_container /bin/bash -c "cd $SCRIPTS_DIR && ./cppcheck.bash"
-        docker cp efs_container:/src/Tools/LintOutput/cppcheck.txt $PSScriptRoot/LintOutput/
+        docker cp efs_container:/src/tools/lint_output/cppcheck.txt $PSScriptRoot/lint_output/
     }
 }
 
