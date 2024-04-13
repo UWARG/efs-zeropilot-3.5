@@ -12,7 +12,7 @@
  **********************************************************************************************************************/
 
 float PIDController::execute(float _desired, float _actual, float _actualRate) {
-    if (std::isnan(_desired) || std::isnan(_actual)){
+    if (std::isnan(_desired) || std::isnan(_actual)) {
         return 0;
     }
 
@@ -27,16 +27,23 @@ float PIDController::execute(float _desired, float _actual, float _actualRate) {
     float error_change = (error - prevError);
     integral = constrain<float>(integral + error + error_change, pid.i_max, -pid.i_max);
 
-    if (!std::isnan(pid.actualRate)){
+    if (!std::isnan(pid.actualRate)) {
         derivative = pid.actualRate * pid.kd;
     } else {
-        derivative = execute_d_back(_desired, _actual, _actualRate);
-        //One is uncommented to test diff between types of calculation
-        // derivative = execute_d_hist(_desired, _actual, _actualRate);
+        // If cannot pull actualRate from IMU filter, use one of the derivative calculation with
+        // back calculation
+        derivative = error - prevError;
+        prevError = error;
+
+        // Alt method, use historical data to calculate derivative
+        //  historicalValue[2] = historicalValue[1];
+        //  historicalValue[1] = historicalValue[0];
+        //  historicalValue[0] = _actual;
+        //  derivative = ((3 * historicalValue[0]) - (4*historicalValue[1]) + (historicalValue[2]));
     }
 
-    float ret = constrain<float>((pid.kp * error) + (pid.ki * integral) - (derivative),
-                                pid.max_output, pid.min_output);
+    float ret = constrain<float>((pid.kp * error) + (pid.ki * integral) - (pid.kd * derivative),
+                                 pid.max_output, pid.min_output);
 
     ret = map(ret, pid.min_output, pid.max_output, 0, 100);
 
@@ -45,7 +52,7 @@ float PIDController::execute(float _desired, float _actual, float _actualRate) {
     return ret;
 }
 
-float PIDController::execute_p(float _desired, float _actual, float _actualRate){
+float PIDController::execute_p(float _desired, float _actual, float _actualRate) {
     float error = _desired - _actual;
     return pid.kp * error;
 }
@@ -66,12 +73,12 @@ float PIDController::execute_d_hist(float _desired, float _actual, float _actual
     historicalValue[1] = historicalValue[0];
     historicalValue[0] = _actual;
 
-    derivative = ((3 * historicalValue[0]) - (4*historicalValue[1]) + (historicalValue[2]));
+    derivative = ((3 * historicalValue[0]) - (4 * historicalValue[1]) + (historicalValue[2]));
 
     return pid.kd * derivative;
 }
 
-float PIDController::execute_d_back(float _desired, float _actual, float _actualRate){
+float PIDController::execute_d_back(float _desired, float _actual, float _actualRate) {
     float error = _desired - _actual;
     float derivative = error - prevError;
     prevError = error;
