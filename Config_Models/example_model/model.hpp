@@ -98,6 +98,18 @@ namespace config
                         .p = 1.0f,
                         .i = 1.0f,
                         .d = 1.0f
+                    },
+                    .pitchPID = {
+                        .isEnabled = true,
+                        .p = 1.0f,
+                        .i = 1.0f,
+                        .d = 1.0f
+                    },
+                    .throttlePID = {
+                        .isEnabled = true,
+                        .p = 1.0f,
+                        .i = 1.0f,
+                        .d = 1.0f
                     }
                 },
                 .controlLimits = {

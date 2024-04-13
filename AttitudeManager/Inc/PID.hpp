@@ -26,18 +26,6 @@ struct PIDGains{
    float kd;
 };
 
-struct PIDValues{
-   float kp;
-   float ki;
-   float kd;
-   float i_max;
-   float min_output;
-   float max_output;
-   float desired;
-   float actual;
-   float actualRate;
-};
-
 typedef enum {
    proportional,
    integral,
@@ -67,16 +55,17 @@ class PIDController {
          float kp, kd, ki, i_max, min_output, max_output, desired, actual, actualRate;
       };
 
-      PIDController(PIDValues _data)
-         : pid{.kp = _data.kp,
-               .kd = _data.kd,
-               .ki = _data.ki,
-               .i_max = _data.i_max,
-               .min_output = _data.min_output,
-               .max_output = _data.max_output,
-               .desired = _data.desired,
-               .actual = _data.actual,
-               .actualRate = _data.actualRate},
+      PIDController( float _kp, float _kd, float _ki, float _i_max, float _min_output, float _max_output, 
+                     float _desired, float _actual, float _actualRate )
+         : pid{.kp = _kp,
+               .kd = _kd,
+               .ki = _ki,
+               .i_max = _i_max,
+               .min_output = _min_output,
+               .max_output = _max_output,
+               .desired = _desired,
+               .actual = _actual,
+               .actualRate = _actualRate},
                integral(0.0f),
                prevError(0.0f){}
 

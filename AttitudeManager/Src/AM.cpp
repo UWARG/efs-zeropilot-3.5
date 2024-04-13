@@ -19,6 +19,19 @@ AttitudeManagerInput AttitudeManager::control_inputs = {
     .throttle = 0.0f
 };
 
+AxisPIDs axisPIDs = {
+    .pitch = PIDController(flightmodes[1].tuningData.PIDValues.pitchPID.p,
+                        flightmodes[1].tuningData.PIDValues.pitchPID.i,
+                        flightmodes[1].tuningData.PIDValues.pitchPID.d, 100, 0, 100, 0, 0, 0),
+    .roll = PIDController(flightmodes[1].tuningData.PIDValues.rollPID.p, 
+                        flightmodes[1].tuningData.PIDValues.rollPID.i,
+                        flightmodes[1].tuningData.PIDValues.rollPID.d, 100, 0, 100, 0, 0, 0),
+    .yaw = PIDController(flightmodes[1].tuningData.PIDValues.yawPID.p, 
+                        flightmodes[1].tuningData.PIDValues.yawPID.i, 
+                        flightmodes[1].tuningData.PIDValues.yawPID.d, 100, 0, 100, 0, 0, 0),
+    .throttle = PIDController(0, 0, 0, 0, 0, 0, 0, 0, 0)
+};
+
 void AttitudeManager::setControlInputs(const AttitudeManagerInput& new_control_inputs) {
     if (xSemaphoreTake(control_inputs_mutex, (TickType_t) portMAX_DELAY) == pdPASS) {
         control_inputs = new_control_inputs;
@@ -49,7 +62,7 @@ void AttitudeManager::runControlLoopIteration() {
     AttitudeManagerInput control_inputs = getControlInputs();
 
     // Run Control Algorithms
-    AttitudeManagerInput motor_outputs = controlAlgorithm_->run(control_inputs);
+    AttitudeManagerInput motor_outputs = controlAlgorithm_->run(control_inputs, axisPIDs);
 
     // Write motor outputs
     outputToMotor(yaw, static_cast<uint8_t>(motor_outputs.yaw));

@@ -14,6 +14,7 @@
 #include "FreeRTOS.h"
 #include "flightmode.hpp"
 #include "semphr.h"
+#include "model.hpp"
 #ifdef TESTING
 #include <gtest/gtest_prod.h>
 #endif
