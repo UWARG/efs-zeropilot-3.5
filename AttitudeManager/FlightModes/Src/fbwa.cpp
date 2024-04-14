@@ -2,9 +2,10 @@
 #include "CommonDataTypes.hpp"
 #include "AM.hpp"
 #include <cassert>
+#include <stdexcept>
 
 namespace AM {
-AttitudeManagerInput FBWA::run(const AttitudeManagerInput& input, AxisPIDs _pids) {
+AttitudeManagerInput FBWA::run(const AttitudeManagerInput& input) {
     AttitudeManagerInput mappedOutputs;
 
     // TODO: bound checking that doesn't throw an abort() and program exit
@@ -42,58 +43,38 @@ AttitudeManagerInput FBWA::run(const AttitudeManagerInput& input, AxisPIDs _pids
         _pids.pitch.setDesired(mappedOutputs.pitch);
         _pids.roll.setDesired(mappedOutputs.roll);
         _pids.yaw.setDesired(mappedOutputs.yaw);
+    // Need to get actual and actualRate data from IMU filter
+    //  pidRoll.execute(mappedOutputs.roll, actual, actualRate);
+    //  pidPitch.execute(mappedOutputs.pitch, actual, actualRate);
+    //  pidYaw.execute(mappedOutputs.yaw, actual, actualRate);
 
         
         return mappedOutputs;
 
 void FBWA::updatePid() {}  // Needs to be implemented
 
-void FBWA::updatePidGains(PIDController _axis, GainTerm whichGain, float desiredGain) {
-    if (isnan(desiredGain)) {
+void FBWA::updatePidGains(PidAxis pid_axis, GainTerm pid_gain_term, float desired_gain) {
+    if ((std::isnan(pid_gain_term)) || (desired_gain < 0) || (desired_gain > 1)) {
         return;
     }
 
-    void FBWA::updatePid() {} //Needs to be implemented
-
-    void FBWA::updatePidGains(PIDController _axis, GainTerm whichGain, float desiredGain) {
-        if ( isnan(desiredGain)){
-            return;
-        }
-
-        switch (whichGain){
-            case proportional:
-                _axis.setKp(desiredGain);
-                break;
-            case integral:
-                _axis.setKi(desiredGain);
-                break;
-            case derivative:
-                _axis.setKd(desiredGain);
-                break;
-        }
-    } //Needs to be implemented
-
-    void FBWA::updatePidGains(PIDController _axis, GainTerm whichGain, float desiredGain) {
-        switch (whichGain){
-            case proportional:
-                _axis.setKp(desiredGain);
-                break;
-            case integral:
-                _axis.setKi(desiredGain);
-                break;
-            case derivative:
-                _axis.setKd(desiredGain);
-                break;
-        }
-    } //Needs to be implemented
-
-    void FBWA::updatePidGains() {} //Needs to be implemented
-
-    void FBWA::updateControlLimits(ControlLimits_t limits) {
-        // TODO: make this better than a straight copy
-        fbwa_control_limits = limits;
-    }
-}  // Needs to be implemented
+    switch (pid_axis) {
+        case PidAxis::Pitch:
+            pidPitch.setGainTerm(pid_gain_term, desired_gain);
+            break;
+        case PidAxis::Roll:
+            pidRoll.setGainTerm(pid_gain_term, desired_gain);
+            break;
+        case PidAxis::Yaw:
+            pidYaw.setGainTerm(pid_gain_term, desired_gain);
+            break;
+        case PidAxis::Throttle:
+            break;
+        default:
+            throw std::invalid_argument("Invalid pid_axis value.");
+            break; 
+    } 
+}
 
 void FBWA::updateControlLimits(ControlLimits_t limits) {
     // TODO: make this better than a straight copy

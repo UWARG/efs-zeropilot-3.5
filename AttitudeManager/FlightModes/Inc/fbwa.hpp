@@ -11,12 +11,15 @@ class FBWA : public Flightmode {
 
     AttitudeManagerInput run(const AttitudeManagerInput& input) override;
     void updatePid() override;
-    void updatePidGains(PIDController _axis, GainTerm whichGain, float desiredGain) override;
-    void updateControlLimits() override;
+    void updatePidGains(PidAxis pid_axis, GainTerm pid_gain_term, float desired_gain) override;
+    void updateControlLimits(ControlLimits_t limits) override;
 
    private:
     // TODO: FIXME to be a control limit class
     ControlLimits_t fbwa_control_limits;
+    PIDController pidRoll;
+    PIDController pidPitch;
+    PIDController pidYaw;
 };
 
 }  // namespace AM

@@ -9,10 +9,16 @@ class Manual : public Flightmode {
    public:
     Manual() = default;
 
-    AttitudeManagerInput run(const AttitudeManagerInput& input, AxisPIDs) override;
+    AttitudeManagerInput run(const AttitudeManagerInput& input) override;
     void updatePid() override;
-    void updatePidGains(PIDController _axis, GainTerm whichGain, float desiredGain) override;
+    void updatePidGains(PidAxis pid_axis, GainTerm pid_gain_term, float desired_gain) override;
     void updateControlLimits(ControlLimits_t limits) override;
+
+   private:
+    PIDController pitchPID;
+    PIDController rollPID;
+    PIDController yawPID;
+    PIDController throttlePID;
 };
 
 }  // namespace AM

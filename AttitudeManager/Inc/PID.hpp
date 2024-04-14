@@ -26,12 +26,18 @@ struct PIDGains{
    float kd;
 };
 
-typedef enum {
-   proportional,
-   integral,
-   derivative
-} GainTerm;
+enum GainTerm {
+   Proportional,
+   Integral,
+   Derivative
+};
 
+enum PidAxis{
+   Pitch,
+   Roll,
+   Yaw,
+   Throttle
+};
 
       /**
      * Initialises the Pid object.
@@ -105,6 +111,7 @@ class PIDController {
    void setKi(float _ki) {pid.ki = _ki;};
    void setKp(float _kp) {pid.kp = _kp;};
    void setKd(float _kd) {pid.kd = _kd;};
+   void setGainTerm(GainTerm _gainTerm, float _desired_gain);
    void setDesired(float _desired) {pid.desired = _desired;};
    void setActual(float _actual) {pid.actual = _actual;};
    void setActualRate(float _actualRate) {pid.actualRate = _actualRate;};
@@ -134,14 +141,5 @@ class PIDController {
       float historicalValue[3] = {0.0f};  // Allows us to compute our derivative
                                         // if necessary
 };
-
-struct AxisPIDs{
-   PIDController pitch;
-   PIDController roll;
-   PIDController yaw;
-   PIDController throttle;
-};
-
-
 
 #endif /* PID_HPP_ */

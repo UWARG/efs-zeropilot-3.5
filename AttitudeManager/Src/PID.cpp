@@ -87,4 +87,23 @@ float PIDController::execute_d_back(float _desired, float _actual, float _actual
 
 float PIDController::map(float x, float in_min, float in_max, float out_min, float out_max) {
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+
+}
+
+void PIDController::setGainTerm(GainTerm _gainTerm, float _desired_gain) {
+    if (std::isnan(_desired_gain) || _desired_gain < 0 || _desired_gain > 1) {
+        return;
+    }
+
+    switch (_gainTerm) {
+        case Proportional:
+            pid.kp = _desired_gain;
+            break;
+        case Derivative:
+            pid.kd = _desired_gain;
+            break;
+        case Integral:
+            pid.ki = _desired_gain;
+            break;
+    }
 }

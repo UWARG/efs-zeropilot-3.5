@@ -1,0 +1,95 @@
+Building ZeroPilot for firmware.
+Building for platform nucleol552zeq and model example_model.
+Cleaning old firmware build environment.
+
+Creating Unix Makefiles build system...
+-- The C compiler identification is GNU 13.2.1
+-- The CXX compiler identification is GNU 13.2.1
+-- The ASM compiler identification is GNU
+-- Found assembler: /opt/homebrew/bin/arm-none-eabi-gcc
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /opt/homebrew/bin/arm-none-eabi-gcc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /opt/homebrew/bin/arm-none-eabi-g++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done (1.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/camronsabahi/WARG/efs-zeropilot-3.5/Tools/Firmware/build
+
+Compiling project...
+[  1%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Core/Src/adc.c.obj
+[  2%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Core/Src/app_freertos.c.obj
+[  3%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Core/Src/dma.c.obj
+[  4%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Core/Src/gpio.c.obj
+[  5%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Core/Src/i2c.c.obj
+[  6%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Core/Src/icache.c.obj
+[  8%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Core/Src/iwdg.c.obj
+[  9%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Core/Src/rtc.c.obj
+[ 10%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Core/Src/spi.c.obj
+[ 11%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Core/Src/stm32l5xx_hal_msp.c.obj
+[ 12%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Core/Src/stm32l5xx_it.c.obj
+[ 13%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Core/Src/syscalls.c.obj
+[ 15%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Core/Src/sysmem.c.obj
+[ 16%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Core/Src/system_stm32l5xx.c.obj
+[ 17%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Core/Src/tim.c.obj
+[ 18%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Core/Src/ucpd.c.obj
+[ 19%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Core/Src/usart.c.obj
+[ 20%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Core/Src/usb.c.obj
+[ 22%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal.c.obj
+[ 23%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_adc.c.obj
+[ 24%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_adc_ex.c.obj
+[ 25%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_cortex.c.obj
+[ 26%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_dma.c.obj
+[ 27%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_dma_ex.c.obj
+[ 29%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_exti.c.obj
+[ 30%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_flash.c.obj
+[ 31%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_flash_ex.c.obj
+[ 32%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_flash_ramfunc.c.obj
+[ 33%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_gpio.c.obj
+[ 34%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_i2c.c.obj
+[ 36%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_i2c_ex.c.obj
+[ 37%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_icache.c.obj
+[ 38%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_iwdg.c.obj
+[ 39%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_pcd.c.obj
+[ 40%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_pcd_ex.c.obj
+[ 41%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_pwr.c.obj
+[ 43%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_pwr_ex.c.obj
+[ 44%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_rcc.c.obj
+[ 45%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_rcc_ex.c.obj
+[ 46%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_rtc.c.obj
+[ 47%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_rtc_ex.c.obj
+[ 48%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_spi.c.obj
+[ 50%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_spi_ex.c.obj
+[ 51%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_tim.c.obj
+[ 52%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_tim_ex.c.obj
+[ 53%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_uart.c.obj
+[ 54%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_uart_ex.c.obj
+[ 55%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_dma.c.obj
+[ 56%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_exti.c.obj
+[ 58%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_gpio.c.obj
+[ 59%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_ucpd.c.obj
+[ 60%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_usb.c.obj
+[ 61%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_utils.c.obj
+[ 62%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c.obj
+[ 63%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Middlewares/Third_Party/FreeRTOS/Source/croutine.c.obj
+[ 65%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Middlewares/Third_Party/FreeRTOS/Source/event_groups.c.obj
+[ 66%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Middlewares/Third_Party/FreeRTOS/Source/list.c.obj
+[ 67%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM33_NTZ/non_secure/port.c.obj
+[ 68%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM33_NTZ/non_secure/portasm.c.obj
+[ 69%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c.obj
+[ 70%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Middlewares/Third_Party/FreeRTOS/Source/queue.c.obj
+[ 72%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c.obj
+[ 73%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Middlewares/Third_Party/FreeRTOS/Source/tasks.c.obj
+[ 74%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Boardfiles/nucleol552zeq/Middlewares/Third_Party/FreeRTOS/Source/timers.c.obj
+[ 75%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Drivers/ccontrol/Src/inv.c.obj
+[ 76%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Drivers/ccontrol/Src/lup.c.obj
+[ 77%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Drivers/ccontrol/Src/mul.c.obj
+[ 79%] Building C object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/Drivers/ccontrol/Src/tran.c.obj
+[ 80%] Building CXX object CMakeFiles/ZeroPilot.elf.dir/Users/camronsabahi/WARG/efs-zeropilot-3.5/AttitudeManager/FlightModes/Src/fbwa.cpp.obj
+
+Error: Failed to compile project.
