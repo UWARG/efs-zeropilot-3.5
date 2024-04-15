@@ -39,6 +39,18 @@ enum PidAxis{
    Throttle
 };
 
+typedef struct PidConfig_t{
+   float kp;
+   float kd;
+   float ki;
+   float i_max;
+   float min_output;
+   float max_output;
+   float desired;
+   float actual;
+   float actualRate;
+} PidConfig_t;
+
       /**
      * Initialises the Pid object.
      * @param[in]	_kp 	The proportional gain.
@@ -56,27 +68,27 @@ enum PidAxis{
 
 class PIDController {
    public:
-      class PID {
-         public:
-         float kp, kd, ki, i_max, min_output, max_output, desired, actual, actualRate;
-      };
+      PidConfig_t pid_conf;
+
+      //Default Constructor
+      PIDController() = default;
 
       PIDController( float _kp, float _kd, float _ki, float _i_max, float _min_output, float _max_output, 
                      float _desired, float _actual, float _actualRate )
-         : pid{.kp = _kp,
-               .kd = _kd,
-               .ki = _ki,
-               .i_max = _i_max,
-               .min_output = _min_output,
-               .max_output = _max_output,
-               .desired = _desired,
-               .actual = _actual,
-               .actualRate = _actualRate},
-               integral(0.0f),
-               prevError(0.0f){}
+         : pid_conf{.kp = _kp,
+            .kd = _kd,
+            .ki = _ki,
+            .i_max = _i_max,
+            .min_output = _min_output,
+            .max_output = _max_output,
+            .desired = _desired,
+            .actual = _actual,
+            .actualRate = _actualRate},
+            integral(0.0f),
+            prevError(0.0f){}
 
       //Constructor taking pre-constructed PID strucutre
-      PIDController(PIDController::PID _pid) : pid(_pid), integral(0.0f) {}
+      PIDController(const PidConfig_t& _pid_conf) : pid_conf(_pid_conf), integral(0.0f), prevError(0.0f) {}
 
       //Destructor using C++ default
       ~PIDController() = default;
@@ -108,38 +120,37 @@ class PIDController {
    float execute_d_back(float _desired, float _actual, float _actualRate);
 
    float getIntegral() { return integral; }
-   void setKi(float _ki) {pid.ki = _ki;};
-   void setKp(float _kp) {pid.kp = _kp;};
-   void setKd(float _kd) {pid.kd = _kd;};
+   void setKi(float _ki) {pid_conf.ki = _ki;};
+   void setKp(float _kp) {pid_conf.kp = _kp;};
+   void setKd(float _kd) {pid_conf.kd = _kd;};
    void setGainTerm(GainTerm _gainTerm, float _desired_gain);
-   void setDesired(float _desired) {pid.desired = _desired;};
-   void setActual(float _actual) {pid.actual = _actual;};
-   void setActualRate(float _actualRate) {pid.actualRate = _actualRate;};
+   void setDesired(float _desired) {pid_conf.desired = _desired;};
+   void setActual(float _actual) {pid_conf.actual = _actual;};
+   void setActualRate(float _actualRate) {pid_conf.actualRate = _actualRate;};
 
    float map(float x, float in_min, float in_max, float out_min, float out_max);
 
+   void setNewPid(const PidConfig_t& new_pid_conf) { pid_conf = new_pid_conf; }
 
-   void setNewPid(PID _pid) { pid = _pid; }
-   void setNewPid(float _kp, float _ki, float _kd, float _i_max, float _min_output, float _max_output, float _desired, float _actual, float _actualRate) {
-      pid = PID{.kp = _kp,
-                  .kd = _kd,
-                  .ki = _ki,
-                  .i_max = _i_max,
-                  .min_output = _min_output,
-                  .max_output = _max_output,
-                  .desired = _desired,
-                  .actual = _actual,
-                  .actualRate = _actualRate
-};
+   void setNewPid(float _kp, float _ki, float _kd, float _i_max, float _min_output, float _max_output, 
+                  float _desired, float _actual, float _actualRate) {
+      pid_conf = PidConfig_t{
+         .kp = _kp,
+         .kd = _kd,
+         .ki = _ki,
+         .i_max = _i_max,
+         .min_output = _min_output,
+         .max_output = _max_output,
+         .desired = _desired,
+         .actual = _actual,
+         .actualRate = _actualRate 
+      };
    }
 
    private:
-      PID pid;
-
       float integral = 0.0f;
-      float prevError = 0.0f;
-      float historicalValue[3] = {0.0f};  // Allows us to compute our derivative
-                                        // if necessary
+      float prevError = 0.0f; //Compute derivative using back calculation if needed
+      float historicalValue[3] = {0.0f};  // Compute derivative using historical data if needed
 };
 
 #endif /* PID_HPP_ */
