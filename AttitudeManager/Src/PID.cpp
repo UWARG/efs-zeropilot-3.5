@@ -42,8 +42,9 @@ float PIDController::execute(float _desired, float _actual, float _actualRate) {
         //  derivative = ((3 * historicalValue[0]) - (4*historicalValue[1]) + (historicalValue[2]));
     }
 
-    float ret = constrain<float>((pid_conf.kp * error) + (pid_conf.ki * integral) - (pid_conf.kd * derivative),
-                                 pid_conf.max_output, pid_conf.min_output);
+    float ret = constrain<float>(
+        (pid_conf.kp * error) + (pid_conf.ki * integral) - (pid_conf.kd * derivative),
+        pid_conf.max_output, pid_conf.min_output);
 
     ret = map(ret, pid_conf.min_output, pid_conf.max_output, 0, 100);
 
@@ -87,7 +88,6 @@ float PIDController::execute_d_back(float _desired, float _actual, float _actual
 
 float PIDController::map(float x, float in_min, float in_max, float out_min, float out_max) {
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-
 }
 
 void PIDController::setGainTerm(GainTerm _gainTerm, float _desired_gain) {
