@@ -2,8 +2,9 @@
 
 # define path to the tools dir
 TOOLS_DIR=$(dirname -- "$0")
-# define path to the helper scripts dir in the container
-SCRIPTS_DIR=/src/tools/scripts
+# define container paths
+DOCKER_TOOLS_DIR=efs_container:/zeropilot-3.5/tools
+SCRIPTS_DIR=/zeropilot-3.5/tools/scripts
 
 # Help message
 if [[ $1 == "help" ]]; then
@@ -33,7 +34,7 @@ else
     docker start efs_container
 fi
 
-docker cp $TOOLS_DIR/../. efs_container:/src/
+docker cp $TOOLS_DIR/../. efs_container:/zeropilot-3.5/
 
 # Create directory for linting output if it doesn't exist
 mkdir -p $TOOLS_DIR/lint_output
@@ -45,27 +46,27 @@ case $1 in
 
     "compile")
         docker exec efs_container /bin/bash -c "cd $SCRIPTS_DIR && ./build.bash -c"
-        docker cp efs_container:/src/tools/firmware $TOOLS_DIR/
+        docker cp $DOCKER_TOOLS_DIR/firmware $TOOLS_DIR/
     ;;
 
     "test")
         docker exec efs_container /bin/bash -c "cd $SCRIPTS_DIR && ./build.bash -t testing -c && ./test.bash"
-        docker cp efs_container:/src/tools/testing $TOOLS_DIR/
+        docker cp $DOCKER_TOOLS_DIR/testing $TOOLS_DIR/
     ;;
 
     "clang-format")
         docker exec efs_container /bin/bash -c "cd $SCRIPTS_DIR && ./clang-format.bash"
-        docker cp efs_container:/src/tools/lint_output/formatted_files $TOOLS_DIR/lint_output/
+        docker cp $DOCKER_TOOLS_DIR/lint_output/formatted_files $TOOLS_DIR/lint_output/
     ;;
 
     "clang-tidy")
         docker exec efs_container /bin/bash -c "cd $SCRIPTS_DIR && ./clang-tidy.bash"
-        docker cp efs_container:/src/tools/lint_output/clang-tidy.txt $TOOLS_DIR/lint_output/
+        docker cp $DOCKER_TOOLS_DIR/lint_output/clang-tidy.txt $TOOLS_DIR/lint_output/
     ;;
 
     "cppcheck")
         docker exec efs_container /bin/bash -c "cd $SCRIPTS_DIR && ./cppcheck.bash"
-        docker cp efs_container:/src/tools/lint_output/cppcheck.txt $TOOLS_DIR/lint_output/
+        docker cp $DOCKER_TOOLS_DIR/lint_output/cppcheck.txt $TOOLS_DIR/lint_output/
     ;;
 esac
 

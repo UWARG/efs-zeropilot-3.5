@@ -16,7 +16,7 @@ fi
 COMPILER_ROOT=/usr/share/arm-gnu-toolchain-12.3.rel1-x86_64-arm-none-eabi
 mkdir -p $TOOLS_DIR/lint_output
 clang-tidy \
-    -p /src/tools/firmware/build \
+    -p $TOOLS_DIR/firmware/build \
     --extra-arg=--target=arm-none-eabi \
     --extra-arg=-I"${COMPILER_ROOT}/arm-none-eabi/include/c++/12.3.1" \
     --extra-arg=-I"${COMPILER_ROOT}/arm-none-eabi/include/c++/12.3.1/arm-none-eabi" \

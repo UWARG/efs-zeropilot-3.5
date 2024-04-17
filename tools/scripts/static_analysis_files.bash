@@ -19,15 +19,15 @@ while IFS=$'\n' read -r line; do
 done < "$TOOLS_DIR/configs/static_analysis_ignore.txt"
 EXCLUDE=${EXCLUDE:0:-1}
 
-ALL_INC_FILES=$(find /src -name "*.h*" | grep -Ev "$EXCLUDE")
+ALL_INC_FILES=$(find /zeropilot-3.5 -name "*.h*" | grep -Ev "$EXCLUDE")
 TRAVERSE_STACK=()
 FILES=()
 
 # initialize traverse stack with source files
 while read -r file; do
     TRAVERSE_STACK+=( $file )
-done <<< $(grep -Po "\-c \/src\/.*\.cp*" $JSON_PATH | grep -Ev "$EXCLUDE" | sed "s/\-c //g" && \
-           grep -Po "\-c \/src\/.*main\.cp*" $JSON_PATH | sed "s/\-c //g")
+done <<< $(grep -Po "\-c \/zeropilot-3.5\/.*\.cp*" $JSON_PATH | grep -Ev "$EXCLUDE" | sed "s/\-c //g" && \
+           grep -Po "\-c \/zeropilot-3.5\/.*main\.cp*" $JSON_PATH | sed "s/\-c //g")
 
 # traverse
 while [ ${#TRAVERSE_STACK[@]} != 0 ]; do
@@ -47,7 +47,7 @@ while [ ${#TRAVERSE_STACK[@]} != 0 ]; do
     while read -r header; do
         if [[ $header != "" && $ALL_INC_FILES == *$header* ]]; then
             # get full header path
-            header_path=$(echo $ALL_INC_FILES | grep -Po "\/src[A-Za-z0-9_/]*\/$header")
+            header_path=$(echo $ALL_INC_FILES | grep -Po "\/zeropilot-3.5[A-Za-z0-9_/]*\/$header")
             # add to traverse stack
             TRAVERSE_STACK+=( $header_path )
         fi

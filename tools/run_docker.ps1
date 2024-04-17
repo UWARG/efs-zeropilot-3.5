@@ -1,5 +1,6 @@
-# define path to the helper scripts dir in the container
-$SCRIPTS_DIR = "/src/tools/scripts"
+# define container paths
+$DOCKER_TOOLS_DIR = "efs_container:/zeropilot-3.5/tools"
+$SCRIPTS_DIR = "/zeropilot-3.5/tools/scripts"
 
 # Help message
 if ( $args[0] -eq "help" ) {
@@ -29,7 +30,7 @@ if ( -not ( $containers -like "*efs_container*" ) ) {
     docker start efs_container
 }
 
-docker cp $PSScriptRoot/../. efs_container:/src/
+docker cp $PSScriptRoot/../. efs_container:/zeropilot-3.5/
 
 # Create directory for linting output if it doesn't exist
 if ( -not ( Test-Path $PSScriptRoot/lint_output ) ) {
@@ -44,27 +45,27 @@ switch ( $args[0] )
 
     "compile" {
         docker exec efs_container /bin/bash -c "cd $SCRIPTS_DIR && ./build.bash -c"
-        docker cp efs_container:/src/tools/firmware $PSScriptRoot/
+        docker cp $DOCKER_TOOLS_DIR/firmware $PSScriptRoot/
     }
 
     "test" {
         docker exec efs_container /bin/bash -c "cd $SCRIPTS_DIR && ./build.bash -t testing -c && ./test.bash"
-        docker cp efs_container:/src/tools/testing $PSScriptRoot/
+        docker cp $DOCKER_TOOLS_DIR/testing $PSScriptRoot/
     }
 
     "clang-format" {
         docker exec efs_container /bin/bash -c "cd $SCRIPTS_DIR && ./clang-format.bash"
-        docker cp efs_container:/src/tools/lint_output/formatted_files $PSScriptRoot/lint_output/
+        docker cp $DOCKER_TOOLS_DIR/lint_output/formatted_files $PSScriptRoot/lint_output/
     }
 
     "clang-tidy" {
         docker exec efs_container /bin/bash -c "cd $SCRIPTS_DIR && ./clang-tidy.bash"
-        docker cp efs_container:/src/tools/lint_output/clang-tidy.txt $PSScriptRoot/lint_output/
+        docker cp $DOCKER_TOOLS_DIR/lint_output/clang-tidy.txt $PSScriptRoot/lint_output/
     }
 
     "cppcheck" {
         docker exec efs_container /bin/bash -c "cd $SCRIPTS_DIR && ./cppcheck.bash"
-        docker cp efs_container:/src/tools/lint_output/cppcheck.txt $PSScriptRoot/lint_output/
+        docker cp $DOCKER_TOOLS_DIR/lint_output/cppcheck.txt $PSScriptRoot/lint_output/
     }
 }
 
