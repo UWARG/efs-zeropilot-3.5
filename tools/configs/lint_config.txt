@@ -1,0 +1,7 @@
+# --- Linting settings begin ---
+
+CLANG_FORMAT_FLAGS="-i"
+CLANG_TIDY_FLAGS=""
+CPPCHECK_FLAGS=""
+
+# --- Linting settings end ---

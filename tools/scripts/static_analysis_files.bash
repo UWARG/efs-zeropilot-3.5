@@ -10,7 +10,7 @@ while IFS=$'\n' read -r line; do
     if [[ $line != *#* && $line != "" ]]; then
         EXCLUDE+="$line|"
     fi
-done < "$TOOLS_DIR/static_analysis_ignore.txt"
+done < "$TOOLS_DIR/configs/static_analysis_ignore.txt"
 EXCLUDE=${EXCLUDE:0:-1}
 
 ALL_INC_FILES=$(find /src -name "*.h*" | grep -Ev "$EXCLUDE")

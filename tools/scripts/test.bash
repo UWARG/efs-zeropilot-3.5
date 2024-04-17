@@ -24,6 +24,9 @@ throw_error() {
 # --- var declare ---
 # ====================
 
+# read compile configurations
+source $TOOLS_DIR/scripts/read_configs.bash "$TOOLS_DIR/configs/test_config.txt"
+
 # read user inputs
 while getopts :f: opt
 do
