@@ -40,22 +40,26 @@ AttitudeManagerInput FBWA::run(const AttitudeManagerInput& input) {
             (AM::AttitudeManager::INPUT_MAX - AM::AttitudeManager::INPUT_MIN);
         
 
-        _pids.pitch.setDesired(mappedOutputs.pitch);
-        _pids.roll.setDesired(mappedOutputs.roll);
-        _pids.yaw.setDesired(mappedOutputs.yaw);
     // Need to get actual and actualRate data from IMU filter
     //  pidRoll.execute(mappedOutputs.roll, actual, actualRate);
     //  pidPitch.execute(mappedOutputs.pitch, actual, actualRate);
     //  pidYaw.execute(mappedOutputs.yaw, actual, actualRate);
 
-        
         return mappedOutputs;
+}
 
 void FBWA::updatePid() {}  // Needs to be implemented
 
 void FBWA::updatePidGains(PidAxis pid_axis, GainTerm pid_gain_term, float desired_gain) {
-    if ((std::isnan(pid_gain_term)) || (desired_gain < 0) || (desired_gain > 1)) {
-        return;
+
+    if ((std::isnan(desired_gain)) || (desired_gain < 0) || (desired_gain > 1)){
+        if (desired_gain < 0) {
+            desired_gain = 0;
+        } else if (desired_gain > 1) {
+            desired_gain = 1;
+        } else {
+            return;
+        }
     }
 
     switch (pid_axis) {
@@ -71,9 +75,8 @@ void FBWA::updatePidGains(PidAxis pid_axis, GainTerm pid_gain_term, float desire
         case PidAxis::Throttle:
             break;
         default:
-            throw std::invalid_argument("Invalid pid_axis value.");
-            break; 
-    } 
+            break;
+        } 
 }
 
 void FBWA::updateControlLimits(ControlLimits_t limits) {

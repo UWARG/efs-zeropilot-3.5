@@ -9,8 +9,15 @@ AttitudeManagerInput Manual::run(const AttitudeManagerInput& input) {
 
 void Manual::updatePid() {}
 void Manual::updatePidGains(PidAxis pid_axis, GainTerm pid_gain_term, float desired_gain) {
-    if ((isnan(pid_gain_term)) || (desired_gain < 0) || (desired_gain > 1)) {
-        return;
+
+    if ((std::isnan(desired_gain)) || (desired_gain < 0) || (desired_gain > 1)){
+        if (desired_gain < 0) {
+            desired_gain = 0;
+        } else if (desired_gain > 1) {
+            desired_gain = 1;
+        } else {
+            return;
+        }
     }
 
     switch (pid_axis) {
@@ -27,9 +34,7 @@ void Manual::updatePidGains(PidAxis pid_axis, GainTerm pid_gain_term, float desi
             throttlePID.setGainTerm(pid_gain_term, desired_gain);
             break;
         default:
-            throw std::invalid_argument("Invalid pid_axis value.");
             break;
-
     }
 }
 void Manual::updateControlLimits(ControlLimits_t limits) {}

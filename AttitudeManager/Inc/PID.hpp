@@ -71,7 +71,18 @@ class PIDController {
       PidConfig_t pid_conf;
 
       //Default Constructor
-      PIDController() = default;
+      PIDController()
+         : pid_conf{.kp = 0.0f,
+            .kd = 0.0f,
+            .ki = 0.0f,
+            .i_max = 0.0f,
+            .min_output = 0.0f,
+            .max_output = 100.0f,
+            .desired = 0.0f,
+            .actual = 0.0f,
+            .actualRate = 0.0f},
+            integral(0.0f),
+            prevError(0.0f){}
 
       PIDController( float _kp, float _kd, float _ki, float _i_max, float _min_output, float _max_output, 
                      float _desired, float _actual, float _actualRate )

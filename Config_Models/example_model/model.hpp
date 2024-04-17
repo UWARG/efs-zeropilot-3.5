@@ -93,13 +93,13 @@ namespace config
                         .i = 1.0f,
                         .d = 1.0f
                     },
-                    .rollPID = {
+                    .pitchPID = {
                         .isEnabled = true,
                         .p = 1.0f,
                         .i = 1.0f,
                         .d = 1.0f
                     },
-                    .pitchPID = {
+                    .rollPID = {
                         .isEnabled = true,
                         .p = 1.0f,
                         .i = 1.0f,
@@ -129,18 +129,6 @@ namespace config
                         .min = 0.0f,
                         .max = 100.0f
                     },
-                    .pitchLimit = {
-                        .min = -30.0f,
-                        .max = 30.0f
-                    },
-                    .rollLimit = {
-                        .min = -100.0f,
-                        .max = 100.0f
-                    },
-                    .throttleLimit = {
-                        .min = 0.0f,
-                        .max = 100.0f
-                    }
                 }
             },
             .flightmodeConstructor = constructObject<AM::Flightmode, AM::FBWA>

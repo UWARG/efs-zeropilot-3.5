@@ -25,10 +25,10 @@ float PIDController::execute(float _desired, float _actual, float _actualRate) {
     float derivative;
 
     float error_change = (error - prevError);
-    integral = constrain<float>(integral + error + error_change, pid.i_max, -pid.i_max);
+    integral = constrain<float>(integral + error + error_change, pid_conf.i_max, -pid_conf.i_max);
 
-    if (!std::isnan(pid.actualRate)) {
-        derivative = pid.actualRate * pid.kd;
+    if (!std::isnan(pid_conf.actualRate)) {
+        derivative = pid_conf.actualRate * pid_conf.kd;
     } else {
         // If cannot pull actualRate from IMU filter, use one of the derivative calculation with
         // back calculation
@@ -42,10 +42,10 @@ float PIDController::execute(float _desired, float _actual, float _actualRate) {
         //  derivative = ((3 * historicalValue[0]) - (4*historicalValue[1]) + (historicalValue[2]));
     }
 
-    float ret = constrain<float>((pid.kp * error) + (pid.ki * integral) - (pid.kd * derivative),
-                                 pid.max_output, pid.min_output);
+    float ret = constrain<float>((pid_conf.kp * error) + (pid_conf.ki * integral) - (pid_conf.kd * derivative),
+                                 pid_conf.max_output, pid_conf.min_output);
 
-    ret = map(ret, pid.min_output, pid.max_output, 0, 100);
+    ret = map(ret, pid_conf.min_output, pid_conf.max_output, 0, 100);
 
     prevError = error;
 
@@ -54,16 +54,16 @@ float PIDController::execute(float _desired, float _actual, float _actualRate) {
 
 float PIDController::execute_p(float _desired, float _actual, float _actualRate) {
     float error = _desired - _actual;
-    return pid.kp * error;
+    return pid_conf.kp * error;
 }
 
 float PIDController::execute_i(float _desired, float _actual, float _actualRate) {
     float error = _desired - _actual;
     float error_change = (error - prevError);
     float integral = getIntegral();
-    integral = constrain<float>(integral + error + error_change, pid.i_max, -pid.i_max);
+    integral = constrain<float>(integral + error + error_change, pid_conf.i_max, -pid_conf.i_max);
     prevError = error;
-    return pid.ki * integral;
+    return pid_conf.ki * integral;
 }
 
 float PIDController::execute_d_hist(float _desired, float _actual, float _actualRate) {
@@ -75,14 +75,14 @@ float PIDController::execute_d_hist(float _desired, float _actual, float _actual
 
     derivative = ((3 * historicalValue[0]) - (4 * historicalValue[1]) + (historicalValue[2]));
 
-    return pid.kd * derivative;
+    return pid_conf.kd * derivative;
 }
 
 float PIDController::execute_d_back(float _desired, float _actual, float _actualRate) {
     float error = _desired - _actual;
     float derivative = error - prevError;
     prevError = error;
-    return pid.kd * derivative;
+    return pid_conf.kd * derivative;
 }
 
 float PIDController::map(float x, float in_min, float in_max, float out_min, float out_max) {
@@ -97,13 +97,13 @@ void PIDController::setGainTerm(GainTerm _gainTerm, float _desired_gain) {
 
     switch (_gainTerm) {
         case Proportional:
-            pid.kp = _desired_gain;
+            pid_conf.kp = _desired_gain;
             break;
         case Derivative:
-            pid.kd = _desired_gain;
+            pid_conf.kd = _desired_gain;
             break;
         case Integral:
-            pid.ki = _desired_gain;
+            pid_conf.ki = _desired_gain;
             break;
     }
 }
