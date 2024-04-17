@@ -36,6 +36,8 @@ typedef struct PidConfig_t {
     float i_max;
     float min_output;
     float max_output;
+    float min_input;
+    float max_input;
     float desired;
     float actual;
     float actualRate;
@@ -68,6 +70,8 @@ class PIDController {
                    .i_max = 0.0f,
                    .min_output = 0.0f,
                    .max_output = 100.0f,
+                   .min_input = 0.0f,
+                   .max_input = 100.0f,
                    .desired = 0.0f,
                    .actual = 0.0f,
                    .actualRate = 0.0f},
@@ -75,13 +79,16 @@ class PIDController {
           prevError(0.0f) {}
 
     PIDController(float _kp, float _kd, float _ki, float _i_max, float _min_output,
-                  float _max_output, float _desired, float _actual, float _actualRate)
+                  float _min_input, float _max_input, float _max_output, float _desired,
+                  float _actual, float _actualRate)
         : pid_conf{.kp = _kp,
                    .kd = _kd,
                    .ki = _ki,
                    .i_max = _i_max,
                    .min_output = _min_output,
                    .max_output = _max_output,
+                   .min_input = _min_input,
+                   .max_input = _max_input,
                    .desired = _desired,
                    .actual = _actual,
                    .actualRate = _actualRate},
@@ -130,7 +137,7 @@ class PIDController {
     void setActual(float _actual) { pid_conf.actual = _actual; };
     void setActualRate(float _actualRate) { pid_conf.actualRate = _actualRate; };
 
-    float map(float x, float in_min, float in_max, float out_min, float out_max);
+    float map(float x, float out_min, float out_max);
 
     void setNewPid(const PidConfig_t& new_pid_conf) { pid_conf = new_pid_conf; }
 
