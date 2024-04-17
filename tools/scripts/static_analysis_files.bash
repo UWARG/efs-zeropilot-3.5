@@ -4,6 +4,12 @@
 TOOLS_DIR=$(dirname -- "$0")/..
 JSON_PATH=$TOOLS_DIR/firmware/build/compile_commands.json
 
+# check json file exists
+if ! test -f $JSON_PATH; then
+    >&2 echo "$JSON_PATH not found. Please build the project before linting."
+    exit
+fi
+
 # exclude paths specified in static_analysis_ignore.txt
 EXCLUDE=''
 while IFS=$'\n' read -r line; do
