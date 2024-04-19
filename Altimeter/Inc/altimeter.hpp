@@ -7,34 +7,34 @@
 #include <cmath>
 
 
-#define RESET 0x1E
+constexpr uint8_t RESET_COMMAND = 0x1E;
 
 /*PROM Addresses */
-#define PROM_READ_ADDRESS_0 0xA0
-#define PROM_READ_ADDRESS_1 0xA2
-#define PROM_READ_ADDRESS_2 0xA4
-#define PROM_READ_ADDRESS_3 0xA6
-#define PROM_READ_ADDRESS_4 0xA8
-#define PROM_READ_ADDRESS_5 0xAA
-#define PROM_READ_ADDRESS_6 0xAC
-#define PROM_READ_ADDRESS_7 0xAE
+constexpr uint8_t PROM_READ_ADDRESS_0 = 0xA0;
+constexpr uint8_t PROM_READ_ADDRESS_1 = 0xA2;
+constexpr uint8_t PROM_READ_ADDRESS_2 = 0xA4;
+constexpr uint8_t PROM_READ_ADDRESS_3 = 0xA6;
+constexpr uint8_t PROM_READ_ADDRESS_4 = 0xA8;
+constexpr uint8_t PROM_READ_ADDRESS_5 = 0xAA;
+constexpr uint8_t PROM_READ_ADDRESS_6 = 0xAC;
+constexpr uint8_t PROM_READ_ADDRESS_7 = 0xAE;
 
 
 /*digital pressure/temperature commands at different sampling rates*/
-#define CONVERT_D1_OSR_256 0x40
-#define CONVERT_D1_OSR_512 0x42
-#define CONVERT_D1_OSR_1024 0x44
-#define CONVERT_D1_OSR_2048 0x46
-#define CONVERT_D1_OSR_4096 0x48
-#define CONVERT_D2_OSR_256 0x50
-#define CONVERT_D2_OSR_512 0x52
-#define CONVERT_D2_OSR_1024 0x54
-#define CONVERT_D2_OSR_2048 0x56
-#define CONVERT_D2_OSR_4096 0x58
+constexpr uint8_t CONVERT_D1_OSR_256 = 0x40;
+constexpr uint8_t CONVERT_D1_OSR_512 = 0x42;
+constexpr uint8_t CONVERT_D1_OSR_1024 = 0x44;
+constexpr uint8_t CONVERT_D1_OSR_2048 = 0x46;
+constexpr uint8_t CONVERT_D1_OSR_4096 = 0x48;
+constexpr uint8_t CONVERT_D2_OSR_256 = 0x50;
+constexpr uint8_t CONVERT_D2_OSR_512  = 0x52;
+constexpr uint8_t CONVERT_D2_OSR_1024 = 0x54;
+constexpr uint8_t CONVERT_D2_OSR_2048 = 0x56;
+constexpr uint8_t CONVERT_D2_OSR_4096 = 0x58;
 
-#define ADC_READ 0x0
+constexpr uint8_t ADC_READ = 0x0;
 
-#define TIMEOUT 1 << 31
+constexpr uint32_t TIMEOUT = 1 << 31;
 
 typedef struct CalCoeffs_t{
 	uint16_t sens;
