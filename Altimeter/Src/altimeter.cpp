@@ -63,7 +63,7 @@ uint16_t MS5611::promRead(uint8_t address){
 	HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_SET);
 
 	//Grab conversion coefficients.
-	uint16_t conversion_coefficient = (coefficient_val[1] << 8) | (coefficient_val[2]);
+	uint16_t conversion_coefficient = (coefficient_val[1] << 8) | (coefficient_val[2]) & 0x0000FFFF;;
 
 	return conversion_coefficient;
 }
@@ -96,7 +96,7 @@ uint32_t MS5611::uncompensatedPressureTemperature(uint8_t conversion_command){
 	HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_SET);
 
 	//get 24-bit uncompensated pressure or temperature value value.
-	uint32_t uncompensated_value = (rx_buffer[1] << 16 | rx_buffer[2] << 8 | rx_buffer[3]);
+	uint32_t uncompensated_value = (rx_buffer[1] << 16 | rx_buffer[2] << 8 | rx_buffer[3]) & 0x00FFFFFF;
 
 	return uncompensated_value;
 }
@@ -104,36 +104,39 @@ uint32_t MS5611::uncompensatedPressureTemperature(uint8_t conversion_command){
 
 void MS5611::calculateTempPres(){
 
-
 	uint32_t digital_temperature = uncompensatedPressureTemperature(CONVERT_D2_OSR_256);
 	uint32_t digital_pressure = uncompensatedPressureTemperature(CONVERT_D1_OSR_256);
 
-	float dt = digital_temperature - (float)coeffs_.t_ref * 256.0f;
-	float temp = 2000 + dt * (float) coeffs_.temp_sens / pow(2, 23);
+	const float TWO_POW_7 = 128.0f;
+	const float TWO_POW_8 = 256.0f;
+	const float TWO_POW_15 = 32768.0f;
+	const float TWO_POW_16 = 65536.0f;
+	const float TWO_POW_21 = 2097152.0f;
+	const float TWO_POW_23 = 8388608.0f;
+	const float TWO_POW_31 = 2147483648.0f;
 
-
-	float off = coeffs_.off * 65536.0f + (coeffs_.tco * dt) / 128.0f;
-	float sens = coeffs_.sens * 32768.0f  + (coeffs_.tcs * dt) / 256.0f;
+	float dt = digital_temperature - (float)coeffs_.t_ref * TWO_POW_8;
+	float temp = 2000 + dt * (float) coeffs_.temp_sens / TWO_POW_23;
+	float off = coeffs_.off * TWO_POW_16 + (coeffs_.tco * dt) / TWO_POW_7;
+	float sens = coeffs_.sens * TWO_POW_15  + (coeffs_.tcs * dt) / TWO_POW_8;
 
 	/*Second order temperature compensation */
 	if(temp < 2000){
-		float t2 = (dt*dt) / 2147483648.0f;
-		float off2 = 5.0f * pow((temp - 2000), 2) / 2.0f;
-		float sens2 = 5.0f * pow((temp - 2000), 2) / 4.0f;
-
+		float t2 = (dt*dt) / TWO_POW_31;
+		float off2 = FIVE * pow((temp - 2000), TWO_POW_1) / TWO_POW_1;
+		float sens2 = FIVE * pow((temp - 2000), TWO_POW_1) / TWO_POW_2;
 
 		if(temp < 1500){
-			off2 = off2 + 7 * pow((temp + 1500), 2);
-			sens2 = sens2 + 11 * pow((temp + 1500), 2) / 2;
+			off2 = off2 + 7 * pow((temp + 1500), TWO_POW_1);
+			sens2 = sens2 + 11 * pow((temp + 1500), TWO_POW_1) / TWO_POW_1;
 		}
 
 		temp = temp - t2;
 		off = off - off2;
 		sens = sens - sens2;
-
 	}
 
-	float pressure = (digital_pressure * (sens / 2097152.0f) - off) / 32768.0f;
+	float pressure = (digital_pressure * (sens / TWO_POW_21) - off) / TWO_POW_15;
 	pressure /= 100.0f;
 	temp /= 100.0f;
 
