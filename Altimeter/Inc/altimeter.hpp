@@ -36,14 +36,14 @@
 
 #define TIMEOUT 1 << 31
 
-typedef struct cal_coeffs{
+typedef struct CalCoeffs_t{
 	uint16_t sens;
 	uint16_t off;
 	uint16_t tcs;
 	uint16_t tco;
 	uint16_t t_ref;
 	uint16_t temp_sens;
-}cal_coeffs;
+}CalCoeffs_t;
 
 
 
@@ -51,42 +51,39 @@ typedef struct cal_coeffs{
  * Then before getting (step 4) pressure/temp/altitude, (step 3) calculateTempPres should be called beforehand.
  *  */
 
-class AltDevice{
+class MS5611{
 public:
 	/**
 	* Constructor for the AltDevice class
 	 *
+	* It assigns the spi_handler and ports and pins
+	* related to the chip select and protocol pins.
+	* @param spi_handle -> hspix handle
+	* @param cs_port -> chip select pin port
 	* @param ps_port -> protocol select port
+	* @param cs_pin -> chip select pin
 	* @param ps_pin -> protocol select pin
 	 *
 	* @return none
 	 */
-	AltDevice(GPIO_TypeDef *ps_port, uint16_t ps_pin);
+	MS5611(SPI_HandleTypeDef *spi_handle, GPIO_TypeDef *cs_port, GPIO_TypeDef *ps_port, uint16_t cs_pin, uint16_t ps_pin);
 
 	/**
 	* This function sends the reset command, populates the cal_coeffs
 	* struct members with the calibration coefficients in the sensor PROM,
 	* and gets the current elevation above sea level.
 	 *
-	* @param ps_port -> protocol select port
-	* @param ps_pin -> protocol select pin
-	* @param spi_handle -> hspix handle
-	 *
 	* @return none
 	 */
-	void altInit(SPI_HandleTypeDef *spi_handle, GPIO_TypeDef *cs_port, uint16_t cs_pin);
+	void altInit();
 
 	/**
 	* Calculates datasheet variable values needed for temperature and pressure,
 	* and calculates temperature and pressure. It
 	 *
-	* @param ps_port -> protocol select port
-	* @param ps_pin -> protocol select pin
-	* @param spi_handle -> hspix handle
-	 *
 	* @return none
 	 */
-	void calculateTempPres(SPI_HandleTypeDef *spi_handle, GPIO_TypeDef *cs_port, uint16_t cs_pin);
+	void calculateTempPres();
 
 
 	/**
@@ -111,11 +108,22 @@ public:
 
 
 private:
-	cal_coeffs coeffs_;
+
+	/* Setup description comment */
+	SPI_HandleTypeDef *spi_handle_;
+	GPIO_TypeDef *cs_port_;
+	GPIO_TypeDef *ps_port_;
+	uint16_t cs_pin_;
+	uint16_t ps_pin_;
+
+	/* Description comment */
+	CalCoeffs_t coeffs_;
 	float base_elev_;
 	float height_;
 	float temp_;
 	float pres_;
+
+
 
 	/**
 	* Sends the reset command to the barometer.
@@ -126,40 +134,28 @@ private:
 	 *
 	* @return none
 	 */
-	void reset(SPI_HandleTypeDef *spi_handle, GPIO_TypeDef *cs_port, uint16_t cs_pin);
+	void reset();
 
 	/**
 	* Populates the struct with calibration coefficients.
 	 *
-	* @param ps_port -> protocol select port
-	* @param ps_pin -> protocol select pin
-	* @param spi_handle -> hspix handle
-	 *
 	* @return none
 	 */
-	void getConvCoeffs(SPI_HandleTypeDef *spi_handle, GPIO_TypeDef *cs_port, uint16_t cs_pin);
+	void getConvCoeffs();
 
 	/**
-	* Reads user-specified calibration coefficient from the PROM
-	 *
-	* @param ps_port -> protocol select port
-	* @param ps_pin -> protocol select pin
-	* @param spi_handle -> hspix handle
+	* Reads PROM data from user-specified 16-bit address.
 	 *
 	* @return calibration data
 	 */
-	uint16_t promRead(SPI_HandleTypeDef *spi_handle, GPIO_TypeDef *cs_port, uint16_t cs_pin, uint8_t address);
+	uint16_t promRead(uint8_t address);
 
 	/**
 	* Reads uncompenssated temperature/pressure value from altimeter.
 	 *
-	* @param ps_port -> protocol select port
-	* @param ps_pin -> protocol select pin
-	* @param spi_handle -> hspix handle
-	 *
 	* @return uncompensated pressure/temperature value
 	 */
-	uint32_t uncompensatedPressureTemperature(SPI_HandleTypeDef *spi_handle, GPIO_TypeDef *cs_port, uint16_t cs_pin, uint8_t conversion_command);
+	uint32_t uncompensatedPressureTemperature(uint8_t conversion_command);
 };
 
 
