@@ -72,7 +72,7 @@ public:
 	 *
 	* @return none
 	 */
-	void calculateTempPres();
+	void calculateTemperatureAndPressure();
 
 
 	/**
@@ -152,6 +152,13 @@ private:
 	* @return uncompensated pressure/temperature value
 	 */
 	uint32_t uncompensatedPressureTemperature(uint8_t conversion_command);
+
+	/**
+	* Calculates the temperature in degrees celsius and pressure in mbar.
+	 *
+	* @return none
+	 */
+	void calculateTemperatureAndPressure();
 };
 
 

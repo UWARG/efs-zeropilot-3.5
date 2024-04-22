@@ -20,7 +20,7 @@ void MS5611::altInit(){
 
 	float reading_sum = 0.0f;
 	for(int i = 0; i < 100; i++){
-		calculateTempPres();
+		calculateTemperatureAndPressure();
 		reading_sum += getAltitudeAboveSeaLevel();
 	}
 
@@ -101,7 +101,7 @@ uint32_t MS5611::uncompensatedPressureTemperature(uint8_t conversion_command){
 }
 
 
-void MS5611::calculateTempPres(){
+void MS5611::calculateTemperatureAndPressure(){
 
 	uint32_t digital_temperature = uncompensatedPressureTemperature(CONVERT_D2_OSR_256);
 	uint32_t digital_pressure = uncompensatedPressureTemperature(CONVERT_D1_OSR_256);
@@ -148,10 +148,12 @@ void MS5611::calculateTempPres(){
 }
 
 float MS5611::getPressure(){
+	calculateTemperatureAndPressure();
 	return pres_;
 }
 
 float MS5611::getTemperature(){
+	calculateTemperatureAndPressure();
 	return temp_;
 }
 
@@ -169,7 +171,6 @@ float MS5611::getAltitudeAboveSeaLevel(){
 
 	return height;
 }
-
 
 float MS5611::getAltitudeAboveGroundLevel(){
 	height_ = getAltitudeAboveSeaLevel();
