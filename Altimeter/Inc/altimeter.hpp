@@ -68,8 +68,7 @@ public:
 	void altInit();
 
 	/**
-	* Calculates datasheet variable values needed for temperature and pressure,
-	* and calculates temperature and pressure. It
+	* Calculates the temperature in degrees celsius and pressure in mbar.
 	 *
 	* @return none
 	 */
@@ -89,12 +88,12 @@ public:
 	/**
 	* @return the current altitude above sea level.
 	 */
-	float getAltAboveSeaLvl();
+	float getAltitudeAboveSeaLevel();
 
 	/**
 	* @return the current altitude above zero point.
 	 */
-	float getAltitude();
+	float getAltitudeAboveGroundLevel();
 
 
 private:

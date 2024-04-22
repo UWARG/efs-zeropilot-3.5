@@ -21,14 +21,13 @@ void MS5611::altInit(){
 	float reading_sum = 0.0f;
 	for(int i = 0; i < 100; i++){
 		calculateTempPres();
-		reading_sum += getAltAboveSeaLvl();
+		reading_sum += getAltitudeAboveSeaLevel();
 	}
 
 	base_elev_ = reading_sum / 100.0f;
 }
 
 void MS5611::reset(){
-
 	HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_RESET);
 
@@ -156,7 +155,7 @@ float MS5611::getTemperature(){
 	return temp_;
 }
 
-float MS5611::getAltAboveSeaLvl(){
+float MS5611::getAltitudeAboveSeaLevel(){
 
 	float reference_temp = 288.15f; /* Ref temperature in Kelvins */
 	float temp_lapse_rate = 0.0065f;
@@ -172,8 +171,8 @@ float MS5611::getAltAboveSeaLvl(){
 }
 
 
-float MS5611::getAltitude(){
-	height_ = getAltAboveSeaLvl();
+float MS5611::getAltitudeAboveGroundLevel(){
+	height_ = getAltitudeAboveSeaLevel();
 	return {height_ - base_elev_};
 }
 
