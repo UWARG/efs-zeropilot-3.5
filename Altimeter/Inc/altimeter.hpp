@@ -36,16 +36,6 @@ constexpr uint8_t ADC_READ = 0x0;
 
 constexpr uint32_t TIMEOUT = 1 << 31;
 
-typedef struct CalCoeffs_t{
-	uint16_t sens;
-	uint16_t off;
-	uint16_t tcs;
-	uint16_t tco;
-	uint16_t t_ref;
-	uint16_t temp_sens;
-}CalCoeffs_t;
-
-
 
 /* To get temperature/pressure/altitude values, call (step 1) AltDevice, then (step 2) AltInit once.
  * Then before getting (step 4) pressure/temp/altitude, (step 3) calculateTempPres should be called beforehand.
@@ -116,8 +106,15 @@ private:
 	uint16_t cs_pin_;
 	uint16_t ps_pin_;
 
-	/* Description comment */
-	CalCoeffs_t coeffs_;
+	/*ms5611 calibration coefficients for pressure and temperature calculations */
+	uint16_t pressure_sensitivity_;
+	uint16_t pressure_offset_;
+	uint16_t pres_sensitivity_temp_coeff_; /*Temperature coefficient of pressure sensitivity*/
+	uint16_t pres_offset_temp_coeff_; /* temperature coefficient of temperature offset */
+	uint16_t reference_temperature_;
+	uint16_t temp_coeff_of_temp_;     /*Temperature coefficient of temperature */
+
+	/* barometer measurement variables */
 	float base_elev_;
 	float height_;
 	float temp_;

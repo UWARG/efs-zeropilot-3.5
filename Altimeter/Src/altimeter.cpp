@@ -42,12 +42,12 @@ void MS5611::reset(){
 }
 
 void MS5611::getConvCoeffs(){
-	coeffs_.sens = promRead(PROM_READ_ADDRESS_1);
-	coeffs_.off = promRead(PROM_READ_ADDRESS_2);
-	coeffs_.tcs = promRead(PROM_READ_ADDRESS_3);
-	coeffs_.tco = promRead(PROM_READ_ADDRESS_4);
-	coeffs_.t_ref = promRead(PROM_READ_ADDRESS_5);
-	coeffs_.temp_sens = promRead(PROM_READ_ADDRESS_6);
+	pressure_sensitivity_ = promRead(PROM_READ_ADDRESS_1);
+	pressure_offset_ = promRead(PROM_READ_ADDRESS_2);
+	pres_sensitivity_temp_coeff_ = promRead(PROM_READ_ADDRESS_3);
+	pres_offset_temp_coeff_ = promRead(PROM_READ_ADDRESS_4);
+	reference_temperature_ = promRead(PROM_READ_ADDRESS_5);
+	temp_coeff_of_temp_ = promRead(PROM_READ_ADDRESS_6);
 }
 
 
@@ -107,6 +107,8 @@ void MS5611::calculateTempPres(){
 	uint32_t digital_temperature = uncompensatedPressureTemperature(CONVERT_D2_OSR_256);
 	uint32_t digital_pressure = uncompensatedPressureTemperature(CONVERT_D1_OSR_256);
 
+	const float TWO_POW_1 = 2.0f;
+	const float TWO_POW_2 = 4.0f;
 	const float TWO_POW_7 = 128.0f;
 	const float TWO_POW_8 = 256.0f;
 	const float TWO_POW_15 = 32768.0f;
@@ -115,35 +117,36 @@ void MS5611::calculateTempPres(){
 	const float TWO_POW_23 = 8388608.0f;
 	const float TWO_POW_31 = 2147483648.0f;
 
-	float dt = digital_temperature - (float)coeffs_.t_ref * TWO_POW_8;
-	float temp = 2000 + dt * (float) coeffs_.temp_sens / TWO_POW_23;
-	float off = coeffs_.off * TWO_POW_16 + (coeffs_.tco * dt) / TWO_POW_7;
-	float sens = coeffs_.sens * TWO_POW_15  + (coeffs_.tcs * dt) / TWO_POW_8;
+	const float FIVE = 5.0f;
+
+	float dt = digital_temperature - (float)reference_temperature_ * TWO_POW_8;
+	float temp = 2000 + dt * (float)temp_coeff_of_temp_ / TWO_POW_23;
+	float pressure_offset = pressure_offset_ * TWO_POW_16 + (pres_offset_temp_coeff_ * dt) / TWO_POW_7;
+	float pressure_sensitivity = pressure_sensitivity_ * TWO_POW_15  + (pres_sensitivity_temp_coeff_ * dt) / TWO_POW_8;
 
 	/*Second order temperature compensation */
 	if(temp < 2000){
 		float t2 = (dt*dt) / TWO_POW_31;
-		float off2 = FIVE * pow((temp - 2000), TWO_POW_1) / TWO_POW_1;
-		float sens2 = FIVE * pow((temp - 2000), TWO_POW_1) / TWO_POW_2;
+		float pressure_offset_2 = FIVE * pow((temp - 2000), TWO_POW_1) / TWO_POW_1;
+		float pressure_sensitivity_2 = FIVE * pow((temp - 2000), TWO_POW_1) / TWO_POW_2;
 
 		if(temp < 1500){
-			off2 = off2 + 7 * pow((temp + 1500), TWO_POW_1);
-			sens2 = sens2 + 11 * pow((temp + 1500), TWO_POW_1) / TWO_POW_1;
+			pressure_offset_2 = pressure_offset_2 + 7 * pow((temp + 1500), TWO_POW_1);
+			pressure_sensitivity_2 = pressure_sensitivity_2 + 11 * pow((temp + 1500), TWO_POW_1) / TWO_POW_1;
 		}
 
 		temp = temp - t2;
-		off = off - off2;
-		sens = sens - sens2;
+		pressure_offset = pressure_offset - pressure_offset_2;
+		pressure_sensitivity = pressure_sensitivity - pressure_sensitivity_2;
 	}
 
-	float pressure = (digital_pressure * (sens / TWO_POW_21) - off) / TWO_POW_15;
+	float pressure = (digital_pressure * (pressure_sensitivity / TWO_POW_21) - pressure_offset) / TWO_POW_15;
 	pressure /= 100.0f;
 	temp /= 100.0f;
 
 	pres_ = pressure;
 	temp_ = temp;
 }
-
 
 float MS5611::getPressure(){
 	return pres_;
