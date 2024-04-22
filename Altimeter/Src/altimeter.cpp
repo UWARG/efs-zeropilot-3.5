@@ -69,7 +69,7 @@ uint16_t MS5611::promRead(uint8_t address){
 
 
 
-uint32_t MS5611::uncompensatedPressureTemperature(uint8_t conversion_command){
+uint32_t MS5611::readPressureTemperatureUncompensated(uint8_t conversion_command){
 
 	uint8_t digital_pres_temp[1] = {conversion_command};
 	uint8_t receive_buffer[1];
@@ -103,8 +103,8 @@ uint32_t MS5611::uncompensatedPressureTemperature(uint8_t conversion_command){
 
 void MS5611::calculateTemperatureAndPressure(){
 
-	uint32_t digital_temperature = uncompensatedPressureTemperature(CONVERT_D2_OSR_256);
-	uint32_t digital_pressure = uncompensatedPressureTemperature(CONVERT_D1_OSR_256);
+	uint32_t digital_temperature = readPressureTemperatureUncompensated(CONVERT_D2_OSR_256);
+	uint32_t digital_pressure = readPressureTemperatureUncompensated(CONVERT_D1_OSR_256);
 
 	const float TWO_POW_1 = 2.0f;
 	const float TWO_POW_2 = 4.0f;

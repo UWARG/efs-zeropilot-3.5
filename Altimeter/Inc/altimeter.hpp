@@ -68,14 +68,6 @@ public:
 	void altInit();
 
 	/**
-	* Calculates the temperature in degrees celsius and pressure in mbar.
-	 *
-	* @return none
-	 */
-	void calculateTemperatureAndPressure();
-
-
-	/**
 	* @return the current pressure value
 	 */
 	float getPressure();
@@ -119,8 +111,6 @@ private:
 	float temp_;
 	float pres_;
 
-
-
 	/**
 	* Sends the reset command to the barometer.
 	 *
@@ -151,7 +141,7 @@ private:
 	 *
 	* @return uncompensated pressure/temperature value
 	 */
-	uint32_t uncompensatedPressureTemperature(uint8_t conversion_command);
+	uint32_t readPressureTemperatureUncompensated(uint8_t conversion_command);
 
 	/**
 	* Calculates the temperature in degrees celsius and pressure in mbar.
