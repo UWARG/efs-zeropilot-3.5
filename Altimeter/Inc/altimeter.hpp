@@ -9,7 +9,7 @@
 
 constexpr uint8_t RESET_COMMAND = 0x1E;
 
-/*PROM Addresses */
+// PROM Addresses.
 constexpr uint8_t PROM_READ_ADDRESS_0 = 0xA0;
 constexpr uint8_t PROM_READ_ADDRESS_1 = 0xA2;
 constexpr uint8_t PROM_READ_ADDRESS_2 = 0xA4;
@@ -20,7 +20,7 @@ constexpr uint8_t PROM_READ_ADDRESS_6 = 0xAC;
 constexpr uint8_t PROM_READ_ADDRESS_7 = 0xAE;
 
 
-/*digital pressure/temperature commands at different sampling rates*/
+// digital pressure/temperature commands at different sampling rates.
 constexpr uint8_t CONVERT_D1_OSR_256 = 0x40;
 constexpr uint8_t CONVERT_D1_OSR_512 = 0x42;
 constexpr uint8_t CONVERT_D1_OSR_1024 = 0x44;
@@ -36,18 +36,16 @@ constexpr uint8_t ADC_READ = 0x0;
 
 constexpr uint32_t TIMEOUT = 1 << 31;
 
-
-/* To get temperature/pressure/altitude values, call (step 1) AltDevice, then (step 2) AltInit once.
- * Then before getting (step 4) pressure/temp/altitude, (step 3) calculateTempPres should be called beforehand.
- *  */
-
 class MS5611{
 public:
 	/**
-	* Constructor for the AltDevice class
+	* Constructor for the AltDevice class.
+	* It assigns the spi_handler and ports and pins related to the chip select and protocol pins.
+	* This function sends the reset command, populates the cal_coeffs
+	* struct members with the calibration coefficients in the sensor PROM,
+	* and gets the current elevation above sea level.
 	 *
-	* It assigns the spi_handler and ports and pins
-	* related to the chip select and protocol pins.
+	*
 	* @param spi_handle -> hspix handle
 	* @param cs_port -> chip select pin port
 	* @param ps_port -> protocol select port
@@ -57,15 +55,6 @@ public:
 	* @return none
 	 */
 	MS5611(SPI_HandleTypeDef *spi_handle, GPIO_TypeDef *cs_port, GPIO_TypeDef *ps_port, uint16_t cs_pin, uint16_t ps_pin);
-
-	/**
-	* This function sends the reset command, populates the cal_coeffs
-	* struct members with the calibration coefficients in the sensor PROM,
-	* and gets the current elevation above sea level.
-	 *
-	* @return none
-	 */
-	void altInit();
 
 	/**
 	* @return the current pressure value
@@ -90,22 +79,22 @@ public:
 
 private:
 
-	/* Setup description comment */
+	// Setup description comment.
 	SPI_HandleTypeDef *spi_handle_;
 	GPIO_TypeDef *cs_port_;
 	GPIO_TypeDef *ps_port_;
 	uint16_t cs_pin_;
 	uint16_t ps_pin_;
 
-	/*ms5611 calibration coefficients for pressure and temperature calculations */
+	// ms5611 calibration coefficients for pressure and temperature calculations. 
 	uint16_t pressure_sensitivity_;
 	uint16_t pressure_offset_;
-	uint16_t pres_sensitivity_temp_coeff_; /*Temperature coefficient of pressure sensitivity*/
-	uint16_t pres_offset_temp_coeff_; /* temperature coefficient of temperature offset */
+	uint16_t pres_sensitivity_temp_coeff_; // Temperature coefficient of pressure sensitivity.
+	uint16_t pres_offset_temp_coeff_; // temperature coefficient of temperature offset.
 	uint16_t reference_temperature_;
-	uint16_t temp_coeff_of_temp_;     /*Temperature coefficient of temperature */
+	uint16_t temp_coeff_of_temp_;     // Temperature coefficient of temperature.
 
-	/* barometer measurement variables */
+	// barometer measurement variables.
 	float base_elev_;
 	float height_;
 	float temp_;

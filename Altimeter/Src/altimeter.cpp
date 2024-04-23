@@ -8,19 +8,13 @@ MS5611::MS5611(SPI_HandleTypeDef *spi_handle, GPIO_TypeDef *cs_port, GPIO_TypeDe
 	cs_pin_ = cs_pin;
 	ps_pin_ = ps_pin;
 	HAL_GPIO_WritePin(ps_port_, ps_pin_, GPIO_PIN_RESET);
-}
-
-void MS5611::altInit(){
-
 
 	reset();
 	getConvCoeffs();
 
-	/*Get the average of 100 readings*/
-
+	// Get the average of 100 readings.
 	float reading_sum = 0.0f;
 	for(int i = 0; i < 100; i++){
-		calculateTemperatureAndPressure();
 		reading_sum += getAltitudeAboveSeaLevel();
 	}
 
@@ -31,10 +25,11 @@ void MS5611::reset(){
 	HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_RESET);
 
-	uint8_t send_reset[3] = {RESET, 0xFF, 0xFF};
-	uint8_t receive_data[3];
+	uint8_t tx_data[3] = {RESET_COMMAND, 0xFF, 0xFF};
+	uint8_t rx_data[3];
+	uint16_t data_size = 3;
 
-	HAL_SPI_TransmitReceive(spi_handle_, send_reset, receive_data, 3, TIMEOUT);
+	HAL_SPI_TransmitReceive(spi_handle_, tx_data, rx_data, data_size, TIMEOUT);
 	osDelay(3);
 
 	HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_SET);
@@ -49,57 +44,56 @@ void MS5611::getConvCoeffs(){
 	temp_coeff_of_temp_ = promRead(PROM_READ_ADDRESS_6);
 }
 
-
 uint16_t MS5611::promRead(uint8_t address){
 	HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_RESET);
 
-	uint8_t send_read_command[3] = {address, 0xFF, 0xFF};
-	uint8_t coefficient_val[3];
+	uint8_t tx_data[3] = {address, 0xFF, 0xFF};
+	uint8_t rx_data[3];
+	uint16_t data_size = 3;
 
-	HAL_SPI_TransmitReceive(spi_handle_, send_read_command, coefficient_val, 3, TIMEOUT);
+	HAL_SPI_TransmitReceive(spi_handle_, tx_data, rx_data, data_size, TIMEOUT);
 
 	HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_SET);
 
-	//Grab conversion coefficients.
-	uint16_t conversion_coefficient = (coefficient_val[1] << 8) | (coefficient_val[2]) & 0x0000FFFF;;
+	// construct 16-bit calibration coefficient.
+	uint16_t calibration_coefficient = (rx_data[1] << 8) | (rx_data[2]) & 0x0000FFFF;
 
-	return conversion_coefficient;
+	return calibration_coefficient;
 }
-
-
 
 uint32_t MS5611::readPressureTemperatureUncompensated(uint8_t conversion_command){
 
-	uint8_t digital_pres_temp[1] = {conversion_command};
-	uint8_t receive_buffer[1];
+	uint8_t tx_data = conversion_command;
+	uint8_t rx_data;
+	uint16_t data_size = 1;
 
 	HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_RESET);
 
-	/* send the digital pressure or temperature with the command */
-	HAL_SPI_TransmitReceive(spi_handle_, digital_pres_temp, receive_buffer, 1, TIMEOUT);
+	// send the digital pressure or temperature with the command.
+	HAL_SPI_TransmitReceive(spi_handle_, tx_data, rx_data, data_size, TIMEOUT);
 	HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_SET);
 
-	/* at least 8.22 ms delay required for ADC conversion.*/
+	// at least 8.22 ms delay required for ADC conversion.
 	osDelay(9);
 
-	uint8_t tx_buffer[4] = {ADC_READ, 0xFF, 0xFF, 0xFF};
-	uint8_t rx_buffer[4];
+	uint8_t tx_data_2[4] = {ADC_READ, 0xFF, 0xFF, 0xFF};
+	uint8_t rx_data_2[4];
+	data_size = 4;
 
 	HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_RESET);
 
-	/*Start adc conversion to get value */
-	HAL_SPI_TransmitReceive(spi_handle_, tx_buffer, rx_buffer, 4, TIMEOUT);
+	// Start adc conversion to get value
+	HAL_SPI_TransmitReceive(spi_handle_, tx_data_2, rx_data_2, data_size, TIMEOUT);
 
 	HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_SET);
 
-	//get 24-bit uncompensated pressure or temperature value value.
-	uint32_t uncompensated_value = (rx_buffer[1] << 16 | rx_buffer[2] << 8 | rx_buffer[3]) & 0x00FFFFFF;
+	// get 24-bit uncompensated pressure or temperature value value.
+	uint32_t uncompensated_value = (rx_data_2[1] << 16 | rx_data_2[2] << 8 | rx_data_2[3]) & 0x00FFFFFF;
 
 	return uncompensated_value;
 }
-
 
 void MS5611::calculateTemperatureAndPressure(){
 
@@ -123,7 +117,7 @@ void MS5611::calculateTemperatureAndPressure(){
 	float pressure_offset = pressure_offset_ * TWO_POW_16 + (pres_offset_temp_coeff_ * dt) / TWO_POW_7;
 	float pressure_sensitivity = pressure_sensitivity_ * TWO_POW_15  + (pres_sensitivity_temp_coeff_ * dt) / TWO_POW_8;
 
-	/*Second order temperature compensation */
+	// Second order temperature compensation.
 	if(temp < 2000){
 		float t2 = (dt*dt) / TWO_POW_31;
 		float pressure_offset_2 = FIVE * pow((temp - 2000), TWO_POW_1) / TWO_POW_1;
@@ -159,11 +153,11 @@ float MS5611::getTemperature(){
 
 float MS5611::getAltitudeAboveSeaLevel(){
 
-	float reference_temp = 288.15f; /* Ref temperature in Kelvins */
+	float reference_temp = 288.15f; // Ref temperature in Kelvins.
 	float temp_lapse_rate = 0.0065f;
 	float exp_gmrl = 5.2558;
 
-	float reference_pressure = 101325.0f; /* in Pa */
+	float reference_pressure = 101325.0f; // in Pa.
 	float current_pressure = getPressure() * 100.0f;
 	float exponent = (log(current_pressure) - log(reference_pressure)) / exp_gmrl;
 
