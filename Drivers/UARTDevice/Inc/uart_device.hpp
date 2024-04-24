@@ -17,7 +17,7 @@ class UARTDevice {
         *
         *  @param huart The HAL UART handle to be managed.
         */
-        UARTDevice(UART_HandleTypeDef* huart);
+        UARTDevice(UART_HandleTypeDef* huart, CircularBuffer *buf_);
 
         /** @brief Initialize the driver.
         *
@@ -78,7 +78,7 @@ class UARTDevice {
         static const uint16_t TRANSMIT_TIMEOUT = 1000;
         UART_HandleTypeDef* uart_handle_;
         uint8_t buf_[BUFFER_SIZE];
-        CircularBuffer circular_buf_;
+        CircularBuffer *circular_buf_;
         uint8_t it_recv_buf_[BUFFER_SIZE];
 };
 
