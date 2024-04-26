@@ -54,7 +54,11 @@ public:
 	 *
 	* @return none
 	 */
-	MS5611(SPI_HandleTypeDef *spi_handle, GPIO_TypeDef *cs_port, GPIO_TypeDef *ps_port, uint16_t cs_pin, uint16_t ps_pin);
+	MS5611(SPI_HandleTypeDef *spi_handle, 
+		   GPIO_TypeDef *cs_port, 
+		   GPIO_TypeDef *ps_port, 
+		   uint16_t cs_pin, 
+		   uint16_t ps_pin);
 
 	/**
 	* @return the current pressure value
@@ -99,6 +103,8 @@ private:
 	float height_;
 	float temp_;
 	float pres_;
+
+	HAL_StatusTypeDef spi_status_;
 
 	/**
 	* Sends the reset command to the barometer.

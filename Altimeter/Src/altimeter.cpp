@@ -14,7 +14,7 @@ MS5611::MS5611(SPI_HandleTypeDef *spi_handle, GPIO_TypeDef *cs_port, GPIO_TypeDe
 
 	// Get the average of 100 readings.
 	float reading_sum = 0.0f;
-	for(int i = 0; i < 100; i++){
+	for (int i = 0; i < 100; i++) {
 		reading_sum += getAltitudeAboveSeaLevel();
 	}
 
@@ -118,12 +118,12 @@ void MS5611::calculateTemperatureAndPressure(){
 	float pressure_sensitivity = pressure_sensitivity_ * TWO_POW_15  + (pres_sensitivity_temp_coeff_ * dt) / TWO_POW_8;
 
 	// Second order temperature compensation.
-	if(temp < 2000){
+	if (temp < 2000) {
 		float t2 = (dt*dt) / TWO_POW_31;
 		float pressure_offset_2 = FIVE * pow((temp - 2000), TWO_POW_1) / TWO_POW_1;
 		float pressure_sensitivity_2 = FIVE * pow((temp - 2000), TWO_POW_1) / TWO_POW_2;
 
-		if(temp < 1500){
+		if (temp < 1500) {
 			pressure_offset_2 = pressure_offset_2 + 7 * pow((temp + 1500), TWO_POW_1);
 			pressure_sensitivity_2 = pressure_sensitivity_2 + 11 * pow((temp + 1500), TWO_POW_1) / TWO_POW_1;
 		}
@@ -152,16 +152,15 @@ float MS5611::getTemperature(){
 }
 
 float MS5611::getAltitudeAboveSeaLevel(){
+	const float REFERENCE_TEMP = 288.15f; /* Ref temperature in Kelvins */
+	const float TEMP_LAPSE_RATE = 0.0065f;
+	const float EXP_GMRL = 5.2558;
 
-	float reference_temp = 288.15f; // Ref temperature in Kelvins.
-	float temp_lapse_rate = 0.0065f;
-	float exp_gmrl = 5.2558;
+	const float REFERENCE_PRESSURE = 101325.0f; /* in Pa */
+	const float CURRENT_PRESSURE = getPressure() * 100.0f;
+	const float EXPONENT = (log(CURRENT_PRESSURE) - log(REFERENCE_PRESSURE)) / EXP_GMRL;
 
-	float reference_pressure = 101325.0f; // in Pa.
-	float current_pressure = getPressure() * 100.0f;
-	float exponent = (log(current_pressure) - log(reference_pressure)) / exp_gmrl;
-
-	float height = reference_temp/temp_lapse_rate * (1 - pow(M_E, exponent));
+	float height = REFERENCE_TEMP / TEMP_LAPSE_RATE * (1 - pow(M_E, EXPONENT));
 
 	return height;
 }
