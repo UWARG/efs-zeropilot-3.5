@@ -17,7 +17,7 @@ class UARTDevice {
         *
         *  @param huart The HAL UART handle to be managed.
         */
-        UARTDevice(UART_HandleTypeDef* huart, CircularBuffer *buf_);
+        UARTDevice(UART_HandleTypeDef* huart);//, CircularBuffer *buf_);
 
         /** @brief Initialize the driver.
         *
