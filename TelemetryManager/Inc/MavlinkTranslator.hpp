@@ -38,7 +38,7 @@ class MavlinkTranslator {
      * @param rxFromGroundByteQueue The CircularBuffer containing the bytes received from the ground
      * station. waiting to be decoded.
      */
-    void bytesToMavlinkMsg(CircularBuffer &rxFromGroundByteQueue);
+    void bytesToMavlinkMsg(TMCircularBuffer &rxFromGroundByteQueue);
 
     /**
      * @brief Converts Mavlink messages to bytes and adds them to the txToGroundByteQueue.
@@ -48,7 +48,7 @@ class MavlinkTranslator {
      * station.
      */
     void addMavlinkMsgToByteQueue(mavlink_message_t &msg,
-                                          CircularBuffer &txToGroundByteQueue);
+                                          TMCircularBuffer &txToGroundByteQueue);
 };
 
 #endif  // MAVLINKTRANSLATOR_H
