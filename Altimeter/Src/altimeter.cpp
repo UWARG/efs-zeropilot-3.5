@@ -12,7 +12,8 @@ MS5611::MS5611(SPI_HandleTypeDef *spi_handle, GPIO_TypeDef *cs_port, GPIO_TypeDe
 	reset();
 	getConvCoeffs();
 
-	// Get the average of 100 readings.
+	// Grab the sensor's altitude above sea level while on some surface and assign it to base_elev_
+	// Subtract this from measurements at greater heights for the height above that initial surface.
 	float reading_sum = 0.0f;
 	for (int i = 0; i < 100; i++) {
 		reading_sum += getAltitudeAboveSeaLevel();

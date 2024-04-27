@@ -39,11 +39,10 @@ constexpr uint32_t TIMEOUT = 1 << 31;
 class MS5611{
 public:
 	/**
-	* Constructor for the AltDevice class.
+	* Constructor for the MS5611 class.
 	* It assigns the spi_handler and ports and pins related to the chip select and protocol pins.
-	* This function sends the reset command, populates the cal_coeffs
-	* struct members with the calibration coefficients in the sensor PROM,
-	* and gets the current elevation above sea level.
+	* This function sends the reset command, populates reads calibration coefficients from
+	* PROM and gets the sensor's initial elevation above sea level.
 	 *
 	*
 	* @param spi_handle -> hspix handle
@@ -107,11 +106,8 @@ private:
 	HAL_StatusTypeDef spi_status_;
 
 	/**
-	* Sends the reset command to the barometer.
-	 *
-	* @param ps_port -> protocol select port
-	* @param ps_pin -> protocol select pin
-	* @param spi_handle -> hspix handle
+	* Sends the reset command to the barometer. The reset command makes sure that
+	* the PROM, which holds calibration data, gets loaded into the device's internal register.
 	 *
 	* @return none
 	 */
