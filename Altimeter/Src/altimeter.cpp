@@ -9,16 +9,28 @@ MS5611::MS5611(SPI_HandleTypeDef *spi_handle, GPIO_TypeDef *cs_port, GPIO_TypeDe
 	ps_pin_ = ps_pin;
 	HAL_GPIO_WritePin(ps_port_, ps_pin_, GPIO_PIN_RESET);
 
+	communication_success_ = true;
+
 	reset();
-	getConvCoeffs();
+	getPromData();
 
-	// Get the average of 100 readings.
+	// Grab the sensor's altitude above sea level while on some surface and assign it to base_elev_
+	// Subtract this from measurements at greater heights for the height above that initial surface.
 	float reading_sum = 0.0f;
+	float altitude_above_sea_level_measurement = 0;
+	int num_successful_measurements = 0;
 	for (int i = 0; i < 100; i++) {
-		reading_sum += getAltitudeAboveSeaLevel();
+		communication_success_ = true;
+		communication_success_ = getAltitudeAboveSeaLevel(altitude_above_sea_level_measurement);
+		if (communication_success_) {	//add measurement if function call is successful.
+			reading_sum += altitude_above_sea_level_measurement;
+			num_successful_measurements += 1;
+		}else{
+			communication_success_ = false;
+		}
 	}
-
-	base_elev_ = reading_sum / 100.0f;
+	//take the average of the number of successful measurements.
+	base_elev_ = reading_sum / num_successful_measurements;
 }
 
 void MS5611::reset(){
@@ -29,22 +41,29 @@ void MS5611::reset(){
 	uint8_t rx_data[3];
 	uint16_t data_size = 3;
 
-	HAL_SPI_TransmitReceive(spi_handle_, tx_data, rx_data, data_size, TIMEOUT);
+	spi_status_ = HAL_SPI_TransmitReceive_IT(spi_handle_, tx_data, rx_data, data_size);
+	if (spi_status_ != HAL_OK) {
+		communication_success_ = false;
+	}
 	osDelay(3);
 
 	HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_SET);
 }
 
-void MS5611::getConvCoeffs(){
-	pressure_sensitivity_ = promRead(PROM_READ_ADDRESS_1);
-	pressure_offset_ = promRead(PROM_READ_ADDRESS_2);
-	pres_sensitivity_temp_coeff_ = promRead(PROM_READ_ADDRESS_3);
-	pres_offset_temp_coeff_ = promRead(PROM_READ_ADDRESS_4);
-	reference_temperature_ = promRead(PROM_READ_ADDRESS_5);
-	temp_coeff_of_temp_ = promRead(PROM_READ_ADDRESS_6);
+void MS5611::getPromData(){
+	for (int i = 0; i < 8; ++i) {
+		communication_success_ = promRead(PROM_READ_ADDRESS_0 + 2 * i, ms6511_prom_data_ + i);
+		if (!communication_success_){
+			return;
+		}
+	}
 }
 
-uint16_t MS5611::promRead(uint8_t address){
+bool MS5611::promRead(uint8_t address, uint16_t *ms5611_prom_data){
+	if (!communication_success_){
+		return communication_success_;
+	}
+
 	HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_RESET);
 
@@ -52,17 +71,25 @@ uint16_t MS5611::promRead(uint8_t address){
 	uint8_t rx_data[3];
 	uint16_t data_size = 3;
 
-	HAL_SPI_TransmitReceive(spi_handle_, tx_data, rx_data, data_size, TIMEOUT);
+	spi_status_ = HAL_SPI_TransmitReceive_IT(spi_handle_, tx_data, rx_data, data_size);
+	if (spi_status_ != HAL_OK) {
+		communication_success_ = false;
+		return communication_success_;
+	}
 
 	HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_SET);
 
 	// construct 16-bit calibration coefficient.
-	uint16_t calibration_coefficient = (rx_data[1] << 8) | (rx_data[2]) & 0x0000FFFF;
+	*ms5611_prom_data = ((rx_data[1] << 8) | (rx_data[2])) & 0x0000FFFF;
 
-	return calibration_coefficient;
+	return communication_success_;
 }
 
-uint32_t MS5611::readPressureTemperatureUncompensated(uint8_t conversion_command){
+bool MS5611::readPressureTemperatureUncompensated(uint8_t conversion_command, uint32_t &uncompensated_pressure_temperature){
+
+	if (!communication_success_){
+		return communication_success_;
+	}
 
 	uint8_t tx_data = conversion_command;
 	uint8_t rx_data;
@@ -72,7 +99,11 @@ uint32_t MS5611::readPressureTemperatureUncompensated(uint8_t conversion_command
 	HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_RESET);
 
 	// send the digital pressure or temperature with the command.
-	HAL_SPI_TransmitReceive(spi_handle_, tx_data, rx_data, data_size, TIMEOUT);
+	spi_status_ = HAL_SPI_TransmitReceive_IT(spi_handle_, &tx_data, &rx_data, data_size);
+	if (spi_status_ != HAL_OK) {
+		communication_success_ = false;
+		return communication_success_;
+	}
 	HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_SET);
 
 	// at least 8.22 ms delay required for ADC conversion.
@@ -85,20 +116,34 @@ uint32_t MS5611::readPressureTemperatureUncompensated(uint8_t conversion_command
 	HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_RESET);
 
 	// Start adc conversion to get value
-	HAL_SPI_TransmitReceive(spi_handle_, tx_data_2, rx_data_2, data_size, TIMEOUT);
+	spi_status_ = HAL_SPI_TransmitReceive_IT(spi_handle_, tx_data_2, rx_data_2, data_size);
+	if (spi_status_ != HAL_OK) {
+		communication_success_ = false;
+		return communication_success_;
+	}
 
 	HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_SET);
 
 	// get 24-bit uncompensated pressure or temperature value value.
-	uint32_t uncompensated_value = (rx_data_2[1] << 16 | rx_data_2[2] << 8 | rx_data_2[3]) & 0x00FFFFFF;
+	uncompensated_pressure_temperature = (rx_data_2[1] << 16 | rx_data_2[2] << 8 | rx_data_2[3]) & 0x00FFFFFF;
 
-	return uncompensated_value;
+	return communication_success_;
 }
 
 void MS5611::calculateTemperatureAndPressure(){
 
-	uint32_t digital_temperature = readPressureTemperatureUncompensated(CONVERT_D2_OSR_256);
-	uint32_t digital_pressure = readPressureTemperatureUncompensated(CONVERT_D1_OSR_256);
+	uint32_t digital_temperature = 0;
+	uint32_t digital_pressure = 0;
+
+	communication_success_ = readPressureTemperatureUncompensated(CONVERT_D2_OSR_256, digital_temperature);
+	if (!communication_success_){
+		return;
+	}
+
+	communication_success_ = readPressureTemperatureUncompensated(CONVERT_D1_OSR_256, digital_pressure);
+	if (!communication_success_){
+		return;
+	}
 
 	const float TWO_POW_1 = 2.0f;
 	const float TWO_POW_2 = 4.0f;
@@ -111,6 +156,15 @@ void MS5611::calculateTemperatureAndPressure(){
 	const float TWO_POW_31 = 2147483648.0f;
 
 	const float FIVE = 5.0f;
+
+	// ms5611 calibration coefficients for pressure and temperature calculations.
+	uint16_t pressure_sensitivity_ = ms6511_prom_data_[1];
+	uint16_t pressure_offset_ = ms6511_prom_data_[2];
+	uint16_t pres_sensitivity_temp_coeff_ = ms6511_prom_data_[3]; //Temperature coefficient of pressure sensitivity.
+	uint16_t pres_offset_temp_coeff_ = ms6511_prom_data_[4];	  // temperature coefficient of temperature offset.
+	uint16_t reference_temperature_ = ms6511_prom_data_[5];
+	uint16_t temp_coeff_of_temp_ = ms6511_prom_data_[6];		  // Temperature coefficient of temperature.
+
 
 	float dt = digital_temperature - (float)reference_temperature_ * TWO_POW_8;
 	float temp = 2000 + dt * (float)temp_coeff_of_temp_ / TWO_POW_23;
@@ -141,32 +195,53 @@ void MS5611::calculateTemperatureAndPressure(){
 	temp_ = temp;
 }
 
-float MS5611::getPressure(){
+bool MS5611::getPressure(float &pressure){
 	calculateTemperatureAndPressure();
-	return pres_;
+	if (!communication_success_) {
+		return false;
+	}
+	pressure = pres_;
+	return true;
 }
 
-float MS5611::getTemperature(){
+bool MS5611::getTemperature(float &temperature){
 	calculateTemperatureAndPressure();
-	return temp_;
+	if (!communication_success_) {
+		return false;
+	}
+	temperature = temp_;
+	return true;
 }
 
-float MS5611::getAltitudeAboveSeaLevel(){
+bool MS5611::getAltitudeAboveSeaLevel(float &altitude_above_sea_level){
+	float pressure = 0.0f;
+	communication_success_ = getPressure(pressure);
+
+	if (!communication_success_) {
+		return communication_success_;
+	}
+
 	const float REFERENCE_TEMP = 288.15f; /* Ref temperature in Kelvins */
 	const float TEMP_LAPSE_RATE = 0.0065f;
 	const float EXP_GMRL = 5.2558;
 
 	const float REFERENCE_PRESSURE = 101325.0f; /* in Pa */
-	const float CURRENT_PRESSURE = getPressure() * 100.0f;
+	const float CURRENT_PRESSURE = pressure * 100.0f;
 	const float EXPONENT = (log(CURRENT_PRESSURE) - log(REFERENCE_PRESSURE)) / EXP_GMRL;
 
-	float height = REFERENCE_TEMP / TEMP_LAPSE_RATE * (1 - pow(M_E, EXPONENT));
+	altitude_above_sea_level = REFERENCE_TEMP / TEMP_LAPSE_RATE * (1 - pow(M_E, EXPONENT));
 
-	return height;
+	return communication_success_;
 }
 
-float MS5611::getAltitudeAboveGroundLevel(){
-	height_ = getAltitudeAboveSeaLevel();
-	return {height_ - base_elev_};
+bool MS5611::getAltitudeAboveGroundLevel(float &altitude_above_ground_level){
+	float alt_above_sea_lvl = 0.0f;
+	communication_success_ = getAltitudeAboveSeaLevel(alt_above_sea_lvl);
+	if (!communication_success_) {
+		return communication_success_;
+	}
+
+	altitude_above_ground_level = alt_above_sea_lvl - base_elev_;
+	return communication_success_;
 }
 
