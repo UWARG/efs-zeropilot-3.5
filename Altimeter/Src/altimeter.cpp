@@ -17,16 +17,20 @@ MS5611::MS5611(SPI_HandleTypeDef *spi_handle, GPIO_TypeDef *cs_port, GPIO_TypeDe
 	// Grab the sensor's altitude above sea level while on some surface and assign it to base_elev_
 	// Subtract this from measurements at greater heights for the height above that initial surface.
 	float base_elevation = 0.0f;
-	float altitude_above_sea_level_measurement = 0;
-	int num_successful_measurements = 0;
-	for (int i = 0; i < 100; i++) { //take a few measurements to make sure they are accurate/consistent.
-		communication_success_ = true;
-		communication_success_ = getAltitudeAboveSeaLevel(altitude_above_sea_level_measurement);
-		if (communication_success_) {
-			base_elevation = altitude_above_sea_level_measurement;
-			num_successful_measurements += 1;
-		}else{
-			communication_success_ = false;
+	if (communication_success_) {   //if HAL_SPI_TransmitReceive_IT doesn't fail in reset or getPromData()
+
+		float altitude_above_sea_level_measurement = 0;
+		int num_successful_measurements = 0;
+		for (int i = 0; i < 100; i++) { 			//take a few measurements to make sure they are accurate/consistent.
+			communication_success_ = true;
+			communication_success_ = getAltitudeAboveSeaLevel(altitude_above_sea_level_measurement);
+			osDelay(10);
+			if (communication_success_) {			//count the number of successful measurements.
+				base_elevation = altitude_above_sea_level_measurement;
+				num_successful_measurements += 1;
+			}else{
+				communication_success_ = false;
+			}
 		}
 	}
 
