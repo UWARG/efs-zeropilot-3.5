@@ -237,6 +237,7 @@ bool MS5611::getAltitudeAboveSeaLevel(float &altitude_above_sea_level){
 }
 
 bool MS5611::getAltitudeAboveGroundLevel(float &altitude_above_ground_level){
+	reset();
 	float alt_above_sea_lvl = 0.0f;
 	communication_success_ = getAltitudeAboveSeaLevel(alt_above_sea_lvl);
 	if (!communication_success_) {
