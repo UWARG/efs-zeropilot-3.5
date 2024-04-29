@@ -16,21 +16,21 @@ MS5611::MS5611(SPI_HandleTypeDef *spi_handle, GPIO_TypeDef *cs_port, GPIO_TypeDe
 
 	// Grab the sensor's altitude above sea level while on some surface and assign it to base_elev_
 	// Subtract this from measurements at greater heights for the height above that initial surface.
-	float reading_sum = 0.0f;
+	float base_elevation = 0.0f;
 	float altitude_above_sea_level_measurement = 0;
 	int num_successful_measurements = 0;
-	for (int i = 0; i < 100; i++) {
+	for (int i = 0; i < 100; i++) { //take a few measurements to make sure they are accurate/consistent.
 		communication_success_ = true;
 		communication_success_ = getAltitudeAboveSeaLevel(altitude_above_sea_level_measurement);
-		if (communication_success_) {	//add measurement if function call is successful.
-			reading_sum += altitude_above_sea_level_measurement;
+		if (communication_success_) {
+			base_elevation = altitude_above_sea_level_measurement;
 			num_successful_measurements += 1;
 		}else{
 			communication_success_ = false;
 		}
 	}
-	//take the average of the number of successful measurements.
-	base_elev_ = reading_sum / num_successful_measurements;
+
+	base_elev_ = base_elevation;
 }
 
 void MS5611::reset(){
@@ -45,9 +45,9 @@ void MS5611::reset(){
 	if (spi_status_ != HAL_OK) {
 		communication_success_ = false;
 	}
-	osDelay(3);
 
 	HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_SET);
+	osDelay(3);
 }
 
 void MS5611::getPromData(){
@@ -78,6 +78,7 @@ bool MS5611::promRead(uint8_t address, uint16_t *ms5611_prom_data){
 	}
 
 	HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_SET);
+	osDelay(9);
 
 	// construct 16-bit calibration coefficient.
 	*ms5611_prom_data = ((rx_data[1] << 8) | (rx_data[2])) & 0x0000FFFF;
@@ -93,6 +94,8 @@ bool MS5611::readPressureTemperatureUncompensated(uint8_t conversion_command, ui
 
 	uint8_t tx_data = conversion_command;
 	uint8_t rx_data;
+	uint8_t tx_data_2[4] = {ADC_READ, 0xFF, 0xFF, 0xFF};
+	uint8_t rx_data_2[4];
 	uint16_t data_size = 1;
 
 	HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_SET);
@@ -109,8 +112,6 @@ bool MS5611::readPressureTemperatureUncompensated(uint8_t conversion_command, ui
 	// at least 8.22 ms delay required for ADC conversion.
 	osDelay(9);
 
-	uint8_t tx_data_2[4] = {ADC_READ, 0xFF, 0xFF, 0xFF};
-	uint8_t rx_data_2[4];
 	data_size = 4;
 
 	HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_RESET);
@@ -126,6 +127,7 @@ bool MS5611::readPressureTemperatureUncompensated(uint8_t conversion_command, ui
 
 	// get 24-bit uncompensated pressure or temperature value value.
 	uncompensated_pressure_temperature = (rx_data_2[1] << 16 | rx_data_2[2] << 8 | rx_data_2[3]) & 0x00FFFFFF;
+	osDelay(9);
 
 	return communication_success_;
 }
@@ -135,12 +137,12 @@ void MS5611::calculateTemperatureAndPressure(){
 	uint32_t digital_temperature = 0;
 	uint32_t digital_pressure = 0;
 
-	communication_success_ = readPressureTemperatureUncompensated(CONVERT_D2_OSR_256, digital_temperature);
+	communication_success_ = readPressureTemperatureUncompensated(CONVERT_D2_OSR_4096, digital_temperature);
 	if (!communication_success_){
 		return;
 	}
 
-	communication_success_ = readPressureTemperatureUncompensated(CONVERT_D1_OSR_256, digital_pressure);
+	communication_success_ = readPressureTemperatureUncompensated(CONVERT_D1_OSR_4096, digital_pressure);
 	if (!communication_success_){
 		return;
 	}
@@ -158,18 +160,18 @@ void MS5611::calculateTemperatureAndPressure(){
 	const float FIVE = 5.0f;
 
 	// ms5611 calibration coefficients for pressure and temperature calculations.
-	uint16_t pressure_sensitivity_ = ms6511_prom_data_[1];
-	uint16_t pressure_offset_ = ms6511_prom_data_[2];
-	uint16_t pres_sensitivity_temp_coeff_ = ms6511_prom_data_[3]; //Temperature coefficient of pressure sensitivity.
-	uint16_t pres_offset_temp_coeff_ = ms6511_prom_data_[4];	  // temperature coefficient of temperature offset.
-	uint16_t reference_temperature_ = ms6511_prom_data_[5];
-	uint16_t temp_coeff_of_temp_ = ms6511_prom_data_[6];		  // Temperature coefficient of temperature.
+	uint16_t pressure_sensitivity = ms6511_prom_data_[1];
+	uint16_t pressure_offset = ms6511_prom_data_[2];
+	uint16_t pres_sensitivity_temp_coeff = ms6511_prom_data_[3]; //Temperature coefficient of pressure sensitivity.
+	uint16_t pres_offset_temp_coeff = ms6511_prom_data_[4];	  // temperature coefficient of temperature offset.
+	uint16_t reference_temperature = ms6511_prom_data_[5];
+	uint16_t temp_coeff_of_temp = ms6511_prom_data_[6];		  // Temperature coefficient of temperature.
 
 
-	float dt = digital_temperature - (float)reference_temperature_ * TWO_POW_8;
-	float temp = 2000 + dt * (float)temp_coeff_of_temp_ / TWO_POW_23;
-	float pressure_offset = pressure_offset_ * TWO_POW_16 + (pres_offset_temp_coeff_ * dt) / TWO_POW_7;
-	float pressure_sensitivity = pressure_sensitivity_ * TWO_POW_15  + (pres_sensitivity_temp_coeff_ * dt) / TWO_POW_8;
+	float dt = digital_temperature - (float)reference_temperature * TWO_POW_8;
+	float temp = 2000 + dt * (float)temp_coeff_of_temp / TWO_POW_23;
+	float f_pressure_offset = pressure_offset * TWO_POW_16 + (pres_offset_temp_coeff * dt) / TWO_POW_7;
+	float f_pressure_sensitivity = pressure_sensitivity * TWO_POW_15  + (pres_sensitivity_temp_coeff * dt) / TWO_POW_8;
 
 	// Second order temperature compensation.
 	if (temp < 2000) {
@@ -183,11 +185,11 @@ void MS5611::calculateTemperatureAndPressure(){
 		}
 
 		temp = temp - t2;
-		pressure_offset = pressure_offset - pressure_offset_2;
-		pressure_sensitivity = pressure_sensitivity - pressure_sensitivity_2;
+		f_pressure_offset = f_pressure_offset - pressure_offset_2;
+		f_pressure_sensitivity = f_pressure_sensitivity - pressure_sensitivity_2;
 	}
 
-	float pressure = (digital_pressure * (pressure_sensitivity / TWO_POW_21) - pressure_offset) / TWO_POW_15;
+	float pressure = (digital_pressure * (f_pressure_sensitivity / TWO_POW_21) - f_pressure_offset) / TWO_POW_15;
 	pressure /= 100.0f;
 	temp /= 100.0f;
 
@@ -244,4 +246,3 @@ bool MS5611::getAltitudeAboveGroundLevel(float &altitude_above_ground_level){
 	altitude_above_ground_level = alt_above_sea_lvl - base_elev_;
 	return communication_success_;
 }
-
