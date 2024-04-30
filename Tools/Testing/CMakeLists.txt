@@ -90,6 +90,9 @@ set(MOTORCHANNEL_SRC "${DRIVERS_FOLDER}/motor_channel/src")
 set(CIRCULAR_BUFFER_INC "${DRIVERS_FOLDER}/common/circular_buffer/inc")
 set(CIRCULAR_BUFFER_SRC "${DRIVERS_FOLDER}/common/circular_buffer/src")
 
+set(MOTORCHANNEL_MOCK_INC "${ROOT_DIR}/Testing/Mocks/Inc")
+set(MOTORCHANNEL_MOCK_SRC "${ROOT_DIR}/Testing/Mocks/Src")
+
 include_directories(${CIRCULAR_BUFFER_INC} ${MOTORCHANNEL_INC} ${MOTORCHANNEL_MOCK_INC})
 file(GLOB DRIVERS_CODE
     "${DRIVERS_FOLDER}/Tests/*.cpp"
