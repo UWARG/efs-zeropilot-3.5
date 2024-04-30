@@ -133,11 +133,11 @@ set(STARTUP_ASM_FILE ${ROOT_DIR}/Boardfiles/${STARTUP_ASM})
 set(LINKER_SCRIPT_FILE ${ROOT_DIR}/Boardfiles/${LINKER_SCRIPT})
 
 # If warnings are so overwhelming you can't locate the actual errors, uncomment the following line
-add_compile_options(
-    "$<$<CXX_COMPILER_ID:GNU>:-w>" # for GCC
-    "$<$<CXX_COMPILER_ID:Clang>:-w>" # for Clang
-    "$<$<CXX_COMPILER_ID:MSVC>:/W0>" # for MSVC
-  )
+# add_compile_options(
+#     "$<$<CXX_COMPILER_ID:GNU>:-w>" # for GCC
+#     "$<$<CXX_COMPILER_ID:Clang>:-w>" # for Clang
+#     "$<$<CXX_COMPILER_ID:MSVC>:/W0>" # for MSVC
+#   )
 
 add_executable(${ELF_NAME} ${C_SOURCES} ${CXX_SOURCES} ${STARTUP_ASM_FILE})
 
