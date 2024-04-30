@@ -6,5 +6,14 @@
 SBUSReceiver sbus_instance(sbus_uart);
 SBUSReceiver* sbus_pointer = &sbus_instance;
 
-UARTDevice rfd900Instance(RFD900_UART);
+/*
+    creating RFD900 instance
+*/
+const uint8_t RFD900_BUF_SIZE = 280;
+uint8_t rfd900_buf[RFD900_BUF_SIZE];
+CircularBuffer rfd900_circular_buffer_inst(rfd900_buf, RFD900_BUF_SIZE);
+
+CircularBuffer* rfd900_circular_buffer = &rfd900_circular_buffer_inst;
+
+UARTDevice rfd900Instance(RFD900_UART, rfd900_circular_buffer);
 UARTDevice* pRFD900 = &rfd900Instance;

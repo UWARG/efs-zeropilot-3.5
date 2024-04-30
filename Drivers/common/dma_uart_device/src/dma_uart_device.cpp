@@ -1,12 +1,9 @@
-// #include "uart_device.hpp"
-
 #include "main.h"
-#include "uart_device.hpp"
+#include "dma_uart_device.hpp"
 
-UARTDevice::UARTDevice(UART_HandleTypeDef* huart)//, CircularBuffer *buf_) 
-: uart_handle_(huart) {
+UARTDevice::UARTDevice(UART_HandleTypeDef* huart, CircularBuffer *buf_) : uart_handle_(huart) {
     //GOTTA FIND A WAY TO ENSURE THAT THE BUFFER SIZE IS THE SAME AS THE BUFFER SIZE IN THE CIRCULAR BUFFER
-    // this->circular_buf_ = buf_;
+    this->circular_buf_ = buf_;
     
 }
 

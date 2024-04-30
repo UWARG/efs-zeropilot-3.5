@@ -28,6 +28,12 @@ class TMCircularBuffer : public CircularBuffer {
     TMCircularBuffer(uint8_t* buf, uint16_t size);
 
     /**
+     * @brief Construct a new Circular Buffer object. Do whatever needs to be done here.
+     *
+     */
+    TMCircularBuffer(CircularBuffer *buf);
+
+    /**
      * @brief Destroy and cleanup memory (everything should be static anyways). Do whatever
      * needs to be done here.
      *

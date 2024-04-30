@@ -27,7 +27,7 @@ include_directories(
     
     ${ROOT_DIR}/Drivers/common/circular_buffer/Inc
     ${ROOT_DIR}/Drivers/common/drivers_config/Inc
-    ${ROOT_DIR}/Drivers/common/uart_device/Inc
+    ${ROOT_DIR}/Drivers/common/dma_uart_device/Inc
     ${ROOT_DIR}/Drivers/iwdg_driver/Inc
     ${ROOT_DIR}/Drivers/motor_channel/Inc
     ${ROOT_DIR}/Drivers/rc_receiver/Inc
@@ -93,19 +93,19 @@ set(DRIVERS_C_SOURCES "${DRIVERS_DIR}/sensor_fusion/ccontrol/Src/*.c")
 set(DRIVERS_CXX_SOURCES "${DRIVERS_DIR}/sensor_fusion/Src/*.cpp")
 
 ## Drivers Sources ##
-set(DRIVERS_RcReceiver_DIR ${ROOT_DIR}/Drivers/rc_receiver/Src)
+set(DRIVERS_RcReceiver_DIR ${ROOT_DIR}/Drivers/rc_receiver/src)
 set(DRIVERS_RcReceiver_CXX_SOURCES "${DRIVERS_RcReceiver_DIR}/*.cpp")
 set(DRIVERS_Common_DIR ${ROOT_DIR}/Drivers/common)
-set(DRIVERS_MotorChannel_DIR ${ROOT_DIR}/Drivers/motor_channel/Src)
+set(DRIVERS_MotorChannel_DIR ${ROOT_DIR}/Drivers/motor_channel/src)
 set(DRIVERS_MotorChannel_CXX_SOURCES "${DRIVERS_MotorChannel_DIR}/*.cpp")
 set(DRIVERS_Common_CXX_SOURCES "${DRIVERS_Common_DIR}/*.cpp")
-set(DRIVERS_IWDGDriver_DIR ${ROOT_DIR}/Drivers/iwdg_driver/Src)
+set(DRIVERS_IWDGDriver_DIR ${ROOT_DIR}/Drivers/iwdg_driver/src)
 set(DRIVERS_IWDGDriver_CXX_SOURCES "${DRIVERS_IWDGDriver_DIR}/*.cpp")
 
 
 ## Actually find the sources, NOTE: if you add a new source above, add it here! ##
 ## Drivers Sources ##
-set(DRIVERS_UARTDevice_DIR ${ROOT_DIR}/Drivers/common/uart_device/Src)
+set(DRIVERS_UARTDevice_DIR ${ROOT_DIR}/Drivers/common/dma_uart_device/src)
 set(DRIVERS_UARTDevice_CXX_SOURCES "${DRIVERS_UARTDevice_DIR}/*.cpp")
 
 file(GLOB_RECURSE C_SOURCES ${HAL_DRIVERS_C_SOURCES}
@@ -132,12 +132,12 @@ message("C++ Sources: ${CXX_SOURCES}")
 set(STARTUP_ASM_FILE ${ROOT_DIR}/Boardfiles/${STARTUP_ASM})
 set(LINKER_SCRIPT_FILE ${ROOT_DIR}/Boardfiles/${LINKER_SCRIPT})
 
-# If warnings are so overwhelming you can't locate the errors, uncomment the following line
-# add_compile_options(
-#     "$<$<CXX_COMPILER_ID:GNU>:-w>" # for GCC
-#     "$<$<CXX_COMPILER_ID:Clang>:-w>" # for Clang
-#     "$<$<CXX_COMPILER_ID:MSVC>:/W0>" # for MSVC
-#   )
+# If warnings are so overwhelming you can't locate the actual errors, uncomment the following line
+add_compile_options(
+    "$<$<CXX_COMPILER_ID:GNU>:-w>" # for GCC
+    "$<$<CXX_COMPILER_ID:Clang>:-w>" # for Clang
+    "$<$<CXX_COMPILER_ID:MSVC>:/W0>" # for MSVC
+  )
 
 add_executable(${ELF_NAME} ${C_SOURCES} ${CXX_SOURCES} ${STARTUP_ASM_FILE})
 

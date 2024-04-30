@@ -1,5 +1,5 @@
-#ifndef UART_DEVICE_HPP
-#define UART_DEVICE_HPP
+#ifndef DMA_UART_DEVICE_HPP
+#define DMA_UART_DEVICE_HPP
 
 #include <cstdint>
 #include "usart.h"
@@ -16,8 +16,9 @@ class UARTDevice {
         *  data via a specified HAL UART handle.
         *
         *  @param huart The HAL UART handle to be managed.
+        *  @param buf_ The circular buffer to store received data.
         */
-        UARTDevice(UART_HandleTypeDef* huart);//, CircularBuffer *buf_);
+        UARTDevice(UART_HandleTypeDef* huart, CircularBuffer *buf_);
 
         /** @brief Initialize the driver.
         *

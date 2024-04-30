@@ -2,14 +2,12 @@
 
 #include "GroundStationCommunication.hpp"
 
-#include "uart_device.hpp"
+#include "drivers_config.hpp"
 
-GroundStationCommunication::GroundStationCommunication() {
-    // Constructor
-    uint8_t *buf = new uint8_t[280];
-    TMCircularBuffer tmcb(buf, 280);
-    UARTDevice *something = new UARTDevice(&huart1, tmcb);
-}
+GroundStationCommunication::GroundStationCommunication::GroundStationCommunication(uint8_t *lowPriorityTransmitBuffer, uint8_t *highPriorityTransmitBuffer, int length): lowPriorityTransmitBuffer(lowPriorityTransmitBuffer, length),
+                                             highPriorityTransmitBuffer(highPriorityTransmitBuffer, length){
+
+                           }
 
 GroundStationCommunication::~GroundStationCommunication() {
     // Destructor
@@ -17,7 +15,7 @@ GroundStationCommunication::~GroundStationCommunication() {
 
 // ** Implement transmit first **
 
-void GroundStationCommunication::transmit(TMCircularBuffer &transmissionBuffer) {
+void GroundStationCommunication::transmit(TMCircularBuffer& transmissionBuffer) {
     // START: Send the bytes in transmissionBuffer to the ground station via RFD900
 
     // END: Send the bytes in transmissionBuffer to the ground station via RFD900
