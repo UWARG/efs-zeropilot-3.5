@@ -25,14 +25,14 @@ include_directories(
 
     ## Driver Includes ##
     
-    ${ROOT_DIR}/Drivers/common/circular_buffer/Inc
-    ${ROOT_DIR}/Drivers/common/drivers_config/Inc
-    ${ROOT_DIR}/Drivers/common/dma_uart_device/Inc
-    ${ROOT_DIR}/Drivers/iwdg_driver/Inc
-    ${ROOT_DIR}/Drivers/motor_channel/Inc
-    ${ROOT_DIR}/Drivers/rc_receiver/Inc
-    ${ROOT_DIR}/Drivers/sensor_fusion/Inc
-    ${ROOT_DIR}/Drivers/sensor_fusion/ccontrol/Inc
+    ${ROOT_DIR}/Drivers/common/circular_buffer/inc
+    ${ROOT_DIR}/Drivers/common/drivers_config/inc
+    ${ROOT_DIR}/Drivers/common/dma_uart_device/inc
+    ${ROOT_DIR}/Drivers/iwdg_driver/inc
+    ${ROOT_DIR}/Drivers/motor_channel/inc
+    ${ROOT_DIR}/Drivers/rc_receiver/inc
+    ${ROOT_DIR}/Drivers/sensor_fusion/inc
+    ${ROOT_DIR}/Drivers/sensor_fusion/ccontrol/inc
 
     # BEFORE FILE RESTURCTURING
     # ${ROOT_DIR}/Drivers/rc_receiver/Inc
