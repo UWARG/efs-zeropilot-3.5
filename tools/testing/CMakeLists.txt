@@ -76,7 +76,7 @@ file(GLOB TM_CODE
     "${TM_FOLDER}/Tests/generic_test.cpp"
 
     # add necessary TelemetryManager source files below
-    "${TM_SRC}/*.cpp"
+    # "${TM_SRC}/*.cpp"
 )
 
 # Drivers
@@ -108,7 +108,7 @@ include_directories(${COMMON_INC})
 file(GLOB COMMON_CODE
     "${COMMON_FOLDER}/Tests/*.cpp"
 
-    # add necessary TelemetryManager source files below
+    # add necessary common source files below
     # "${COMMON_SRC}/foo.cpp"
 )
 
@@ -125,7 +125,7 @@ file(GLOB STUBS_CODE
 )
 
 #Models
-include_directories("${ROOT_DIR}/Config_Models")
+include_directories(${ROOT_DIR}/Config_Models)
 file(GLOB MODELS_CODE
 )
 

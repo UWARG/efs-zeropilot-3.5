@@ -3,13 +3,13 @@
 
 #include <cstdint>
 
-#include "AM_ControlAlgorithm.hpp"
+#include "flightmode.hpp"
 #include "temp_drivers.hpp"
+#include "CommonDataTypes.hpp"
 
 namespace config
 {
-    using percentage_t = float;
-     
+
     //Define factory function to create drivers and flightmodes
     template <class BaseClass, class DerivedClass, auto... args>
     BaseClass* constructObject() {
@@ -23,15 +23,6 @@ namespace config
 
 
     /* Motor declarations */
-
-    typedef enum {
-        yaw,
-        pitch,
-        roll,
-        throttle,
-        NUM_CONTROL_AXIS
-    } ControlAxis_t;
-
     typedef struct {
         ControlAxis_t axis;
         bool isInverted = false;
@@ -74,22 +65,10 @@ namespace config
     } ControlPID_t;
 
     typedef struct {
-        percentage_t min = 0.0f;
-        percentage_t max = 100.0f;
-    } AxisLimits_t;
-
-    typedef struct {
-        AxisLimits_t yawLimit = {};
-        AxisLimits_t pitchLimit = {};
-        AxisLimits_t rollLimit = {};
-        AxisLimits_t throttleLimit = {};
-    } ControlLimits_t;
-
-    typedef struct {
         ControlPID_t PIDValues = {};
         ControlLimits_t controlLimits = {};
     } ControlTuning_t;
-    
+
     typedef struct {
         ControlTuning_t tuningData;
         ObjectFactory<AM::Flightmode> flightmodeConstructor;

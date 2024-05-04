@@ -18,20 +18,4 @@ class GPSDriver{};
 class TempNEOM8Driver : public GPSDriver{};
 class otherGPSDriver : public GPSDriver{};
 
-class ExampleFlightmode1 : public AM::Flightmode{
-    public:
-    ExampleFlightmode1(){}
-    //TODO: Implement control algorithm functions in AM
-    void run(){};
-    void updatePid(){};
-};
-
-class ExampleFlightmode2 : public AM::Flightmode{
-    public:
-    ExampleFlightmode2(){}
-    void run(){};
-    void updatePid(){};
-};
-
-
 #endif // ZPSW3_TEMP_DRIVERS_HPP
