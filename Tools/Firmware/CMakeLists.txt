@@ -34,18 +34,6 @@ include_directories(
     ${ROOT_DIR}/Drivers/sensor_fusion/inc
     ${ROOT_DIR}/Drivers/sensor_fusion/ccontrol/inc
 
-    # BEFORE FILE RESTURCTURING
-    # ${ROOT_DIR}/Drivers/rc_receiver/Inc
-    # ${ROOT_DIR}/Drivers/Common/Inc
-
-    # ${ROOT_DIR}/Drivers/ccontrol/Inc
-    # ${ROOT_DIR}/Drivers/sensor_fusion/Inc
-    # ${ROOT_DIR}/Drivers/IWDG_Driver/Inc
-    # ${ROOT_DIR}/Drivers/MotorChannel/Inc
-
-    # ${ROOT_DIR}/Drivers/UARTDevice/Inc
-    # ${ROOT_DIR}/Drivers/Common/Inc
-
     ## Boardfiles Includes ##
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Drivers/${FAMILY_NAME}_HAL_Driver/Inc
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Core/Inc

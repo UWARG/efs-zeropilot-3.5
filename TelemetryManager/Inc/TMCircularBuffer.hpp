@@ -31,7 +31,7 @@ class TMCircularBuffer : public CircularBuffer {
      * @brief Construct a new Circular Buffer object. Do whatever needs to be done here.
      *
      */
-    TMCircularBuffer(CircularBuffer *buf);
+    TMCircularBuffer(CircularBuffer* buf);
 
     /**
      * @brief Destroy and cleanup memory (everything should be static anyways). Do whatever
@@ -39,13 +39,6 @@ class TMCircularBuffer : public CircularBuffer {
      *
      */
     ~TMCircularBuffer();
-
-    /**
-     * @brief Provides the number of bytes available in the queue
-     *
-     * @return int The number of bytes available in the queue.
-     */
-    int remainingMemory();
 
     /**
      * @brief Dequeue a byte from the queue

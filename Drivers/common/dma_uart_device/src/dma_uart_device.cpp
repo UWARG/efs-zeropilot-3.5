@@ -1,23 +1,21 @@
-#include "main.h"
 #include "dma_uart_device.hpp"
 
-UARTDevice::UARTDevice(UART_HandleTypeDef* huart, CircularBuffer *buf_) : uart_handle_(huart) {
-    //GOTTA FIND A WAY TO ENSURE THAT THE BUFFER SIZE IS THE SAME AS THE BUFFER SIZE IN THE CIRCULAR BUFFER
-    this->circular_buf_ = buf_;
-    
+#include "main.h"
+
+UARTDevice::UARTDevice(UART_HandleTypeDef* huart, CircularBuffer* buf_) : uart_handle_(huart) {
+    circular_buf_ = buf_;
 }
 
 void UARTDevice::init() {
-    HAL_UARTEx_ReceiveToIdle_DMA(uart_handle_, it_recv_buf_, BUFFER_SIZE);
+    HAL_UARTEx_ReceiveToIdle_DMA(uart_handle_, it_recv_buf_, IT_RECV_BUF_SIZE);
     __HAL_DMA_DISABLE_IT(uart_handle_->hdmarx, DMA_IT_HT);
 }
 
 void UARTDevice::callback(uint16_t data_size) {
-    HAL_UARTEx_ReceiveToIdle_DMA(uart_handle_, it_recv_buf_, BUFFER_SIZE);
+    HAL_UARTEx_ReceiveToIdle_DMA(uart_handle_, it_recv_buf_, IT_RECV_BUF_SIZE);
     __HAL_DMA_DISABLE_IT(uart_handle_->hdmarx, DMA_IT_HT);
 
     for (uint16_t i = 0; i < data_size; ++i) {
-        
         circular_buf_->write(it_recv_buf_[i]);
     }
 }

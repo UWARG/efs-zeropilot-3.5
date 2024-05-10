@@ -4,10 +4,15 @@
 
 #include "drivers_config.hpp"
 
-GroundStationCommunication::GroundStationCommunication::GroundStationCommunication(uint8_t *lowPriorityTransmitBuffer, uint8_t *highPriorityTransmitBuffer, int length): lowPriorityTransmitBuffer(lowPriorityTransmitBuffer, length),
-                                             highPriorityTransmitBuffer(highPriorityTransmitBuffer, length){
+GroundStationCommunication::GroundStationCommunication(
+    TMCircularBuffer& DMAReceiveBuffer, uint8_t *lowPriorityTransmitBuffer,
+    uint8_t *highPriorityTransmitBuffer, int length):
+    DMAReceiveBuffer(DMAReceiveBuffer),
+    lowPriorityTransmitBuffer(lowPriorityTransmitBuffer, length),
+    highPriorityTransmitBuffer(highPriorityTransmitBuffer, length) {
 
-                           }
+            
+}
 
 GroundStationCommunication::~GroundStationCommunication() {
     // Destructor
@@ -15,7 +20,7 @@ GroundStationCommunication::~GroundStationCommunication() {
 
 // ** Implement transmit first **
 
-void GroundStationCommunication::transmit(TMCircularBuffer& transmissionBuffer) {
+void GroundStationCommunication::transmit(TMCircularBuffer &transmissionBuffer) {
     // START: Send the bytes in transmissionBuffer to the ground station via RFD900
 
     // END: Send the bytes in transmissionBuffer to the ground station via RFD900

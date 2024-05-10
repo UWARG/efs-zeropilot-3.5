@@ -81,8 +81,6 @@ file(GLOB TM_CODE
 
 # Drivers
 set(DRIVERS_FOLDER "${ROOT_DIR}/Drivers")
-# set(DRIVERS_INC "${DRIVERS_FOLDER}/common/Inc") DOESN'T EXIST?
-# set(DRIVERS_SRC "{$DRIVERS_FOLDER}/Src") DOESN'T EXIST?
 
 set(MOTORCHANNEL_INC "${DRIVERS_FOLDER}/motor_channel/inc")
 set(MOTORCHANNEL_SRC "${DRIVERS_FOLDER}/motor_channel/src")

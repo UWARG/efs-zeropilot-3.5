@@ -11,7 +11,7 @@
  * @warning Any issues you think are important/foresee in the future?
  */
 
-#include "CircularBuffer.hpp"
+#include "TMCircularBuffer.hpp"
 #include "Official_Mavlink_2_Library/common/mavlink.h"
 #ifndef MAVLINKTRANSLATOR_H
 #define MAVLINKTRANSLATOR_H

@@ -13,8 +13,6 @@ TMCircularBuffer::~TMCircularBuffer() {
     // Destructor
 }
 
-int TMCircularBuffer::remainingMemory() { return -1; }
-
 TMCircularBuffer::MAVLinkByte TMCircularBuffer::dequeue() { return 0; }
 
 void TMCircularBuffer::enqueue(MAVLinkByte byte) {

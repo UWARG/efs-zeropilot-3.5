@@ -12,7 +12,7 @@
  * @warning Any issues you think are important/foresee in the future?
  */
 
-#include "CircularBuffer.hpp"
+#include "TMCircularBuffer.hpp"
 #include "drivers_config.hpp"
 #ifndef GROUNDSTATIONCOMMUNICATION_H
 #define GROUNDSTATIONCOMMUNICATION_H
@@ -29,11 +29,12 @@ class GroundStationCommunication {
     /**
      * @brief Construct a new Ground Station Communication object. Do whatever needs to be done
      * here.
+     * @param DMAReceiveBuffer A TMCircularBuffer created FROM the rfd900_circular_buffer in the drivers_config.hpp file. 
      * @param lowPriorityTransmitBuffer A uint8_t buffer to be used by a TM CircularBuffer
      * @param highPriorityTransmitBuffer A uint8_t buffer to be used by a TM CircularBuffer
      * @param length The length of the buffers.
      */
-    GroundStationCommunication(uint8_t* lowPriorityTransmitBuffer, uint8_t* highPriorityTransmitBuffer, int length);
+    GroundStationCommunication(TMCircularBuffer& DMAReceiveBuffer, uint8_t* lowPriorityTransmitBuffer, uint8_t* highPriorityTransmitBuffer, int length);
     ~GroundStationCommunication();
 
 
@@ -41,13 +42,13 @@ class GroundStationCommunication {
      * To make c++ happy while using rfd900_circular_buffer from drivers_config.hpp, we need to
      * create a pointer to the buffer. Then we dereference it.
      */
-    TMCircularBuffer* DMAReceiveBufferPtr = new TMCircularBuffer(rfd900_circular_buffer);
+    // TMCircularBuffer* DMAReceiveBufferPtr = new TMCircularBuffer(rfd900_circular_buffer);
 
 /*
      * When the DMA interrupt is triggered the data should be stored in the DMAReceiveBuffer
      * IF there is space.
      */
-    TMCircularBuffer DMAReceiveBuffer = *DMAReceiveBufferPtr;
+    TMCircularBuffer& DMAReceiveBuffer;
 
     // low priority/Non routine Mavlink bytes to be sent to the ground station.
     TMCircularBuffer lowPriorityTransmitBuffer;

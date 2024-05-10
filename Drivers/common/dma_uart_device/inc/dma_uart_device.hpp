@@ -8,7 +8,7 @@
 class UARTDevice {
     public:
         /* Size of the internal buffer */
-        static const uint16_t BUFFER_SIZE = 280;
+        static const uint16_t IT_RECV_BUF_SIZE = 280;
 
         /** @brief Constructor for the UARTDevice driver.
         *
@@ -78,9 +78,8 @@ class UARTDevice {
     private:
         static const uint16_t TRANSMIT_TIMEOUT = 1000;
         UART_HandleTypeDef* uart_handle_;
-        // uint8_t buf_[BUFFER_SIZE];
         CircularBuffer *circular_buf_;
-        uint8_t it_recv_buf_[BUFFER_SIZE];
+        uint8_t it_recv_buf_[IT_RECV_BUF_SIZE];
         
 
 

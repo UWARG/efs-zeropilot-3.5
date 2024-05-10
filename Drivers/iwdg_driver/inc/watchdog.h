@@ -7,6 +7,3 @@ class Watchdog {
 };
 
 #endif 
-
-
-
