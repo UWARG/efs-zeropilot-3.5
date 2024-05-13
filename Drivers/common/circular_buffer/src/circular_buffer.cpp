@@ -1,4 +1,5 @@
 #include "circular_buffer.hpp"
+
 #include <cstring>
 
 CircularBuffer::CircularBuffer(uint8_t* buf, uint16_t size) {
@@ -48,13 +49,10 @@ bool CircularBuffer::isFull() {
     // The buffer is full when the writePtr_ wraps around to the
     // readPtr_, so it's ahead of the readPtr_ by value, but overlaps
     // the readPtr_ by index aftering modding by the buffer size_.
-    return (writePtr_ != readPtr_) &&
-           (writePtr_ % size_ == readPtr_ % size_);
+    return (writePtr_ != readPtr_) && (writePtr_ % size_ == readPtr_ % size_);
 }
 
-uint16_t CircularBuffer::getNumAvailBytes() {
-    return writePtr_ - readPtr_;
-}
+uint16_t CircularBuffer::getNumAvailBytes() { return writePtr_ - readPtr_; }
 
 bool CircularBuffer::write(uint8_t byte) {
     bool success = true;
@@ -68,3 +66,7 @@ bool CircularBuffer::write(uint8_t byte) {
 
     return success;
 }
+
+uint16_t CircularBuffer::getFreeSpaceBytes() { 
+    //NOT IMPLEMENTED YET
+    return -1; }

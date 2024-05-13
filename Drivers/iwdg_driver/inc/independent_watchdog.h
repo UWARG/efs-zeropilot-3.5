@@ -15,5 +15,6 @@ class IndependentWatchdog : public Watchdog {
 };
 
 
+
 #endif /* SRC_DRIVERS_INDEPENDENTWATCHDOG_H_ */
 
