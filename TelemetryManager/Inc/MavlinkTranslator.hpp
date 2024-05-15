@@ -12,12 +12,19 @@
  */
 
 #include "TMCircularBuffer.hpp"
+#include "mavlink_decoder.h"
+#include "mavlink_encoder.h"
 #include "Official_Mavlink_2_Library/common/mavlink.h"
 #ifndef MAVLINKTRANSLATOR_H
 #define MAVLINKTRANSLATOR_H
 
 class MavlinkTranslator {
    public:
+
+   MavlinkDecoder decoder;
+   MavlinkEncoder encoder;
+
+
     /**
      * @brief Construct a new MavlinkTranslator object. Do whatever needs to be done here.
      *
