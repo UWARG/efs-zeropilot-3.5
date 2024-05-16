@@ -11,5 +11,8 @@ jobs:
       - name: Checkout the repo
         uses: actions/checkout@v3
 
+      - name: Initialize Docker
+        run: bash ./tools/run_docker.bash init
+
       - name: Build and run tests
         run: bash ./tools/run_docker.bash test
