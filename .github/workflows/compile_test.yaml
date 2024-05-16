@@ -7,24 +7,9 @@ on:
 jobs:
   compile_test:
     runs-on: ubuntu-latest
-    
-    env:
-      URL: developer.arm.com/-/media/Files/downloads/gnu/12.2.mpacbti-rel1/binrel
-      TOOLCHAIN_NAME: arm-gnu-toolchain-12.2.mpacbti-rel1-x86_64-arm-none-eabi
-    
     steps:
-      - name: Install CMake, make, and wget
-        run: sudo apt-get -y install cmake make wget
-
-      - name: Install Arm Toolchain
-        working-directory: /opt
-        run: |
-          wget -nv $URL/$TOOLCHAIN_NAME.tar.xz 
-          tar -xf $TOOLCHAIN_NAME.tar.xz && rm -f $TOOLCHAIN_NAME.tar.xz 
-          ln -s $(pwd)/$TOOLCHAIN_NAME/bin/arm-none-eabi-* /usr/local/bin 
-
       - name: Checkout the repo
         uses: actions/checkout@v3
 
       - name: Build project
-        run: bash ./Tools/tools.bash compile -t Firmware -c
+        run: bash ./tools/run_docker.bash compile
