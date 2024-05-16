@@ -5,6 +5,7 @@ $SCRIPTS_DIR = "/zeropilot-3.5/tools/scripts"
 # Help message
 if ( $args[0] -eq "help" ) {
     echo "run_docker.ps1 help          | show this message"
+    echo "run_docker.ps1 init          | setup docker only"
     echo "run_docker.ps1 compile       | compile/build ZeroPilot and return build files in firmware/build/"
     echo "run_docker.ps1 test          | compile tests, run tests, and return build files in testing/build/"
     echo "run_docker.ps1 clang-tidy    | lint code with clang-tidy and return linting log in lint_output/"
@@ -39,6 +40,16 @@ if ( -not ( Test-Path $PSScriptRoot/lint_output ) ) {
 
 switch ( $args[0] )
 {
+    "init" {
+        $images = docker image ls
+        $containers = docker ps -a
+        if ( ( $images -like "*efs_image*" ) -and ( $containers -like "*efs_container*" ) ) {
+            echo "Docker is initialized."
+        } else {
+            echo "Docker failed to initialize."
+        }
+    }
+
     "shell" {
         docker attach efs_container
     }
@@ -66,6 +77,10 @@ switch ( $args[0] )
     "cppcheck" {
         docker exec efs_container /bin/bash -c "cd $SCRIPTS_DIR && ./cppcheck.bash"
         docker cp $DOCKER_TOOLS_DIR/lint_output/cppcheck.txt $PSScriptRoot/lint_output/
+    }
+
+    default {
+        echo "Invalid run_docker option!"
     }
 }
 

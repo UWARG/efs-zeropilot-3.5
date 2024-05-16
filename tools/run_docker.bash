@@ -9,6 +9,7 @@ SCRIPTS_DIR=/zeropilot-3.5/tools/scripts
 # Help message
 if [[ $1 == "help" ]]; then
     echo "run_docker.bash help          | show this message"
+    echo "run_docker.bash init          | setup docker only"
     echo "run_docker.bash compile       | compile/build ZeroPilot and return build files in firmware/build/"
     echo "run_docker.bash test          | compile tests, run tests, and return build files in testing/build/"
     echo "run_docker.bash clang-tidy    | lint code with clang-tidy and return linting log in lint_output/"
@@ -40,6 +41,16 @@ docker cp $TOOLS_DIR/../. efs_container:/zeropilot-3.5/
 mkdir -p $TOOLS_DIR/lint_output
 
 case $1 in
+    "init")
+        IMAGES=$(docker image ls)
+        CONTAINERS=$(docker ps -a)
+        if [[ $IMAGES == *efs_image* ]] && [[ $CONTAINERS == *efs_container* ]]; then
+            echo "Docker is initialized."
+        else
+            echo "Docker failed to initialize."
+        fi
+    ;;
+
     "shell")
         docker attach efs_container
     ;;
@@ -67,6 +78,10 @@ case $1 in
     "cppcheck")
         docker exec efs_container /bin/bash -c "cd $SCRIPTS_DIR && ./cppcheck.bash"
         docker cp $DOCKER_TOOLS_DIR/lint_output/cppcheck.txt $TOOLS_DIR/lint_output/
+    ;;
+
+    *)
+        echo "Invalid run_docker option!"
     ;;
 esac
 
