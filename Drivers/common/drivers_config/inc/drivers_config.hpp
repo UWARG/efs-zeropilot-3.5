@@ -3,8 +3,7 @@
 
 #include "usart.h"
 #include "sbus_receiver.hpp"
-#include "uart_device.hpp"
-
+#include "dma_uart_device.hpp"
 /*
     UART Mapping
 */
@@ -16,5 +15,6 @@ extern SBUSReceiver* sbus_pointer;
 #define RFD900_UART       &huart3
 
 extern UARTDevice* pRFD900;
+extern CircularBuffer *rfd900_circular_buffer;
 
 #endif

@@ -81,24 +81,27 @@ file(GLOB TM_CODE
 
 # Drivers
 set(DRIVERS_FOLDER "${ROOT_DIR}/Drivers")
-set(DRIVERS_INC "${DRIVERS_FOLDER}/Common/Inc")
-set(DRIVERS_SRC "{$DRIVERS_FOLDER}/Src")
-set(MOTORCHANNEL_INC "${DRIVERS_FOLDER}/MotorChannel/Inc")
-set(MOTORCHANNEL_SRC "${DRIVERS_FOLDER}/MotorChannel/Src")
-# Driver Mocks
+
+set(MOTORCHANNEL_INC "${DRIVERS_FOLDER}/motor_channel/inc")
+set(MOTORCHANNEL_SRC "${DRIVERS_FOLDER}/motor_channel/src")
+
+set(CIRCULAR_BUFFER_INC "${DRIVERS_FOLDER}/common/circular_buffer/inc")
+set(CIRCULAR_BUFFER_SRC "${DRIVERS_FOLDER}/common/circular_buffer/src")
+
+set(DRIVERS_CONFIG_INC "${DRIVERS_FOLDER}/Drivers/common/drivers_config/inc")
+
 set(MOTORCHANNEL_MOCK_INC "${ROOT_DIR}/Testing/Mocks/Inc")
 set(MOTORCHANNEL_MOCK_SRC "${ROOT_DIR}/Testing/Mocks/Src")
 
-include_directories(${DRIVERS_INC} ${MOTORCHANNEL_INC} ${MOTORCHANNEL_MOCK_INC})
+include_directories(${DRIVERS_CONFIG_INC} ${CIRCULAR_BUFFER_INC} ${MOTORCHANNEL_INC} ${MOTORCHANNEL_MOCK_INC})
 file(GLOB DRIVERS_CODE
     "${DRIVERS_FOLDER}/Tests/*.cpp"
 
     # add necessary Drivers source files below
     # "${DRIVERS_SRC}/foo.cpp"
-    "${DRIVERS_FOLDER}/Common/Src/circular_buffer.cpp"
+    "${DRIVERS_FOLDER}/common/circular_buffer/src/circular_buffer.cpp"
     "${MOTORCHANNEL_MOCK_SRC}/*.cpp"
 )
-
 # Common
 set(COMMON_FOLDER "${ROOT_DIR}/Common")
 set(COMMON_INC "${COMMON_FOLDER}/Inc")
@@ -128,6 +131,13 @@ file(GLOB STUBS_CODE
 include_directories(${ROOT_DIR}/Config_Models)
 file(GLOB MODELS_CODE
 )
+
+# If warnings are so overwhelming you can't locate the actual errors, uncomment the following line
+# add_compile_options(
+#     "$<$<CXX_COMPILER_ID:GNU>:-w>" # for GCC
+#     "$<$<CXX_COMPILER_ID:Clang>:-w>" # for Clang
+#     "$<$<CXX_COMPILER_ID:MSVC>:/W0>" # for MSVC
+#   )
 
 # --- ZeroPilot File Indexing End ---
 

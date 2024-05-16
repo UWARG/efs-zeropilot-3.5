@@ -10,6 +10,7 @@ IndependentWatchdog::IndependentWatchdog(IWDG_HandleTypeDef *watchdog) {
 }
 
 
+
 /**
  * @brief Refreshes the watchdog that is a member variable of the class
  * @returns true on success, false on failure

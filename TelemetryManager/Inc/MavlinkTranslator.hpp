@@ -11,7 +11,7 @@
  * @warning Any issues you think are important/foresee in the future?
  */
 
-#include "CircularBuffer.hpp"
+#include "TMCircularBuffer.hpp"
 #include "Official_Mavlink_2_Library/common/mavlink.h"
 #ifndef MAVLINKTRANSLATOR_H
 #define MAVLINKTRANSLATOR_H
@@ -38,7 +38,7 @@ class MavlinkTranslator {
      * @param rxFromGroundByteQueue The CircularBuffer containing the bytes received from the ground
      * station. waiting to be decoded.
      */
-    void bytesToMavlinkMsg(CircularBuffer &rxFromGroundByteQueue);
+    void bytesToMavlinkMsg(TMCircularBuffer &rxFromGroundByteQueue);
 
     /**
      * @brief Converts Mavlink messages to bytes and adds them to the txToGroundByteQueue.
@@ -48,7 +48,7 @@ class MavlinkTranslator {
      * station.
      */
     void addMavlinkMsgToByteQueue(mavlink_message_t &msg,
-                                          CircularBuffer &txToGroundByteQueue);
+                                          TMCircularBuffer &txToGroundByteQueue);
 };
 
 #endif  // MAVLINKTRANSLATOR_H

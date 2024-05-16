@@ -35,6 +35,6 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
     if(pRFD900->matchUART(huart)){
         // Clear error and receive data
         HAL_UART_DMAStop(huart);
-        pRFD900->callback(UARTDevice::BUFFER_SIZE);
+        pRFD900->callback(UARTDevice::IT_RECV_BUF_SIZE);
     }
 }
