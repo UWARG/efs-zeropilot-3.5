@@ -23,13 +23,19 @@ fi
 # Build image if it doesn't exist
 IMAGES=$(docker image ls)
 if [[ $IMAGES != *efs_image* ]]; then
-    docker build -t efs_image -f $TOOLS_DIR/Dockerfile .
+	if [[ "$OSTYPE" == "darwin"* ]]; then
+    	docker build --platform linux/amd64 -t efs_image -f $TOOLS_DIR/Dockerfile .
+    else
+    	docker build -t efs_image -f $TOOLS_DIR/Dockerfile .
 fi
 
 # Create container if it doesn't exist
 CONTAINERS=$(docker ps -a)
 if [[ $CONTAINERS != *efs_container* ]]; then
-    docker run -tid --name=efs_container efs_image bash
+	if [[ "$OSTYPE" == "darwin"* ]]; then
+    	docker run --platform linux/amd64 -tid --name=efs_container efs_image bash
+    else
+    	docker run -tid --name=efs_container efs_image bash
 else
     # Start container
     docker start efs_container
