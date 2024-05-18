@@ -4,6 +4,14 @@ Docker is our recommended way of compiling, linting and testing code, since it's
 
 To get started, install Docker from their [official website](https://docs.docker.com/get-docker/) and run our docker script. It will take some time to build the Docker image and container when you run it for the first time.
 
+## Instructions for Macs with M-series chips
+You can identify the processor you have by running the following command in the terminal:
+`sysctl -n machdep.cpu.brand_string`
+
+If you're on Mac with an M-series chip, you'll have to install `gcc-arm-embedded` – the ARM GNU toolchain for development. This can be done by running:
+`brew install gcc-arm-embedded`
+Note that you'll be prompted to provide sudo privileges.
+
 ## Docker Scripts
 - Windows: `run_docker.ps1`
 - Linux and MacOS: `run_docker.bash`
