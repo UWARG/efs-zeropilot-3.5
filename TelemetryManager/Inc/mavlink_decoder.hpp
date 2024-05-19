@@ -2,14 +2,15 @@
 // Created by Yarema Dzulynsky on 2023-07-10.
 //
 
-#ifndef WARGMAVLINKSUPPORT_MAVLINKDECODER_H
-#define WARGMAVLINKSUPPORT_MAVLINKDECODER_H
+#ifndef MAVLINK_DECODER_HPP
+#define MAVLINK_DECODER_HPP
 
 #include <functional>
 #include <iostream>
 #include <unordered_map>
 
-#include "official_mavlink_2_library/common/mavlink.h"
+#include "Official_Mavlink_2_Library/common/mavlink.h"
+#include "TMCircularBuffer.hpp"
 
 
 
@@ -79,7 +80,7 @@ class MavlinkDecoder {
      * @param buffer - Byte sequence for parsing.
      * @param bufferSize - Length of the byte sequence.
      */
-    void parseBytesToMavlinkMsgs(uint8_t *buffer, std::size_t bufferSize);
+    void parseBytesToMavlinkMsgs(TMCircularBuffer &buffer);
 };
 
-#endif  // WARGMAVLINKSUPPORT_MAVLINKDECODER_H
+#endif  // MAVLINK_DECODER_HPP

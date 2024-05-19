@@ -2,7 +2,7 @@
 // Created by Yarema Dzulynsky on 2023-07-10.
 //
 
-#include "../Inc/mavlink_decoder.h"
+#include "mavlink_decoder.hpp"
 
 long MavlinkDecoder::decodedMessages = 0;
 
@@ -66,29 +66,40 @@ MavlinkDecoder::~MavlinkDecoder() {
     // no cleanup needed
 }
 
-void MavlinkDecoder::parseBytesToMavlinkMsgs(uint8_t *buffer, std::size_t bufferSize) {
-    // Process the bytes in the buffer to construct MAVLink messages
 
-    // MAVLink message structure
-    mavlink_message_t currentMessage;
+// M3
+void MavlinkDecoder::parseBytesToMavlinkMsgs(TMCircularBuffer &buffer) {
+    // // Process the bytes in the buffer to construct MAVLink messages
 
-    // Status of the MAVLink message decoding process
-    mavlink_status_t currentMessageDecodingStatus;
+    // // MAVLink message structure
+    // mavlink_message_t currentMessage;
 
-    std::size_t currentBufferIndex = 0;  // Index to traverse the buffer
+    // // Status of the MAVLink message decoding process
+    // mavlink_status_t currentMessageDecodingStatus;
 
-    while (currentBufferIndex < bufferSize) {
-        // Try to parse the current byte and see if it corresponds to a MAVLink message
-        if (mavlink_parse_char(MAVLINK_COMM_0, buffer[currentBufferIndex], &currentMessage,
-                               &currentMessageDecodingStatus)) {
-            bool isMessageDecoded;
-            // Attempt to decode the constructed MAVLink message
-            decodeMsg(currentMessage, isMessageDecoded);
-        }
-        currentBufferIndex++;
-    }
+    
+
+    // std::size_t currentBufferIndex = 0;  // Index to traverse the buffer
+
+    // if (buffer.currentIndex() + 1 == buffer.lastFullMessageEndIndex()) {
+    //     return;
+    // }
+
+
+    // while (currentBufferIndex < buffer.lastFullMessageEndIndex()) {
+    //     // Try to parse the current byte and see if it corresponds to a MAVLink message
+    //     if (mavlink_parse_char(0, buffer[currentBufferIndex], &currentMessage,
+    //                            &currentMessageDecodingStatus)) {
+    //         bool isMessageDecoded;
+    //         // Attempt to decode the constructed MAVLink message
+    //         decodeMsg(currentMessage, isMessageDecoded);
+    //     }
+    //     currentBufferIndex++;
+    // }
 }
 
+
+//M3
 void MavlinkDecoder::decodeMsg(mavlink_message_t &msg, bool &isMessageDecoded) {
     // Attempt to decode the MAVLink message using the registered decoding functions
 

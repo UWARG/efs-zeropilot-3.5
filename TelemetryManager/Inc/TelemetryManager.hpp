@@ -18,9 +18,10 @@
 #include "MavlinkTranslator.hpp"
 #include "TelemetryTask.hpp"
 
+
 class TelemetryManager {
    private:
-    GroundStationCommunication GSC;
+    GroundStationCommunication *GSC;
     MavlinkTranslator MT;
 
     /**

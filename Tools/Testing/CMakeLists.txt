@@ -70,12 +70,23 @@ file(GLOB SM_CODE
 set(TM_FOLDER "${ROOT_DIR}/TelemetryManager")
 set(TM_INC "${TM_FOLDER}/Inc")
 set(TM_SRC "${TM_FOLDER}/Src")
+set(TM_RFD900_DRIVER_DEPENDENCY "${ROOT_DIR}/Drivers/common/drivers_config/inc")
+# set(RFD900_DRIVER_DEPENDENCY_1 "${ROOT_DIR}/Boardfiles/nucleol552zeq/Core/Inc")
+set(RFD900_DRIVER_DEPENDENCY_2 "${ROOT_DIR}/Drivers/rc_receiver/inc")
+set(RFD900_DRIVER_DEPENDENCY_3 "${ROOT_DIR}/Drivers/common/dma_uart_device/inc")
+
+
 
 include_directories(${TM_INC})
 file(GLOB TM_CODE
+    # "${TM_FOLDER}/Tests/delete.cpp"
     "${TM_FOLDER}/Tests/generic_test.cpp"
 
     # add necessary TelemetryManager source files below
+    "${TM_SRC}/MavlinkTranslator.cpp"
+    "${TM_SRC}/mavlink_decoder.cpp"
+    "${TM_SRC}/mavlink_encoder.cpp"
+    "${TM_SRC}/TMCircularBuffer.cpp"
     # "${TM_SRC}/*.cpp"
 )
 
@@ -89,6 +100,7 @@ set(CIRCULAR_BUFFER_INC "${DRIVERS_FOLDER}/common/circular_buffer/inc")
 set(CIRCULAR_BUFFER_SRC "${DRIVERS_FOLDER}/common/circular_buffer/src")
 
 set(DRIVERS_CONFIG_INC "${DRIVERS_FOLDER}/Drivers/common/drivers_config/inc")
+set(DRIVERS_CONFIG_SRC "${DRIVERS_FOLDER}/Drivers/common/drivers_config/src")
 
 set(MOTORCHANNEL_MOCK_INC "${ROOT_DIR}/Testing/Mocks/Inc")
 set(MOTORCHANNEL_MOCK_SRC "${ROOT_DIR}/Testing/Mocks/Src")
@@ -101,6 +113,8 @@ file(GLOB DRIVERS_CODE
     # "${DRIVERS_SRC}/foo.cpp"
     "${DRIVERS_FOLDER}/common/circular_buffer/src/circular_buffer.cpp"
     "${MOTORCHANNEL_MOCK_SRC}/*.cpp"
+    "${DRIVERS_CONFIG_SRC}/drivers_config.cpp"
+    
 )
 # Common
 set(COMMON_FOLDER "${ROOT_DIR}/Common")
@@ -133,11 +147,11 @@ file(GLOB MODELS_CODE
 )
 
 # If warnings are so overwhelming you can't locate the actual errors, uncomment the following line
-# add_compile_options(
-#     "$<$<CXX_COMPILER_ID:GNU>:-w>" # for GCC
-#     "$<$<CXX_COMPILER_ID:Clang>:-w>" # for Clang
-#     "$<$<CXX_COMPILER_ID:MSVC>:/W0>" # for MSVC
-#   )
+add_compile_options(
+    "$<$<CXX_COMPILER_ID:GNU>:-w>" # for GCC
+    "$<$<CXX_COMPILER_ID:Clang>:-w>" # for Clang
+    "$<$<CXX_COMPILER_ID:MSVC>:/W0>" # for MSVC
+  )
 
 # --- ZeroPilot File Indexing End ---
 

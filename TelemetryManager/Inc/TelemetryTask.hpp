@@ -13,13 +13,16 @@
  * @warning Any issues you think are important/foresee in the future?
  */
 
-#include <functional>
-
-#include "FreeRTOS.h"
-#include "TelemetryManager.hpp"
-#include "task.h"
 #ifndef TELEMETRYTASK_H
 #define TELEMETRYTASK_H
+
+#include <functional>
+
+#ifndef TESTING
+#include "FreeRTOS.h"
+#include "task.h"
+#endif
+#include "TelemetryManager.hpp"
 
 class TelemetryTask {
     // Simple alias for a lambda function that takes a TelemetryManager reference as an argument.

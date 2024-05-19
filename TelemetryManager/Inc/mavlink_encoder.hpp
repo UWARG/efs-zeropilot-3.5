@@ -2,13 +2,13 @@
 // Created by Yarema Dzulynsky on 2023-07-24.
 //
 
-#ifndef WARGMAVLINKSUPPORT_BASICMAVLINKENCODER_H
-#define WARGMAVLINKSUPPORT_BASICMAVLINKENCODER_H
+#ifndef MAVLINK_ENCODER_HPP
+#define MAVLINK_ENCODER_HPP
 
 #include <iostream>
 
-#include "official_mavlink_2_library/common/mavlink.h"
-#include "incoming_data.h"
+#include "Official_Mavlink_2_Library/common/mavlink.h"
+#include "TMCircularBuffer.hpp"
 
 /**
  * @brief ENCODE_MESSAGE macro for MAVLink message packing
@@ -50,12 +50,14 @@
  */
 #define MAX_ARRAY_BUFFER_SIZE (10 * MAVLINK_MAX_PACKET_LEN)
 
+
 /**
  * @brief Class dedicated to MAVLink message encoding.
  *
  * The 'MavlinkEncoder' class provides an interface and underlying functionality for MAVLink message
  * encoding, using associated parameters and defined message types.
  */
+ 
 class MavlinkEncoder {
    public:
     // The message object that's currently targeted for encoding.
@@ -64,19 +66,12 @@ class MavlinkEncoder {
     // Default constructor for the MavlinkEncoder class.
     MavlinkEncoder();
 
+
+
     /**
-     * @brief Identifies the appropriate encoding function based on the incoming data.
-     *
-     * This function seeks the suitable encoding mechanism in line with the data specifics
-     * and subsequently populates the output buffer.
-     *
-     * @param data Incoming data to be encoded.
-     * @param outputBuffer The buffer to store the encoded data.
-     * @param maxBufferSize The maximum size the output buffer can occupy.
-     *
-     * @return Returns the size (in bytes) used in the output buffer.
+     * @brief Helper function to pack global position int and attitude messages into the output buffer.
      */
-    size_t packIntoMavlinkByteArray(IncomingData& data, uint8_t* outputBuffer, size_t maxBufferSize);
+    void packStateData(mavlink_global_position_int_t& position, mavlink_attitude_t& attitude, TMCircularBuffer& txToGroundByteQueue);
 };
 
-#endif //WARGMAVLINKSUPPORT_BASICMAVLINKENCODER_H
+#endif //MAVLINK_ENCODER_HPP

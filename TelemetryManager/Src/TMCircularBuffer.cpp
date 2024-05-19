@@ -1,11 +1,11 @@
 
-#include "CircularBuffer.hpp"
+#include "TMCircularBuffer.hpp"
 
 TMCircularBuffer::TMCircularBuffer(uint8_t* buf, uint16_t size): CircularBuffer(buf, size) {
     // Constructor
 }
 
-TMCircularBuffer::TMCircularBuffer(CircularBuffer buf): CircularBuffer(buf) {
+TMCircularBuffer::TMCircularBuffer(CircularBuffer *buf): CircularBuffer(*buf) {
     // Constructor
 }
 

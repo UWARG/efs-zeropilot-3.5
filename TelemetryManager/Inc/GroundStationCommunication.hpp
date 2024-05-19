@@ -29,14 +29,55 @@ class GroundStationCommunication {
     /**
      * @brief Construct a new Ground Station Communication object. Do whatever needs to be done
      * here.
-     * @param DMAReceiveBuffer A TMCircularBuffer created FROM the rfd900_circular_buffer in the drivers_config.hpp file. 
+     * @param DMAReceiveBuffer A TMCircularBuffer created FROM the rfd900_circular_buffer in the
+     * drivers_config.hpp file.
      * @param lowPriorityTransmitBuffer A uint8_t buffer to be used by a TM CircularBuffer
      * @param highPriorityTransmitBuffer A uint8_t buffer to be used by a TM CircularBuffer
      * @param length The length of the buffers.
      */
-    GroundStationCommunication(TMCircularBuffer& DMAReceiveBuffer, uint8_t* lowPriorityTransmitBuffer, uint8_t* highPriorityTransmitBuffer, int length);
+    GroundStationCommunication(TMCircularBuffer& DMAReceiveBuffer,
+                               uint8_t* lowPriorityTransmitBuffer,
+                               uint8_t* highPriorityTransmitBuffer, int length);
     ~GroundStationCommunication();
 
+    // Delete copy constructor and assignment operator for gtest
+    GroundStationCommunication(const GroundStationCommunication&) = delete;
+    GroundStationCommunication& operator=(const GroundStationCommunication&) = delete;
+
+    // Allow move constructor and move assignment operator for gtest
+    GroundStationCommunication(GroundStationCommunication&&) = default;
+    GroundStationCommunication& operator=(GroundStationCommunication&&) = default;
+
+    // Custom assignment operator
+    GroundStationCommunication& operator=(const GroundStationCommunication& other) {
+        if (this != &other) {
+            // Perform a deep copy of other members
+            DMAReceiveBuffer = other.DMAReceiveBuffer;
+            lowPriorityTransmitBuffer = other.lowPriorityTransmitBuffer;
+            highPriorityTransmitBuffer = other.highPriorityTransmitBuffer;
+            // Copy any other necessary members here
+        }
+        return *this;
+    }
+
+    // Implement copy constructor
+    GroundStationCommunication(const GroundStationCommunication& other)
+        : DMAReceiveBuffer(other.DMAReceiveBuffer),
+          lowPriorityTransmitBuffer(other.lowPriorityTransmitBuffer),
+          highPriorityTransmitBuffer(other.highPriorityTransmitBuffer) {
+        // Copy other necessary members
+    }
+
+    // Implement assignment operator
+    GroundStationCommunication& operator=(const GroundStationCommunication& other) {
+        if (this != &other) {
+            // Copy other necessary members
+            DMAReceiveBuffer = other.DMAReceiveBuffer;
+            lowPriorityTransmitBuffer = other.lowPriorityTransmitBuffer;
+            highPriorityTransmitBuffer = other.highPriorityTransmitBuffer;
+        }
+        return *this;
+    }
 
     /**
      * To make c++ happy while using rfd900_circular_buffer from drivers_config.hpp, we need to
@@ -44,7 +85,7 @@ class GroundStationCommunication {
      */
     // TMCircularBuffer* DMAReceiveBufferPtr = new TMCircularBuffer(rfd900_circular_buffer);
 
-/*
+    /*
      * When the DMA interrupt is triggered the data should be stored in the DMAReceiveBuffer
      * IF there is space.
      */
