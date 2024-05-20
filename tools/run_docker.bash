@@ -27,6 +27,7 @@ if [[ $IMAGES != *efs_image* ]]; then
     	docker build --platform linux/amd64 -t efs_image -f $TOOLS_DIR/Dockerfile .
     else
     	docker build -t efs_image -f $TOOLS_DIR/Dockerfile .
+    fi
 fi
 
 # Create container if it doesn't exist
@@ -36,6 +37,7 @@ if [[ $CONTAINERS != *efs_container* ]]; then
     	docker run --platform linux/amd64 -tid --name=efs_container efs_image bash
     else
     	docker run -tid --name=efs_container efs_image bash
+    fi
 else
     # Start container
     docker start efs_container
