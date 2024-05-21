@@ -41,19 +41,25 @@ AttitudeManager::AttitudeManager(Flightmode* controlAlgorithm,  MotorInstance_t 
     numMotorsPerAxis_(numMotorsPerAxis)
 {};
 
-AttitudeManager::~AttitudeManager() 
+AttitudeManager::~AttitudeManager()
 {}
 
-void AttitudeManager::runControlLoopIteration(const AttitudeManagerInput& instructions) {
+void AttitudeManager::runControlLoopIteration() {
     // Process Instructions
+    AttitudeManagerInput control_inputs = getControlInputs();
 
     // Run Control Algorithms
-    controlAlgorithm_->run();
+    AttitudeManagerInput motor_outputs = controlAlgorithm_->run(control_inputs);
 
     // Write motor outputs
+    outputToMotor(yaw, static_cast<uint8_t>(motor_outputs.yaw));
+    outputToMotor(pitch, static_cast<uint8_t>(motor_outputs.pitch));
+    outputToMotor(roll, static_cast<uint8_t>(motor_outputs.roll));
+    outputToMotor(throttle, static_cast<uint8_t>(motor_outputs.throttle));
+
 }
 
-void AttitudeManager::outputToMotor(config::ControlAxis_t axis, uint8_t percent) {
+void AttitudeManager::outputToMotor(ControlAxis_t axis, uint8_t percent) {
     // Move through the portion of the motorInstances array that matches the wanted axis.
     // The motorReferences array holds references to the wanted positions in the motorInstances array
     for (uint8_t motorCount{0}; motorCount < numMotorsPerAxis_[axis]; ++motorCount) {
@@ -63,7 +69,7 @@ void AttitudeManager::outputToMotor(config::ControlAxis_t axis, uint8_t percent)
             motorInstances_[axis][motorCount].motorInstance->set(percent);
         }
     }
-    
+
 }
 
 }  // namespace AM

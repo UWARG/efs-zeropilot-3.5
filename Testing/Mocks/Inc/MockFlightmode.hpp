@@ -1,8 +1,12 @@
-#include "AM_ControlAlgorithm.hpp"
+#include "flightmode.hpp"
 
 class MockFlightmode : public AM::Flightmode{
-    public:
+public:
     MockFlightmode(){}
-    void run(){};
+    AM::AttitudeManagerInput run(const AM::AttitudeManagerInput& input) {
+        return input;
+    };
     void updatePid(){};
+    void updatePidGains() {};
+    void updateControlLimits(ControlLimits_t limits) {};
 };

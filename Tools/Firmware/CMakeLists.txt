@@ -24,16 +24,15 @@ include_directories(
     ${ROOT_DIR}/TelemetryManager/Inc
 
     ## Driver Includes ##
-    ${ROOT_DIR}/Drivers/rc_receiver/Inc
-    ${ROOT_DIR}/Drivers/Common/Inc
-
-    ${ROOT_DIR}/Drivers/ccontrol/Inc
-    ${ROOT_DIR}/Drivers/sensor_fusion/Inc
-    ${ROOT_DIR}/Drivers/IWDG_Driver/Inc
-    ${ROOT_DIR}/Drivers/MotorChannel/Inc
-
-    ${ROOT_DIR}/Drivers/UARTDevice/Inc
-    ${ROOT_DIR}/Drivers/Common/Inc
+    
+    ${ROOT_DIR}/Drivers/common/circular_buffer/inc
+    ${ROOT_DIR}/Drivers/common/drivers_config/inc
+    ${ROOT_DIR}/Drivers/common/dma_uart_device/inc
+    ${ROOT_DIR}/Drivers/iwdg_driver/inc
+    ${ROOT_DIR}/Drivers/motor_channel/inc
+    ${ROOT_DIR}/Drivers/rc_receiver/inc
+    ${ROOT_DIR}/Drivers/sensor_fusion/inc
+    ${ROOT_DIR}/Drivers/sensor_fusion/ccontrol/inc
 
     ## Boardfiles Includes ##
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Drivers/${FAMILY_NAME}_HAL_Driver/Inc
@@ -78,23 +77,23 @@ set(SYSTEM_MANAGER_C_SOURCES "${SYSTEM_MANAGER}/Src/*.c")
 set(SYSTEM_MANAGER_CXX_SOURCES "${SYSTEM_MANAGER}/Src/*.cpp")
 
 set(DRIVERS_DIR ${ROOT_DIR}/Drivers)
-set(DRIVERS_C_SOURCES "${DRIVERS_DIR}/ccontrol/Src/*.c")
+set(DRIVERS_C_SOURCES "${DRIVERS_DIR}/sensor_fusion/ccontrol/Src/*.c")
 set(DRIVERS_CXX_SOURCES "${DRIVERS_DIR}/sensor_fusion/Src/*.cpp")
 
 ## Drivers Sources ##
-set(DRIVERS_RcReceiver_DIR ${ROOT_DIR}/Drivers/rc_receiver/Src)
+set(DRIVERS_RcReceiver_DIR ${ROOT_DIR}/Drivers/rc_receiver/src)
 set(DRIVERS_RcReceiver_CXX_SOURCES "${DRIVERS_RcReceiver_DIR}/*.cpp")
-set(DRIVERS_Common_DIR ${ROOT_DIR}/Drivers/Common/Src)
-set(DRIVERS_MotorChannel_DIR ${ROOT_DIR}/Drivers/MotorChannel/Src)
+set(DRIVERS_Common_DIR ${ROOT_DIR}/Drivers/common)
+set(DRIVERS_MotorChannel_DIR ${ROOT_DIR}/Drivers/motor_channel/src)
 set(DRIVERS_MotorChannel_CXX_SOURCES "${DRIVERS_MotorChannel_DIR}/*.cpp")
 set(DRIVERS_Common_CXX_SOURCES "${DRIVERS_Common_DIR}/*.cpp")
-set(DRIVERS_IWDGDriver_DIR ${ROOT_DIR}/Drivers/IWDG_Driver/Src)
+set(DRIVERS_IWDGDriver_DIR ${ROOT_DIR}/Drivers/iwdg_driver/src)
 set(DRIVERS_IWDGDriver_CXX_SOURCES "${DRIVERS_IWDGDriver_DIR}/*.cpp")
 
 
 ## Actually find the sources, NOTE: if you add a new source above, add it here! ##
 ## Drivers Sources ##
-set(DRIVERS_UARTDevice_DIR ${ROOT_DIR}/Drivers/UARTDevice/Src)
+set(DRIVERS_UARTDevice_DIR ${ROOT_DIR}/Drivers/common/dma_uart_device/src)
 set(DRIVERS_UARTDevice_CXX_SOURCES "${DRIVERS_UARTDevice_DIR}/*.cpp")
 
 file(GLOB_RECURSE C_SOURCES ${HAL_DRIVERS_C_SOURCES}
@@ -120,6 +119,13 @@ message("C++ Sources: ${CXX_SOURCES}")
 ## Find the startup and linker script ##
 set(STARTUP_ASM_FILE ${ROOT_DIR}/Boardfiles/${STARTUP_ASM})
 set(LINKER_SCRIPT_FILE ${ROOT_DIR}/Boardfiles/${LINKER_SCRIPT})
+
+# If warnings are so overwhelming you can't locate the actual errors, uncomment the following line
+# add_compile_options(
+#     "$<$<CXX_COMPILER_ID:GNU>:-w>" # for GCC
+#     "$<$<CXX_COMPILER_ID:Clang>:-w>" # for Clang
+#     "$<$<CXX_COMPILER_ID:MSVC>:/W0>" # for MSVC
+#   )
 
 add_executable(${ELF_NAME} ${C_SOURCES} ${CXX_SOURCES} ${STARTUP_ASM_FILE})
 
