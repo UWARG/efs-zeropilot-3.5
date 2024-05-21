@@ -25,6 +25,9 @@
  * implementation.
  */
 class GroundStationCommunication {
+   private:
+    uint8_t internalBuffer_[RFD900_BUF_SIZE];
+
    public:
     /**
      * @brief Construct a new Ground Station Communication object. Do whatever needs to be done
@@ -69,13 +72,6 @@ class GroundStationCommunication {
      * to the ground station
      */
     void transmit(TMCircularBuffer& transmissionBuffer);
-
-    /**
-     * @brief This is the Interrupt Service Routine (ISR) for when the RFD 900 receives data from
-     * the ground station and stores bytes from the transmission into the GSC.DMAReceiveBuffer if
-     * there is space. Otherwise the data is discarded.
-     */
-    void receiveInterruptServiceRoutine();
 };
 
 #endif  // GROUNDSTATIONCOMMS_H

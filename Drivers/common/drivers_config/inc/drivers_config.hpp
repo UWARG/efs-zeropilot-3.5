@@ -17,4 +17,6 @@ extern SBUSReceiver* sbus_pointer;
 extern UARTDevice* pRFD900;
 extern CircularBuffer *rfd900_circular_buffer;
 
+#define RFD900_BUF_SIZE 280
+
 #endif

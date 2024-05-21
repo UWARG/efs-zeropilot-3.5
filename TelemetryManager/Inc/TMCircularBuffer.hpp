@@ -55,17 +55,17 @@ class TMCircularBuffer : public CircularBuffer {
     void enqueue(MAVLinkByte byte);
 
     /**
-     * @brief Get the index of the last full message in the queue determined by the end flag
-     * in the MAVLink message. This is so if we have a partial message in the queue because
-     * an ISR was triggered while we were in the middle of enqueuing a message, we
-     * only send completed messages and keep the partial message to be finished after the ISR.
+     * @brief Get the number of bytes until the end of the last full message in the queue
+     * determined by the end flag in the MAVLink message. This is so if we have a partial message 
+     * in the queue because an ISR was triggered while we were in the middle of enqueuing a message, 
+     * we only send completed messages and keep the partial message to be finished after the ISR.
      * These partial messages once filled will be sent during the next transmission.
      *
      * @return int The index of the last full message in the queue determined by the end flag
      * in the MAVLink message.
      *
      */
-    int lastFullMessageEndIndex();
+    int bytesUntilLastMessageEnd();
 
     /**
      * @brief Returns the index of the current byte in the queue. This is useful for when we want to
