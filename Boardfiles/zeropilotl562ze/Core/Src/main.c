@@ -84,7 +84,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   /* USER CODE BEGIN 2 */
-
+  MX_GPIO_Init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -92,6 +92,10 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
+
+    HAL_TogglePin(GPIOG, GPIO_PIN_0);
+
+    HAL_Delay(500);
 
     /* USER CODE BEGIN 3 */
   }
