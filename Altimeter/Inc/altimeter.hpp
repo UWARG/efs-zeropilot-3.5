@@ -2,9 +2,11 @@
 #define INC_ALTIMETER_HPP_
 
 #include "stm32l5xx_hal.h"
+#include "ms5611_constants.h"
 #include "cmsis_os.h"
 #include <cstdint>
 #include <cmath>
+#include <cfloat>
 
 
 constexpr uint8_t RESET_COMMAND = 0x1E;
@@ -58,44 +60,41 @@ public:
 		   uint16_t ps_pin);
 
 	/**
-	* Calculates the pressure in mbar and assigns it to the variable passed by
-	* reference.
+	* Calculates the pressure in mbar.
 	 *
-	* @param pressure -> reference to pressure variable
-	 *
-	* @return bool for if there were no communication failures with barometer.
+	* @return pressure value.
 	 */
-	bool getPressure(float &pressure);
+	float getPressure();
 
 	/**
 	* Calculates the temperature in celsius and assigns it to the variable passed by
 	* reference.
 	 *
-	* @param temperature -> reference to temperature variable
-	 *
-	* @return bool for if there were no communication failures with barometer.
+	* @return temperature value.
 	 */
-	bool getTemperature(float &temperature);
+	float getTemperature();
 
 	/**
-	* Calculates the height above sea level in meters and assigns it to the variable passed by
-	* reference.
+	* Sets base_elev_, which is your base elevation from which your altitude
+	* above ground level is calculated, and returns it.
 	 *
-	* @param altitude_above_sea_level -> reference to altitude variable
-	 *
-	* @return bool for if there were no communication failures with barometer.
+	* @return base_elev_.
 	 */
-	bool getAltitudeAboveSeaLevel(float &altitude_above_sea_level);
+	float setBaseElevation();
 
 	/**
-	* Calculates the height above ground level in meters and assigns it to the variable passed by
-	* reference.
+	* Calculates the height above sea level in meters.
 	 *
-	* @param altitude_above_ground_level -> reference to altitude variable
-	 *
-	* @return bool for if there were no communication failures with barometer.
+	* @return height above sea level.
 	 */
-	bool getAltitudeAboveGroundLevel(float &altitude_above_ground_level);
+	float getAltitudeAboveSeaLevel();
+
+	/**
+	* Claculates the height above ground level in meters.
+	 *
+	* @return height above ground level.
+	 */
+	float getAltitudeAboveGroundLevel();
 
 
 private:
@@ -117,11 +116,9 @@ private:
 	float temp_;
 	float pres_;
 
-	//hal_spi_transmitreceive status
-	HAL_StatusTypeDef spi_status_;
-
-	//to track communication failures
-	bool communication_success_;
+	//to track communication failures in the setup.
+	bool setup_done_;
+	bool base_elevation_set_;
 
 	/**
 	* Sends the reset command to the barometer. The reset command makes sure that
@@ -132,21 +129,20 @@ private:
 	void reset();
 
 	/**
-	* Populates ms6511_prom_data_ with data from PROM
+	* Triggers reset and populates ms5611_prom_data buffer with PROM data.
 	 *
 	* @return none
 	 */
-	void getPromData();
+	void getProm();
 
 	/**
 	* Reads PROM data from user-specified 16-bit address.
 	 *
 	* @param address -> The address from which you want to read data.
-	* @param ms5611_prom_data -> pointer to ms5611_prom_data array.
 	 *
-	* @return bool for if there were no communication failures with barometer.
+	* @return 16-bit prom element.
 	 */
-	bool promRead(uint8_t address, uint16_t *ms5611_prom_data);
+	uint16_t getPromElement(uint8_t address);
 
 	/**
 	* Reads uncompensated temperature/pressure value from altimeter.
@@ -156,14 +152,7 @@ private:
 	 *
 	* @return bool for if there were no communication failures with barometer.
 	 */
-	bool readPressureTemperatureUncompensated(uint8_t conversion_command, uint32_t &uncompensated_pressure_temperature);
-
-	/**
-	* Calculates the temperature in degrees celsius and pressure in mbar.
-	 *
-	* @return none
-	 */
-	void calculateTemperatureAndPressure();
+	bool getBarometer(uint8_t conversion_command, uint32_t &uncompensated_pressure_temperature);
 };
 
 
