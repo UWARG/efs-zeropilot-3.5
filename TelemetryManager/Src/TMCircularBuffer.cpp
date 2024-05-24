@@ -42,7 +42,16 @@ int TMCircularBuffer::bytesUntilLastMessageEnd() {
     Rahul: This one is a bit tricky because you need to know the structure of the MAVLink message. 
     I can help you with this one if you want.
     */
+    uint16_t index = readPtr_;
+    uint16_t count = 0;
+    while(count < size_){
+        if(buf_[index] ==0xFD){
+            return index;
+        }
+        index = (index + 1) % size_;
+        count ++;
+    }
     return -1;
 }
 
-int TMCircularBuffer::currentIndex() { return -1; }
+int TMCircularBuffer::currentIndex() { return  readPtr_; }
