@@ -65,7 +65,7 @@ class TMCircularBuffer : public CircularBuffer {
      * in the MAVLink message.
      *
      */
-    int lastFullMessageEndIndex();
+    int bytesUntilLastMessageEnd();
 
     /**
      * @brief Returns the index of the current byte in the queue. This is useful for when we want to
