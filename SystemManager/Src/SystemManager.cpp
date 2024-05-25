@@ -14,10 +14,11 @@
 #include "FreeRTOS.h"
 #include <iostream>
 
-
-
-
 #define TIMEOUT_CYCLES 250000 // 25k = 1 sec fro testing 10/14/2023 => 250k = 10 sec
+
+// TODO: remove this after testing
+static BaseType_t taskCreated[3];
+static TaskHandle_t taskHandles[3];
 
 static uint32_t DisconnectionCount = 0;
 float prevthrottle;
@@ -37,14 +38,28 @@ SystemManager::SystemManager():
 
 SystemManager::~SystemManager() {}
 
-void SystemManager::systemCheckTask(void *pvParameters){
-    uint8_t msg[] = "systemCheckTask running (every second)...\n";
+//wrapper functions are needed as FreeRTOS xTaskCreate function does not accept functions that have "this" pointers
+void SystemManager::systemCheckTaskWrapper(void *pvParameters) {
+    SystemManager *systemManagerInstance = static_cast<SystemManager *>(pvParameters);
+    systemManagerInstance->systemCheckTask();
+}
+
+void SystemManager::attitudeManagerTaskWrapper(void* pvParameters){
+    SystemManager *systemManagerInstance = static_cast<SystemManager *>(pvParameters);  
+    systemManagerInstance->attitudeManagerTask();
+}
+
+void SystemManager::telemetryManagerTaskWrapper(void* pvParameters){
+    SystemManager *systemManagerInstance = static_cast<SystemManager *>(pvParameters);
+    systemManagerInstance->telemetryManagerTask();
+}
+
+void SystemManager::systemCheckTask(){
     for(;;){
-        HAL_UART_Transmit(&huart1, msg, sizeof(msg), 100);
-        vTaskDelay(pdMS_TO_TICKS(1000)); 
+        printf("systemCheckTask memory: %d \r\n", uxTaskGetStackHighWaterMark( NULL ));
+        vTaskDelay(1000); 
 
-
-
+        /*
         this->rcInputs_ = rcController_->GetRCControl();
 
         //TO-DO: need to implement it using is_Data_New;
@@ -89,62 +104,32 @@ void SystemManager::systemCheckTask(void *pvParameters){
             this->pitchMotorChannel_.set(SBUS_MAX/2);
             this->invertedRollMotorChannel_.set(SBUS_MAX/2);
         }
+        */
     }
 }
 
-//wrapper functions are needed as FreeRTOS xTaskCreate function does not accept functions that have "this" pointers
-void SystemManager::systemCheckTaskWrapper(void *pvParameters) {
-
-    SystemManager *systemManagerInstance = static_cast<SystemManager *>(pvParameters);
-    systemManagerInstance->systemCheckTask(pvParameters);
-}
-
-void SystemManager::attitudeManagerTask(void *pvParameters){
-    uint8_t msg[] = "AM running (every 2 seconds)...\n";
+void SystemManager::attitudeManagerTask(){
     for(;;){
         //call AM
-        HAL_UART_Transmit(&huart1, msg, sizeof(msg), 100);
-        vTaskDelay(pdMS_TO_TICKS(2000)); 
 
-        watchdog_.refreshWatchdog(); // always hit the dog
+        printf("AM memory: %d \r\n", uxTaskGetStackHighWaterMark( NULL ));
+        vTaskDelay(2000); 
     }
 }
 
-void SystemManager::attitudeManagerTaskWrapper(void* pvParameters){
-    SystemManager *systemManagerInstance = static_cast<SystemManager *>(pvParameters);
-    systemManagerInstance->attitudeManagerTask(pvParameters);
-}
-
-void SystemManager::telemetryManagerTask(void *pvParameters){
-    uint8_t msg[] = "TM running (every 3 seconds)...\n";
+void SystemManager::telemetryManagerTask(){
     for(;;){
         //call TM
-        HAL_UART_Transmit(&huart1, msg, sizeof(msg), 100);
-        vTaskDelay(pdMS_TO_TICKS(3000)); 
-        
-        watchdog_.refreshWatchdog(); // always hit the dog
+
+        printf("TM memory: %d \r\n", uxTaskGetStackHighWaterMark( NULL ));
+        vTaskDelay(3000); 
     }
 }
 
-void SystemManager::telemetryManagerTaskWrapper(void* pvParameters){
-    SystemManager *systemManagerInstance = static_cast<SystemManager *>(pvParameters);
-    systemManagerInstance->attitudeManagerTask(pvParameters);
-}
-
-
 void SystemManager::setup() {
-    TaskHandle_t hSystemCheck = NULL;
-
     //BaseType_t xTaskCreate( TaskFunction_t pvTaskCode, const char * const pcName, configSTACK_DEPTH_TYPE usStackDepth, void * pvParameters, UBaseType_t uxPriority, TaskHandle_t * pxCreatedTask ); 
-    //                          function's name             description                 size of stack to allocate        parameters for task        priority                    handler
-    xTaskCreate(systemCheckTaskWrapper, "System Check", 500U, NULL, osPriorityNormal, &hSystemCheck);
-
-    TaskHandle_t hAM = NULL;
-    xTaskCreate(attitudeManagerTaskWrapper, "Attitude Manager", 500U, NULL, osPriorityNormal, &hAM);
-
-    TaskHandle_t hTM = NULL;
-    xTaskCreate(telemetryManagerTaskWrapper, "Telemetry Manager", 500U, NULL, osPriorityNormal, &hTM);
-
-
-    //vTaskStartScheduler();
+    //                          function's name             description                 size of stack to allocate        parameters for task        priority                    handler 
+    taskCreated[0] = xTaskCreate(systemCheckTaskWrapper, "System Check", 150U, this, osPriorityNormal, taskHandles);
+    taskCreated[1] = xTaskCreate(attitudeManagerTaskWrapper, "Attitude Manager", 200U, this, osPriorityNormal, taskHandles + 1);
+    taskCreated[2] = xTaskCreate(telemetryManagerTaskWrapper, "Telemetry Manager", 200U, this, osPriorityNormal, taskHandles + 2);
 }

@@ -15,24 +15,7 @@
 #define SBUS_MAX 100
 
 class SystemManager {
-public:
-    /* Constructors and Destructors */
-    SystemManager();
-    ~SystemManager();
-
-    /* Class Functions */
-    void setup();
-    
-
 private:
-    void systemCheckTask(void *pvParameters);
-    static void systemCheckTaskWrapper(void* pvParameters);
-    
-    void attitudeManagerTask(void *pvParameters);
-    static void attitudeManagerTaskWrapper(void* pvParameters);
-
-    void telemetryManagerTask(void *pvParameters);
-    static void telemetryManagerTaskWrapper(void* pvParameters);
     SBUSReceiver* rcController_;
     RCControl rcInputs_;
     PWMChannel throttleMotorChannel_;
@@ -41,7 +24,22 @@ private:
     PWMChannel invertedRollMotorChannel_;
     PWMChannel pitchMotorChannel_;
     IndependentWatchdog watchdog_;
-};
 
+    static void systemCheckTaskWrapper(void *pvParameters);
+    static void attitudeManagerTaskWrapper(void *pvParameters);
+    static void telemetryManagerTaskWrapper(void *pvParameters);
+    
+    void systemCheckTask();
+    void attitudeManagerTask();
+    void telemetryManagerTask();
+
+public:
+    /* Constructors and Destructors */
+    SystemManager();
+    ~SystemManager();
+
+    /* Class Functions */
+    void setup(); 
+};
 
 #endif //ZEROPILOT_3_5_SYSTEMMANAGER_HPP

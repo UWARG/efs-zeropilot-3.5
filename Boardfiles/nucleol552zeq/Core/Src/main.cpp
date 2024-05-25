@@ -34,9 +34,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "SystemManager.hpp"
-#include "drivers_config.hpp"
-#include "independent_watchdog.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -127,15 +125,8 @@ int main(void)
   MX_ICACHE_Init();
   MX_IWDG_Init();
   MX_TIM3_Init();
+
   /* USER CODE BEGIN 2 */
-
-
-
-
-  //TaskHandle_t hSM = NULL;
-  //xTaskCreate(SMTask, "SM", 500U, NULL, osPriorityNormal, &hSM);
-  SystemManager SM;
-  SM.setup();
 
   /* USER CODE END 2 */
 
