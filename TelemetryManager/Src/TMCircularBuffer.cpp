@@ -15,15 +15,14 @@ TMCircularBuffer::~TMCircularBuffer() {
     buf = nullptr;
  }
 
-TMCircularBuffer::MAVLinkByte TMCircularBuffer::dequeue() {
+TMCircularBuffer::bool TMCircularBuffer::dequeue(MAVLinkByte &byte) {
     if(getNumAvailBytes() - size_  == 0){
-      // dont know what to return if queue is empty
-    }
+        return false;
     else{
-        MAVLinkByte byte = buf[(readPtr_)];
+        byte = buf[(readPtr_)];
         readPtr_ = (readPtr_ +1) % size_;
         --size_;
-        return byte;
+        return true;
     }
 
 

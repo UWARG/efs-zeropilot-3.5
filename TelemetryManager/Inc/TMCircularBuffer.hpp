@@ -45,7 +45,7 @@ class TMCircularBuffer : public CircularBuffer {
      *
      * @return MAVLinkByte The byte that was dequeued
      */
-    MAVLinkByte dequeue();
+    bool dequeue();
 
     /**
      * @brief Enqueue a byte into the queue
