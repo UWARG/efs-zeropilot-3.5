@@ -1,0 +1,24 @@
+name: Lint
+
+on:
+  pull_request:
+    type: [opened, synchronize]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v3
+      
+      - name: Initialize Docker
+        run: bash ./tools/run_docker.bash init
+
+      - name: Run clang-tidy
+        run: bash ./tools/run_docker.bash clang-tidy
+
+      - name: Run clang-format
+        run: bash ./tools/run_docker.bash clang-format
+
+      - name: Run cppcheck
+        run: bash ./tools/run_docker.bash cppcheck
