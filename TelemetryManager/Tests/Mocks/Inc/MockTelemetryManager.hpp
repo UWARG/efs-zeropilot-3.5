@@ -1,7 +1,7 @@
 #include <gmock/gmock.h>
 #include "TelemetryManager.hpp"
 
-class MockTelemetryManager : public MockTelemetryManager
+class MockTelemetryManager : public TelemetryManager
 {
     public:
     MOCK_METHOD(void, init, ());
