@@ -150,3 +150,13 @@ void HAL_SD_RxCpltCallback(SD_HandleTypeDef *hsd)
    const uint16_t msg = 1;
    osMessageQueuePut(SDQueueID, (const void *)&msg, NULL, 0);
 }
+
+/**
+  * @brief RTOS-aware delay
+  * @param delay: number of ticks to delay
+  * @retval None
+  */
+void HAL_Delay(uint32_t delay)
+{
+  osDelay(delay);
+}
