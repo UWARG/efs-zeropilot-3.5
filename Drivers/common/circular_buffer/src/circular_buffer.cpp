@@ -70,3 +70,7 @@ bool CircularBuffer::write(uint8_t byte) {
 uint16_t CircularBuffer::getFreeSpaceBytes() { 
     //NOT IMPLEMENTED YET
     return -1; }
+
+uint16_t CircularBuffer::getSize_(){
+    return  size_;
+}

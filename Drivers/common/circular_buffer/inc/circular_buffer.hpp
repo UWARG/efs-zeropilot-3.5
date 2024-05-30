@@ -62,6 +62,13 @@ class CircularBuffer {
      */
     uint16_t getFreeSpaceBytes();
 
+    /**
+     * @brief Provide the size of the buffer.
+     *
+     * @return uint16_t The size of the buffer.
+     */
+    uint16_t getSize_();
+
    private:
     uint8_t* buf_;
     uint16_t size_;

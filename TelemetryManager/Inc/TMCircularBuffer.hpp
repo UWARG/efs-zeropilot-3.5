@@ -45,14 +45,14 @@ class TMCircularBuffer : public CircularBuffer {
      *
      * @return MAVLinkByte The byte that was dequeued
      */
-    bool dequeue();
+    MAVLinkByte dequeue();
 
     /**
      * @brief Enqueue a byte into the queue
      *
      * @param byte The byte to be enqueued
      */
-    void enqueue(MAVLinkByte byte);
+    bool enqueue(MAVLinkByte byte);
 
     /**
      * @brief Get the index of the last full message in the queue determined by the end flag
@@ -65,7 +65,7 @@ class TMCircularBuffer : public CircularBuffer {
      * in the MAVLink message.
      *
      */
-    int bytesUntilLastMessageEnd();
+    int bytesUntilLastMessageEnd(uint8_t* buf);
 
     /**
      * @brief Returns the index of the current byte in the queue. This is useful for when we want to
@@ -76,6 +76,9 @@ class TMCircularBuffer : public CircularBuffer {
      * @return int The index of the current byte in the queue.
      */
     int currentIndex();
+
+    private: 
+    int index = 0;
 };
 
 #endif
