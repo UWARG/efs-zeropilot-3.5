@@ -23,6 +23,8 @@
 
 .idea/
 .vscode/
-Tools/*/build/
+.DS_Store/
+tools/*/build
+tools/lint_output
 Debug/
 /.metadata/

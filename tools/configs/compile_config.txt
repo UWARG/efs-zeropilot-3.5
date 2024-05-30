@@ -1,0 +1,7 @@
+# --- Compile settings begin ---
+
+COMPILE_TYPE="firmware"
+PLATFORM="nucleol552zeq"
+MODEL_NAME="example_model"
+
+# --- Compile settings end ---

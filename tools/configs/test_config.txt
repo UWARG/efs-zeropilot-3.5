@@ -1,0 +1,5 @@
+# --- Testing settings begin ---
+ 
+TEST_FILTER="*"
+
+# --- Testing settings end ---

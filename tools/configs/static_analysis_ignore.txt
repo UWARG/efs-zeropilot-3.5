@@ -1,0 +1,7 @@
+# Add pathes to be ignored by static analysis (clang-tidy, clang-format, cppcheck)
+
+tools
+Boardfiles
+TelemetryManager/Inc/Official_Mavlink_2_Library
+
+# Do not remove this last line

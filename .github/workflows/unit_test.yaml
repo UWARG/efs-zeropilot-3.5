@@ -6,29 +6,13 @@ on:
 
 jobs:
   unit_test:
-    runs-on: ubuntu-latest 
-    
-    env:
-      URL: https://github.com/google/googletest.git
-      TAG: v1.13.0
-    
-    steps:      
-      - name: Install CMake, make, and git
-        run: sudo apt-get -y install cmake make git
-
-      - name: Install GoogleTest
-        working-directory: /home/runner/work
-        run: |
-          git clone $URL -b $TAG
-          mkdir googletest/build && cd googletest/build
-          cmake -G "Unix Makefiles" ..
-          cmake --build . && sudo cmake --install .
-
-      - name: Checkout repo
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repo
         uses: actions/checkout@v3
 
-      - name: Build tests
-        run: bash ./Tools/tools.bash compile -t Testing -c
+      - name: Initialize Docker
+        run: bash ./tools/run_docker.bash init
 
-      - name: Run tests
-        run: bash ./Tools/tools.bash run
+      - name: Build and run tests
+        run: bash ./tools/run_docker.bash test
