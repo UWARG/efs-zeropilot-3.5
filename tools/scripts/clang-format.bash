@@ -14,5 +14,13 @@ if [ -z "$SRC_FILES" ]; then
 fi
 
 mkdir -p $TOOLS_DIR/lint_output/formatted_files
-clang-format $CLANG_FORMAT_FLAGS $SRC_FILES
-cp $SRC_FILES $TOOLS_DIR/lint_output/formatted_files/
+
+# Get differences between the original and formatted files using a for loop
+for file in $SRC_FILES; do
+    clang-format $CLANG_FORMAT_FLAGS $file > $TOOLS_DIR/lint_output/formatted_files/$(basename $file)
+
+    # if the file exists in the formatted_files
+    if [ -f $TOOLS_DIR/lint_output/formatted_files/$(basename $file) ]; then
+        diff -u $file $TOOLS_DIR/lint_output/formatted_files/$(basename $file)
+    fi
+done
