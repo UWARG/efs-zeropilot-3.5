@@ -41,6 +41,7 @@
 
 extern "C" {
   #include "app_fatfs.h"
+  #include "log_util.h"
 }
 /* USER CODE END Includes */
 
@@ -79,7 +80,6 @@ extern "C" {
 void SMTask(void *pvParameters) {
     SystemManager SM;
     SM.flyManually();
-
 }
 /* USER CODE END 0 */
 
@@ -136,13 +136,10 @@ int main(void)
     Error_Handler();
   }
   /* USER CODE BEGIN 2 */
-
-
-
+  logInit();
 
   TaskHandle_t hSM = NULL;
   xTaskCreate(SMTask, "SM", 500U, NULL, osPriorityNormal, &hSM);
-
 
   /* USER CODE END 2 */
 
