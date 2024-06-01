@@ -15,17 +15,17 @@ TMCircularBuffer::~TMCircularBuffer() {
  }
 
 TMCircularBuffer::MAVLinkByte  TMCircularBuffer::dequeue() {
-    uint8_t* res;
+    MAVLinkByte* res;
     if(read(res,1)){
         return *res;
     }
-    return *res;
+    return 0;
 }
 
 bool TMCircularBuffer::enqueue(MAVLinkByte byte) {
     // Enqueue the byte
     if(write(byte)){
-        index ++;
+        index_ = (index_ + 1) % getSize();
         return true;
     }
      return false;
@@ -36,9 +36,9 @@ int TMCircularBuffer::bytesUntilLastMessageEnd(uint8_t* buf) {
     Rahul: This one is a bit tricky because you need to know the structure of the MAVLink message. 
     I can help you with this one if you want.
     */
-   uint16_t index = 0;
+   uint16_t index = -1;
    uint16_t count = 0;
-   uint16_t size = getSize_();
+   uint16_t size = getSize();
    while(count < size){
       if( buf[index] == 0xFD){
         return index;
@@ -46,11 +46,11 @@ int TMCircularBuffer::bytesUntilLastMessageEnd(uint8_t* buf) {
       
       index = (index + 1) % size;
       count ++;
-
    }
+   return index;
    
 }
 
 int TMCircularBuffer::currentIndex() {
-    return index;
+    return index_;
  }

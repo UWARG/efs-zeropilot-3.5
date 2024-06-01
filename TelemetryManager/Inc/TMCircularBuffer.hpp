@@ -78,7 +78,7 @@ class TMCircularBuffer : public CircularBuffer {
     int currentIndex();
 
     private: 
-    int index = 0;
+    uint8_t index_ = 0;
 };
 
 #endif

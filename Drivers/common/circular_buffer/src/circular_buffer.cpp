@@ -71,6 +71,6 @@ uint16_t CircularBuffer::getFreeSpaceBytes() {
     //NOT IMPLEMENTED YET
     return -1; }
 
-uint16_t CircularBuffer::getSize_(){
+uint16_t CircularBuffer::getSize(){
     return  size_;
 }
