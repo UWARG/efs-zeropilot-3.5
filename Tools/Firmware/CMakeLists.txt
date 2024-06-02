@@ -33,6 +33,7 @@ include_directories(
     ${ROOT_DIR}/Drivers/rc_receiver/inc
     ${ROOT_DIR}/Drivers/sensor_fusion/inc
     ${ROOT_DIR}/Drivers/sensor_fusion/ccontrol/inc
+    ${ROOT_DIR}/Drivers/sd_card/inc
 
     ## Boardfiles Includes ##
     ${ROOT_DIR}/Boardfiles/${FOLDER_NAME}/Drivers/${FAMILY_NAME}_HAL_Driver/Inc
@@ -102,6 +103,8 @@ set(DRIVERS_MotorChannel_CXX_SOURCES "${DRIVERS_MotorChannel_DIR}/*.cpp")
 set(DRIVERS_Common_CXX_SOURCES "${DRIVERS_Common_DIR}/*.cpp")
 set(DRIVERS_IWDGDriver_DIR ${ROOT_DIR}/Drivers/iwdg_driver/src)
 set(DRIVERS_IWDGDriver_CXX_SOURCES "${DRIVERS_IWDGDriver_DIR}/*.cpp")
+set(DRIVERS_SDCard_DIR ${ROOT_DIR}/Drivers/sd_card/src)
+set(DRIVERS_SDCard_C_SOURCES "${DRIVERS_SDCard_DIR}/*.c")
 
 
 ## Actually find the sources, NOTE: if you add a new source above, add it here! ##
@@ -117,7 +120,8 @@ file(GLOB_RECURSE C_SOURCES ${HAL_DRIVERS_C_SOURCES}
                             ${SYSTEM_MANAGER_C_SOURCES}
                             ${DRIVERS_C_SOURCES}
                             ${FATFS_C_SOURCES}
-                            ${FATFS_DIR_C_SOURCES})
+                            ${FATFS_DIR_C_SOURCES}
+                            ${DRIVERS_SDCard_C_SOURCES})
 message("C Sources: ${C_SOURCES}")
 file(GLOB_RECURSE CXX_SOURCES ${HAL_CORE_CXX_SOURCES}
                               ${ATTITUDE_MANAGER_CXX_SOURCES}
