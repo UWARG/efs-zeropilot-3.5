@@ -39,6 +39,7 @@
 #define QUEUE_SIZE         (uint32_t) 10
 #define READ_CPLT_MSG      (uint32_t) 1
 #define WRITE_CPLT_MSG     (uint32_t) 2
+#define TRANS_ERR_MSG      (uint32_t) 3
 #define SD_TIMEOUT 30 * 1000
 #define SD_DEFAULT_BLOCK_SIZE 512
 /* USER CODE END PD */
@@ -52,6 +53,7 @@
 /* USER CODE BEGIN PV */
 /* Disk status */
 static volatile DSTATUS Stat = STA_NOINIT;
+static DWORD alignedBuffer[BLOCKSIZE / 4] = {0};
 osMessageQueueId_t SDQueueID = NULL;
 /* USER CODE END PV */
 
@@ -144,7 +146,6 @@ DRESULT SD_read(BYTE lun, BYTE *buff, DWORD sector, UINT count)
   DRESULT res = RES_ERROR;
   WORD event;
 	osStatus_t status;
-  DWORD alignedBuffer[BLOCKSIZE / 4] = {0};
 
   // DMA can only handle word-aligned pointers
   // If BYTE* buff is not word aligned
@@ -209,7 +210,6 @@ DRESULT SD_write(BYTE lun, const BYTE *buff, DWORD sector, UINT count)
   DRESULT res = RES_ERROR;
 	WORD event;
 	osStatus_t status;
-  DWORD alignedBuffer[BLOCKSIZE / 4] = {0};
 
   // DMA can only handle word-aligned pointers
   // If BYTE* buff is not word aligned

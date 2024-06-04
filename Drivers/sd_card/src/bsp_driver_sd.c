@@ -136,8 +136,8 @@ void BSP_SD_GetCardInfo(BSP_SD_CardInfo *CardInfo) {
   */
 void HAL_SD_TxCpltCallback(SD_HandleTypeDef *hsd)
 {
-   const uint16_t msg = 2;
-   osMessageQueuePut(SDQueueID, (const void *)&msg, NULL, 0);
+  const uint16_t msg = 2;
+  osMessageQueuePut(SDQueueID, (const void *)&msg, NULL, 0);
 }
 
 /**
@@ -147,8 +147,19 @@ void HAL_SD_TxCpltCallback(SD_HandleTypeDef *hsd)
   */
 void HAL_SD_RxCpltCallback(SD_HandleTypeDef *hsd)
 {
-   const uint16_t msg = 1;
-   osMessageQueuePut(SDQueueID, (const void *)&msg, NULL, 0);
+  const uint16_t msg = 1;
+  osMessageQueuePut(SDQueueID, (const void *)&msg, NULL, 0);
+}
+
+/**
+  * @brief Transfer error callback
+  * @param hsd: SD handle
+  * @retval None
+  */
+void HAL_SD_ErrorCallback(SD_HandleTypeDef *hsd)
+{
+  const uint16_t msg = 3;
+  osMessageQueuePut(SDQueueID, (const void *)&msg, NULL, 0);
 }
 
 /**
