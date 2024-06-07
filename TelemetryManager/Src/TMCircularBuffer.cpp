@@ -5,9 +5,9 @@ TMCircularBuffer::TMCircularBuffer(uint8_t* buf, uint16_t size): CircularBuffer(
     // Constructor
 }
 
-TMCircularBuffer::TMCircularBuffer(CircularBuffer* buf): CircularBuffer(*buf) {
+TMCircularBuffer::TMCircularBuffer(CircularBuffer* buf ): CircularBuffer(*buf) {
     // Constructor
-}
+ }
 
 TMCircularBuffer::~TMCircularBuffer() {
     // Destructor
@@ -25,7 +25,6 @@ TMCircularBuffer::MAVLinkByte  TMCircularBuffer::dequeue() {
 bool TMCircularBuffer::enqueue(MAVLinkByte byte) {
     // Enqueue the byte
     if(write(byte)){
-        index_ = (index_ + 1) % getSize();
         return true;
     }
      return false;
@@ -38,7 +37,7 @@ int TMCircularBuffer::bytesUntilLastMessageEnd(uint8_t* buf) {
     */
    int index = -1;
    uint16_t count = 0;
-   uint16_t size = getSize();
+   uint16_t size = size_;
    while(count < size){
       if( buf[index] == 0xFD){
         return index;
@@ -51,6 +50,6 @@ int TMCircularBuffer::bytesUntilLastMessageEnd(uint8_t* buf) {
    
 }
 
-int TMCircularBuffer::currentIndex() {
-    return index_;
+uint16_t TMCircularBuffer::currentIndex() {
+    return readPtr_;
  }

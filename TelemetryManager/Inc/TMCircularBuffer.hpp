@@ -14,6 +14,7 @@
 
 #ifndef TMCIRCULARBUFFER_H
 #define TMCIRCULARBUFFER_H
+#define MAX_MAVLINK_MSG_SIZE 280
 
 #include "circular_buffer.hpp"
 
@@ -31,7 +32,7 @@ class TMCircularBuffer : public CircularBuffer {
      * @brief Construct a new Circular Buffer object. Do whatever needs to be done here.
      *
      */
-    TMCircularBuffer(CircularBuffer* buf);
+    TMCircularBuffer(CircularBuffer* buf );
 
     /**
      * @brief Destroy and cleanup memory (everything should be static anyways). Do whatever
@@ -75,10 +76,9 @@ class TMCircularBuffer : public CircularBuffer {
      *
      * @return int The index of the current byte in the queue.
      */
-    int currentIndex();
+    uint16_t currentIndex();
 
-    private: 
-    uint8_t index_ = 0;
+  
 };
 
 #endif

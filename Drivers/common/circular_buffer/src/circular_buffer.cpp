@@ -7,6 +7,10 @@ CircularBuffer::CircularBuffer(uint8_t* buf, uint16_t size) {
     size_ = size;
 }
 
+CircularBuffer::CircularBuffer(const CircularBuffer& other) {
+  
+}
+
 bool CircularBuffer::peek(uint8_t& byte, uint16_t index) {
     bool success = true;
 
@@ -70,7 +74,3 @@ bool CircularBuffer::write(uint8_t byte) {
 uint16_t CircularBuffer::getFreeSpaceBytes() { 
     //NOT IMPLEMENTED YET
     return -1; }
-
-uint16_t CircularBuffer::getSize(){
-    return  size_;
-}

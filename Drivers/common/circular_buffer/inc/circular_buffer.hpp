@@ -16,6 +16,16 @@ class CircularBuffer {
      */
     CircularBuffer(uint8_t* buf, uint16_t size);
 
+    /** @brief Copy Constructor for the CircularBuffer class
+     *
+     *  CircularBuffer will create a copy of  a stack-allocated byte array as a
+     *  circular buffer.
+     *
+     *  .
+     *  @param other an instance of a circular buffer 
+     */
+    CircularBuffer(const CircularBuffer& other);
+
     /** @brief Read the value of a byte in the circular buffer
      *          without incrementing the read pointer
      *
@@ -69,7 +79,7 @@ class CircularBuffer {
      */
     uint16_t getSize();
 
-   private:
+   protected:
     uint8_t* buf_;
     uint16_t size_;
     uint16_t writePtr_ = 0;
