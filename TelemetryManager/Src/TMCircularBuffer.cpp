@@ -19,7 +19,7 @@ void TMCircularBuffer::enqueue(MAVLinkByte byte) {
     // Enqueue the byte
 }
 
-int TMCircularBuffer::lastFullMessageEndIndex() {
+int TMCircularBuffer::bytesUntilLastMessageEnd() {
     /*
     Rahul: This one is a bit tricky cause you need to know the structure of the MAVLink message. 
     I can help you with this one if you want.

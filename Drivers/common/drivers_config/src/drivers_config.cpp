@@ -9,7 +9,6 @@ SBUSReceiver* sbus_pointer = &sbus_instance;
 /*
     creating RFD900 instance
 */
-const uint8_t RFD900_BUF_SIZE = 280;
 uint8_t rfd900_buf[RFD900_BUF_SIZE];
 CircularBuffer rfd900_circular_buffer_inst(rfd900_buf, RFD900_BUF_SIZE);
 
