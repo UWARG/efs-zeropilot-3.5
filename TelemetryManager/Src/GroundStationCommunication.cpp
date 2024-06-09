@@ -23,6 +23,10 @@ GroundStationCommunication::~GroundStationCommunication() {
 void GroundStationCommunication::transmit(TMCircularBuffer &transmissionBuffer) {
     // START: Send the bytes in transmissionBuffer to the ground station via RFD900
     int bytesToTransmit = transmissionBuffer.bytesUntilLastMessageEnd();
+    
+    if (bytesToTransmit > RFD900_BUF_SIZE) {
+        bytesToTransmit = RFD900_BUF_SIZE;
+    }
 
     for (int i {0}; i < bytesToTransmit; ++i) {
         internalBuffer_[i] = transmissionBuffer.dequeue();

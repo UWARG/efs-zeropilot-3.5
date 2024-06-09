@@ -40,14 +40,7 @@ class GroundStationCommunication {
     GroundStationCommunication(TMCircularBuffer& DMAReceiveBuffer, uint8_t* lowPriorityTransmitBuffer, uint8_t* highPriorityTransmitBuffer, int length);
     ~GroundStationCommunication();
 
-
-    /**
-     * To make c++ happy while using rfd900_circular_buffer from drivers_config.hpp, we need to
-     * create a pointer to the buffer. Then we dereference it.
-     */
-    // TMCircularBuffer* DMAReceiveBufferPtr = new TMCircularBuffer(rfd900_circular_buffer);
-
-/*
+    /*
      * When the DMA interrupt is triggered the data should be stored in the DMAReceiveBuffer
      * IF there is space.
      */
