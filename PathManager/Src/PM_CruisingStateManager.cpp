@@ -1,5 +1,6 @@
 #include "PM_CruisingStateManager.hpp"
 
+#include <iostream>
 
 namespace PM {
 
@@ -53,32 +54,46 @@ namespace PM {
         return get_next_directions(input, output);
     }
 
-    WaypointStatus CruisingStateManager::editFlightPath(WaypointsCommand * telemetryData, const WaypointManager_Data_In &inputData, bool reset)
+    WaypointStatus CruisingStateManager::editFlightPath(WaypointsCommand * telemetryData, const WaypointManager_Data_In &inputData)
     {
         if (telemetryData->num_waypoints == 0)
         {
             return INVALID_PARAMETERS;
         }
+        else if (telemetryData->num_waypoints > MAX_PATH_BUFFER_SIZE)
+        {
+            return WaypointStatus::TOO_MANY_WAYPOINTS;
+        }
+
+        bool reset = false;
+        int start_index = 0;
         
         // initialize waypoints
         WaypointData * Waypoints[MAX_PATH_BUFFER_SIZE];
         for (int i=0; i<telemetryData->num_waypoints; ++i)
         {
             Waypoints[i] = initialize_waypoint(telemetryData->waypoints[i]);
+            if (!reset && telemetryData->waypoints[i].seq_num == 0) {
+                reset = true;
+                start_index = i;
+            }
         }
 
         if (reset)
         {
             clear_flight_plan();
-            initialize_flight_plan(Waypoints, telemetryData->num_waypoints);
+            return initialize_flight_plan(&(Waypoints[start_index]), telemetryData->num_waypoints - start_index);
         }
         else
         {
+            if (telemetryData->num_waypoints + numWaypoints > MAX_PATH_BUFFER_SIZE) 
+                return WaypointStatus::TOO_MANY_WAYPOINTS;
             for (int i=0; i<telemetryData->num_waypoints; ++i)
             {
                 append_waypoint(Waypoints[i]);
             }
         }
+        return WaypointStatus::WAYPOINT_SUCCESS;
     }
 
     WaypointData ** CruisingStateManager::get_waypoint_buffer() {
@@ -135,12 +150,12 @@ namespace PM {
         }
 
         // Initializes the waypointBuffer array
-        for (int i = 0; i < numWaypoints; i++) {
+        for (int i = 0; i < numberOfWaypoints; i++) {
             waypointBuffer[i] = waypoints[i]; // Sets the element in the waypointBuffer
         }
 
         // Links waypoints together
-        for (int i = 0; i < numWaypoints; i++) {
+        for (int i = 0; i < numberOfWaypoints; i++) {
             if (i == 0) { // If first waypoint, link to next one only
                 waypointBuffer[i]->next = waypointBuffer[i+1];
                 waypointBuffer[i]->previous = nullptr;

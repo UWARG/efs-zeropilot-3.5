@@ -70,6 +70,7 @@ enum CMD_ID {
 
 struct TelemWaypoint {
     uint8_t waypoint_id;
+    int seq_num;
     double longitude;
     double latitude;
     double altitude;

@@ -22,7 +22,7 @@ namespace PM {
              *
              * @return error code indicating success of operation WaypointStatus
              */
-            WaypointStatus editFlightPath(WaypointsCommand * telemetryData, const WaypointManager_Data_In &inputData, bool reset);
+            WaypointStatus editFlightPath(WaypointsCommand * telemetryData, const WaypointManager_Data_In &inputData);
 
             /**
              * Function retrieves the next desired path for the aircraft
