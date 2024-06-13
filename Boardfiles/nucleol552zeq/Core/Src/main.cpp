@@ -26,6 +26,7 @@
 #include "iwdg.h"
 #include "usart.h"
 #include "rtc.h"
+#include "sdmmc.h"
 #include "spi.h"
 #include "tim.h"
 #include "ucpd.h"
@@ -37,6 +38,11 @@
 #include "SystemManager.hpp"
 #include "drivers_config.hpp"
 #include "independent_watchdog.h"
+
+extern "C" {
+  #include "app_fatfs.h"
+  #include "log_util.h"
+}
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -74,7 +80,6 @@ extern "C" {
 void SMTask(void *pvParameters) {
     SystemManager SM;
     SM.flyManually();
-
 }
 /* USER CODE END 0 */
 
@@ -113,7 +118,6 @@ int main(void)
   MX_USB_PCD_Init();
   MX_I2C1_Init();
   MX_I2C2_Init();
-  MX_UART5_Init();
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
   MX_USART3_UART_Init();
@@ -127,14 +131,15 @@ int main(void)
   MX_ICACHE_Init();
   MX_IWDG_Init();
   MX_TIM3_Init();
+  MX_SDMMC1_SD_Init();
+  if (MX_FATFS_Init() != APP_OK) {
+    Error_Handler();
+  }
   /* USER CODE BEGIN 2 */
-
-
-
+  logInit();
 
   TaskHandle_t hSM = NULL;
   xTaskCreate(SMTask, "SM", 500U, NULL, osPriorityNormal, &hSM);
-
 
   /* USER CODE END 2 */
 
