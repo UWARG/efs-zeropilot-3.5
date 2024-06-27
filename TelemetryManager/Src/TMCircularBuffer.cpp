@@ -1,30 +1,55 @@
 
-#include "CircularBuffer.hpp"
+#include "TMCircularBuffer.hpp"
 
-TMCircularBuffer::TMCircularBuffer(uint8_t* buf, uint16_t size): CircularBuffer(buf, size) {
+TMCircularBuffer::TMCircularBuffer(uint8_t* buf, uint16_t size): CircularBuffer(*buf, size) {
     // Constructor
 }
 
-TMCircularBuffer::TMCircularBuffer(CircularBuffer buf): CircularBuffer(buf) {
+TMCircularBuffer::TMCircularBuffer(CircularBuffer* buf ): CircularBuffer(*buf) {
     // Constructor
-}
+ }
 
 TMCircularBuffer::~TMCircularBuffer() {
     // Destructor
+   
+ }
+
+TMCircularBuffer::MAVLinkByte  TMCircularBuffer::dequeue() {
+    MAVLinkByte* res;
+    if(read(res,1)){
+        return *res;
+    }
+    return 0;
 }
 
-TMCircularBuffer::MAVLinkByte TMCircularBuffer::dequeue() { return 0; }
-
-void TMCircularBuffer::enqueue(MAVLinkByte byte) {
+bool TMCircularBuffer::enqueue(MAVLinkByte byte) {
     // Enqueue the byte
+    if(write(byte)){
+        return true;
+    }
+     return false;
 }
 
-int TMCircularBuffer::lastFullMessageEndIndex() {
+int TMCircularBuffer::bytesUntilLastMessageEnd() {
     /*
-    Rahul: This one is a bit tricky cause you need to know the structure of the MAVLink message. 
+    Rahul: This one is a bit tricky because you need to know the structure of the MAVLink message. 
     I can help you with this one if you want.
     */
-    return -1;
+   int index = -1;
+   uint16_t count = 0;
+   uint16_t size = size_;
+   while(count < size){
+      if( buf_[index] == 0xFD){
+        return index;
+      }
+      
+      index = (index + 1) % size;
+      count ++;
+   }
+   return index;
+   
 }
 
-int TMCircularBuffer::currentIndex() { return -1; }
+uint16_t TMCircularBuffer::currentIndex() {
+    return readPtr_;
+ }
