@@ -30,7 +30,7 @@ bool TMCircularBuffer::enqueue(MAVLinkByte byte) {
      return false;
 }
 
-int TMCircularBuffer::bytesUntilLastMessageEnd(uint8_t* buf) {
+int TMCircularBuffer::bytesUntilLastMessageEnd() {
     /*
     Rahul: This one is a bit tricky because you need to know the structure of the MAVLink message. 
     I can help you with this one if you want.
@@ -39,7 +39,7 @@ int TMCircularBuffer::bytesUntilLastMessageEnd(uint8_t* buf) {
    uint16_t count = 0;
    uint16_t size = size_;
    while(count < size){
-      if( buf[index] == 0xFD){
+      if( buf_[index] == 0xFD){
         return index;
       }
       

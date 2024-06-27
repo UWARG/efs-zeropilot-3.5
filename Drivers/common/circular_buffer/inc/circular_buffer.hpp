@@ -22,7 +22,7 @@ class CircularBuffer {
      *  circular buffer.
      *
      *  .
-     *  @param other an instance of a circular buffer 
+     *  @param other an instance of a circula   r buffer 
      */
     CircularBuffer(const CircularBuffer& other);
 
@@ -72,12 +72,6 @@ class CircularBuffer {
      */
     uint16_t getFreeSpaceBytes();
 
-    /**
-     * @brief Provide the size of the buffer.
-     *
-     * @return uint16_t The size of the buffer.
-     */
-    uint16_t getSize();
 
    protected:
     uint8_t* buf_;
