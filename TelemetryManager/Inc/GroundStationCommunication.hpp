@@ -25,6 +25,9 @@
  * implementation.
  */
 class GroundStationCommunication {
+   private:
+    uint8_t internalBuffer_[RFD900_BUF_SIZE];
+
    public:
     /**
      * @brief Construct a new Ground Station Communication object. Do whatever needs to be done
@@ -37,14 +40,7 @@ class GroundStationCommunication {
     GroundStationCommunication(TMCircularBuffer& DMAReceiveBuffer, uint8_t* lowPriorityTransmitBuffer, uint8_t* highPriorityTransmitBuffer, int length);
     ~GroundStationCommunication();
 
-
-    /**
-     * To make c++ happy while using rfd900_circular_buffer from drivers_config.hpp, we need to
-     * create a pointer to the buffer. Then we dereference it.
-     */
-    // TMCircularBuffer* DMAReceiveBufferPtr = new TMCircularBuffer(rfd900_circular_buffer);
-
-/*
+    /*
      * When the DMA interrupt is triggered the data should be stored in the DMAReceiveBuffer
      * IF there is space.
      */
@@ -69,13 +65,6 @@ class GroundStationCommunication {
      * to the ground station
      */
     void transmit(TMCircularBuffer& transmissionBuffer);
-
-    /**
-     * @brief This is the Interrupt Service Routine (ISR) for when the RFD 900 receives data from
-     * the ground station and stores bytes from the transmission into the GSC.DMAReceiveBuffer if
-     * there is space. Otherwise the data is discarded.
-     */
-    void receiveInterruptServiceRoutine();
 };
 
 #endif  // GROUNDSTATIONCOMMS_H
