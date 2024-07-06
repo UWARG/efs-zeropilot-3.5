@@ -22,6 +22,9 @@ class TelemetryManager {
    private:
     GroundStationCommunication GSC;
     MavlinkTranslator MT;
+    TMCircularBuffer* DMAReceiveBuffer;
+    uint8_t* lowPriorityTransmitBuffer;
+    uint8_t* highPriorityTransmitBuffer;
 
     /**
      * @brief Create and configure FreeRTOS tasks.

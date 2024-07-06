@@ -10,10 +10,16 @@
  */
 TelemetryTask* routineDataTransmission;
 
-TelemetryManager::TelemetryManager() {
-    this->MT = MavlinkTranslator();
-    this->GSC = GroundStationCommunication();
+
+TelemetryManager::TelemetryManager() 
+    : DMAReceiveBuffer(new TMCircularBuffer(rfd900_circular_buffer)),
+      lowPriorityTransmitBuffer(new uint8_t[RFD900_BUF_SIZE]), 
+      highPriorityTransmitBuffer(new uint8_t[RFD900_BUF_SIZE]),
+      GSC(*DMAReceiveBuffer, lowPriorityTransmitBuffer, highPriorityTransmitBuffer, RFD900_BUF_SIZE),
+      MT() {
 }
+
+
 
 TelemetryManager::~TelemetryManager() {
     // Destructor
