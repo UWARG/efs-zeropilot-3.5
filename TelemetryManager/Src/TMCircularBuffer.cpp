@@ -1,8 +1,6 @@
 
 #include "TMCircularBuffer.hpp"
 
-#include <vector>
-
 TMCircularBuffer::TMCircularBuffer(uint8_t* buf, uint16_t size) : CircularBuffer(buf, size) {
     // Constructor
 }

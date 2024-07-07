@@ -26,6 +26,9 @@ class TelemetryManager {
     uint8_t* lowPriorityTransmitBuffer;
     uint8_t* highPriorityTransmitBuffer;
 
+    //A reference to the drone's altitude variable
+    uint8_t& altitude;
+
     /**
      * @brief Create and configure FreeRTOS tasks.
      *
@@ -42,8 +45,13 @@ class TelemetryManager {
     /**
      * @brief Construct a new Telemetry Manager object. Does not initialize the tasks.
      * To do so call the init() method.
+     * @param altitude A reference to the drone's altitude variable
      */
-    TelemetryManager();
+    TelemetryManager(uint8_t& altitude);
+
+    /**
+     * @brief Destroy the Telemetry Manager object. Also destroys the tasks.
+     */
     ~TelemetryManager();
 
     /**

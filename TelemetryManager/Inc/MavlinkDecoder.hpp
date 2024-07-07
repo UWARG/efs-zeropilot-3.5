@@ -2,11 +2,11 @@
 // Created by Yarema Dzulynsky on 2023-07-10.
 //
 
-#ifndef WARGMAVLINKSUPPORT_MAVLINKDECODER_H
-#define WARGMAVLINKSUPPORT_MAVLINKDECODER_H
+#ifndef MAVLINKDECODER_H
+#define MAVLINKDECODER_H
 
 #include <functional>
-#include <iostream>
+// #include <iostream>
 #include <unordered_map>
 
 #include "Official_Mavlink_2_Library/common/mavlink.h"
@@ -39,21 +39,14 @@
     decodingFunctions[msgId] = [](mavlink_message_t &msg) { \
         mavlink_##baseName##_t msgType;                     \
         mavlink_msg_##baseName##_decode(&msg, &msgType);    \
-        MavlinkDecoder::decodedMessages++;                  \
         postProcessor(msgType);                             \
     };
 
 
 class MavlinkDecoder {
-   public:
 
+   public:
     std::unordered_map<int, std::function<void(mavlink_message_t &)>> decodingFunctions;
-    /**
-     * The number of decoded messages. This is used for test cases
-     */
-    static long decodedMessages;
-
-   public:
     /**
      * Default constructor.
      * Register message types with their decoders and post-decoding callbacks here.
@@ -82,4 +75,4 @@ class MavlinkDecoder {
     void parseBytesToMavlinkMsgs(uint8_t *buffer, std::size_t bufferSize);
 };
 
-#endif  // WARGMAVLINKSUPPORT_MAVLINKDECODER_H
+#endif  

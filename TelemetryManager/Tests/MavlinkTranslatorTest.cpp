@@ -1,92 +1,23 @@
 #include <gtest/gtest.h>
-// #include <iomanip>
 #include <MavlinkTranslator.hpp>
 
-#include "../Inc/incoming_data.hpp"
-#include "../Inc/mavlink_decoder.hpp"
-#include "../Inc/mavlink_encoder.hpp"
-
-void fillTestData(IncomingData &data) {
-    data.latitude = 1;
-    data.longitude = 2;
-    data.altitude = 3;
-    data.isLatitudeInitialized = true;
-    data.isLongitudeInitialized = true;
-    data.isAltitudeInitialized = true;
-    data.roll = 4;
-    data.pitch = 5;
-    data.yaw = 6;
-    data.isRollInitialized = true;
-    data.isPitchInitialized = true;
-    data.isYawInitialized = true;
-    data.vx = 7;
-    data.vy = 8;
-    data.vz = 9;
-    data.isVxInitialized = true;
-    data.isVyInitialized = true;
-    data.isVzInitialized = true;
-}
-
-TEST(MavlinkTranslatorTest, PackIntoMavlinkByteArrayTest) {
-    MavlinkEncoder encoder;
-    IncomingData data;
-
-    // Fill data with test values
-    fillTestData(data);
-
-    uint8_t encoderBuffer[256] = {0};
-    size_t encoderBufferSize = sizeof(encoderBuffer);
-    encoder.packIntoMavlinkByteArray(data, encoderBuffer, encoderBufferSize);
-
-    // Create mavlink messages
-    mavlink_message_t globalPositionIntMsg, attitudeMsg;
-    uint8_t globalPositionIntBuffer[MAVLINK_MAX_PACKET_LEN] = {0};
-    uint8_t attitudeBuffer[MAVLINK_MAX_PACKET_LEN] = {0};
-
-    mavlink_msg_global_position_int_pack(0, 0, &globalPositionIntMsg, 0, 1, 2, 3, 0, 7, 8, 9, 0);
-    size_t globalPositionIntBufferLen =
-        mavlink_msg_to_send_buffer(globalPositionIntBuffer, &globalPositionIntMsg);
-
-    mavlink_msg_attitude_pack(0, 0, &attitudeMsg, 0, 4, 5, 6, 0, 0, 0);
-    size_t attitudeBufferLen = mavlink_msg_to_send_buffer(attitudeBuffer, &attitudeMsg);
-
-    uint8_t outputBuffer[MAVLINK_MAX_PACKET_LEN * 2] = {0};
-    size_t outputIndex = 0;
-
-    memcpy(outputBuffer, globalPositionIntBuffer, globalPositionIntBufferLen);
-    outputIndex += globalPositionIntBufferLen;
-    memcpy(outputBuffer + outputIndex, attitudeBuffer, attitudeBufferLen);
-    outputIndex += attitudeBufferLen;
-
-    int errorCount = 0;
-    for (size_t i = 0; i < outputIndex; i++) {
-        if (outputBuffer[i] != encoderBuffer[i]) {
-            errorCount++;
-        }
-    }
-
-    const int amountOfMessages = 2;
-    ASSERT_TRUE(errorCount <= amountOfMessages * 3)
-        << "There were " << errorCount << " errors in the encoder buffer";
-}
-
 TEST(MavlinkTranslatorTest, EncodeThenDecodeTest) {
-    MavlinkEncoder encoder;
     MavlinkTranslator translator;
-    IncomingData data;
 
-    // Fill data with test values
-    fillTestData(data);
+    mavlink_message_t globalPositionInt;
+    mavlink_message_t attitude;
+    mavlink_msg_global_position_int_pack(0, 0, &globalPositionInt, 0, 1, 2, 3, 0, 7, 8, 9, 0);
+    mavlink_msg_attitude_pack(0, 0, &attitude, 0, 4, 5, 6, 0, 0, 0);
 
-    uint8_t encoderBuffer[256] = {0};
-    size_t encoderBufferSize = sizeof(encoderBuffer);
-    uint8_t actDataSize = encoder.packIntoMavlinkByteArray(data, encoderBuffer, encoderBufferSize);
+    uint8_t encoderBuffer[2 * MAVLINK_MAX_PACKET_LEN] = {0};
+    TMCircularBuffer buffer(encoderBuffer, 2 * MAVLINK_MAX_PACKET_LEN);
 
-    TMCircularBuffer buffer(encoderBuffer, encoderBufferSize);
+    translator.addMavlinkMsgToByteQueue(globalPositionInt, buffer);
+    translator.addMavlinkMsgToByteQueue(attitude, buffer);
 
-    for (size_t i = 0; i < actDataSize; i++) {
-        buffer.enqueue(encoderBuffer[i]);
-    }
+    // for (size_t i = 0; i < actDataSize; i++) {
+    //     buffer.enqueue(encoderBuffer[i]);
+    // }
 
     int expectedNumberOfMessagesDecoded =
         1;  // should be one not two because we want to wait for the next message to determine the
@@ -95,11 +26,10 @@ TEST(MavlinkTranslatorTest, EncodeThenDecodeTest) {
     translator.bytesToMavlinkMsg(buffer);
     ASSERT_EQ(translator.decodedMessages, expectedNumberOfMessagesDecoded);
 
-    MavlinkDecoder::decodedMessages = 0;
 }
 
 TEST(MavlinkTranslatorTest, ParseBytesToMavlinkMsgsTest) {
-    MavlinkDecoder decoder;
+    MavlinkTranslator translator;
     int expectedNumberOfMessagesDecoded = 1;
 
     mavlink_message_t globalPositionIntMsg, attitudeMsg;
@@ -121,22 +51,20 @@ TEST(MavlinkTranslatorTest, ParseBytesToMavlinkMsgsTest) {
 
     TMCircularBuffer buffer(outputBuffer, globalPositionIntBufferLen + attitudeBufferLen);
 
-    for (size_t i = 0; i < globalPositionIntBufferLen + attitudeBufferLen; i++) {
-        buffer.enqueue(outputBuffer[i]);
-    }
+    buffer.enqueue(outputBuffer, globalPositionIntBufferLen + attitudeBufferLen);
 
-    MavlinkTranslator translator;
     translator.bytesToMavlinkMsg(buffer);
 
     ASSERT_EQ(translator.decodedMessages, expectedNumberOfMessagesDecoded);
 }
 
 TEST(MavlinkTranslatorTest, global_position_int) {
-    uint8_t buffer[256];
-
-    // Use the ENCODE_MESSAGE macro to encode
     mavlink_message_t msg;
-    ENCODE_MESSAGE(global_position_int, 1, 2, 3, 4, 5, 6, 7, 8, 9)(msg, buffer);
+    mavlink_msg_global_position_int_pack(0, 0, &msg, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+    
+    // Create a buffer to hold the message data
+    uint8_t expectedBuffer[MAVLINK_MAX_PACKET_LEN] = {0};
+
 
     // Decode the message
     mavlink_global_position_int_t globalPositionInt;

@@ -11,19 +11,21 @@
  * @warning Any issues you think are important/foresee in the future?
  */
 
+#include "MavlinkDecoder.hpp"
+#include "MavlinkEncoder.hpp"
 #include "Official_Mavlink_2_Library/common/mavlink.h"
 #include "TMCircularBuffer.hpp"
-#include "mavlink_decoder.hpp"
-#include "mavlink_encoder.hpp"
 #ifndef MAVLINKTRANSLATOR_H
 #define MAVLINKTRANSLATOR_H
 
 class MavlinkTranslator {
    private:
+    // The decoder and encoder objects.
     MavlinkDecoder decoder;
     MavlinkEncoder encoder;
 
    public:
+    // The number of messages that have been decoded - used for testing purposes.
     long decodedMessages = 0;
     /**
      * @brief Construct a new MavlinkTranslator object. Do whatever needs to be done here.

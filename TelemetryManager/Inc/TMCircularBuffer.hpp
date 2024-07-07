@@ -16,7 +16,7 @@
 #define TMCIRCULARBUFFER_H
 #define MAX_MAVLINK_MSG_SIZE 280
 
-#include "/Users/yaremadzulynsky/Software/Languages/C++/WARG/efs-zeropilot-3.5/Drivers/common/circular_buffer/inc/circular_buffer.hpp"
+#include "circular_buffer.hpp"
 
 class TMCircularBuffer : public CircularBuffer {
    public:
@@ -52,9 +52,18 @@ class TMCircularBuffer : public CircularBuffer {
      * @brief Enqueue a byte into the queue
      *
      * @param byte The byte to be enqueued
+     * 
+     * @return bool True if the byte was enqueued successfully, false otherwise
      */
     bool enqueue(MAVLinkByte byte);
 
+    /**
+     * @brief 
+     * 
+     * @param bytes The bytes to be enqueued
+     * @param size The number of bytes to be enqueued
+     * @return bool True if the bytes were enqueued successfully, false otherwise
+     */
     bool enqueue(MAVLinkByte* bytes, uint16_t size);
 
     /**
@@ -64,6 +73,9 @@ class TMCircularBuffer : public CircularBuffer {
      * enqueuing a message, we only send completed messages and keep the partial message to be
      * finished after the ISR. These partial messages once filled will be sent during the next
      * transmission.
+     * 
+     * @param success A pointer to a boolean that will be set to true if the operation was successful
+     * and false if it was not.
      *
      * @return int The index of the last full message in the queue determined by the end flag
      * in the MAVLink message.

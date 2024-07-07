@@ -73,10 +73,13 @@ set(TM_SRC "${TM_FOLDER}/Src")
 
 include_directories(${TM_INC})
 file(GLOB TM_CODE
-    "${TM_FOLDER}/Tests/generic_test.cpp"
+    "${TM_FOLDER}/Tests/*.cpp"
 
     # add necessary TelemetryManager source files below
-    # "${TM_SRC}/*.cpp"
+    "${TM_SRC}/MavlinkDecoder.cpp"
+    "${TM_SRC}/MavlinkEncoder.cpp"
+    "${TM_SRC}/TMCircularBuffer.cpp"
+    "${TM_SRC}/MavlinkTranslator.cpp"
 )
 
 # Drivers
