@@ -11,13 +11,6 @@
 #include "TMCircularBuffer.hpp"
 
 /**
- * Setting a predefined buffer size, derived from the maximum packet length allowed by MAVLink.
- * @note IMPORTANT: IF THE THE MAX_ARRAY_BUFFER_SIZE < SIZE OF BYTES INCOMING MEMORY MAY
- * BE OVERWRITTEN!
- */
-#define MAX_ARRAY_BUFFER_SIZE (25 * MAVLINK_MAX_PACKET_LEN)
-
-/**
  * @brief Class dedicated to MAVLink message encoding.
  *
  * The 'MavlinkEncoder' class provides an interface and underlying functionality for MAVLink message
