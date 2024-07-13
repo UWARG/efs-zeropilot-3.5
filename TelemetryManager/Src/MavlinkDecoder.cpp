@@ -4,55 +4,7 @@
 
 #include "MavlinkDecoder.hpp"
 
-MavlinkDecoder::MavlinkDecoder() {
-    /*
-    Register message types with their decoders and post-decoding callbacks here. This is just a
-    placeholder.
-    */
-    REGISTER_DECODER(MAVLINK_MSG_ID_ATTITUDE, attitude, [](mavlink_attitude_t &message) {
-
-    });
-
-    REGISTER_DECODER(MAVLINK_MSG_ID_GLOBAL_POSITION_INT, global_position_int,
-                     [](mavlink_global_position_int_t &message) {
-                        
-                     });
-
-    REGISTER_DECODER(MAVLINK_MSG_ID_HEARTBEAT, heartbeat, [](mavlink_heartbeat_t &message) {
-
-    });
-
-    REGISTER_DECODER(MAVLINK_MSG_ID_SYS_STATUS, sys_status, [](mavlink_sys_status_t &message) {
-
-    });
-
-    REGISTER_DECODER(MAVLINK_MSG_ID_GPS_RAW_INT, gps_raw_int, [](mavlink_gps_raw_int_t &message) {
-
-    });
-
-    REGISTER_DECODER(MAVLINK_MSG_ID_MISSION_CURRENT, mission_current,
-                     [](mavlink_mission_current_t &message) {
-
-                     });
-
-    REGISTER_DECODER(MAVLINK_MSG_ID_NAV_CONTROLLER_OUTPUT, nav_controller_output,
-                     [](mavlink_nav_controller_output_t &message) {
-
-                     });
-
-    REGISTER_DECODER(MAVLINK_MSG_ID_RC_CHANNELS, rc_channels, [](mavlink_rc_channels_t &message) {
-
-    });
-
-    REGISTER_DECODER(MAVLINK_MSG_ID_ALTITUDE, altitude, [](mavlink_altitude_t &message) {
-
-    });
-
-    REGISTER_DECODER(MAVLINK_MSG_ID_BATTERY_STATUS, battery_status,
-                     [](mavlink_battery_status_t &message) {
-
-                     });
-}
+MavlinkDecoder::MavlinkDecoder() {}
 
 MavlinkDecoder::~MavlinkDecoder() {
     // no cleanup needed
@@ -81,21 +33,50 @@ void MavlinkDecoder::parseBytesToMavlinkMsgs(uint8_t *buffer, std::size_t buffer
     }
 }
 
-void MavlinkDecoder::decodeMsg(mavlink_message_t &msg, bool &isMessageDecoded) {
-    // Attempt to decode the MAVLink message using the registered decoding functions
+// must return true if the message was handled successfully
+bool handle_attitude(mavlink_message_t &msg) {
+    mavlink_attitude_t payload;
+    mavlink_msg_attitude_decode(&msg, &payload);
 
+    // do what you want with the payload
+
+    return true;
+}
+
+// must return true if the message was handled successfully
+bool handle_global_position_int(mavlink_message_t &msg) {
+    mavlink_global_position_int_t payload;
+    mavlink_msg_global_position_int_decode(&msg, &payload);
+
+    // do what you want with the payload
+    return true;
+}
+
+// must return true if the message was handled successfully
+bool handle_heartbeat(mavlink_message_t &msg) {
+    mavlink_heartbeat_t payload;
+    mavlink_msg_heartbeat_decode(&msg, &payload);
+
+    // do what you want with the payload
+    return true;
+}
+
+void MavlinkDecoder::decodeMsg(mavlink_message_t &msg, bool &isMessageDecoded) {
     int messageId = msg.msgid;  // Extract message ID
 
-    // Try to find a decoding function for the given message ID
-    auto it = decodingFunctions.find(messageId);
+    switch (messageId) {
+        case MAVLINK_MSG_ID_ATTITUDE:
+            handle_attitude(msg) ? messagesHandledSuccessfully++ : messagesHandledSuccessfully;
 
-    if (it != decodingFunctions.end()) {
-        // Found a decoder: Call it
-        auto decodingFunctionName = it->second;
-        decodingFunctionName(msg);
-        isMessageDecoded = true;
-    } else {
-        // Decoder not found: Indicate failure
-        isMessageDecoded = false;
+            break;
+        case MAVLINK_MSG_ID_GLOBAL_POSITION_INT:
+            handle_global_position_int(msg) ? messagesHandledSuccessfully++
+                                            : messagesHandledSuccessfully;
+            break;
+        case MAVLINK_MSG_ID_HEARTBEAT:
+            handle_heartbeat(msg) ? messagesHandledSuccessfully++ : messagesHandledSuccessfully;
+            break;
+        default:
+            break;
     }
 }

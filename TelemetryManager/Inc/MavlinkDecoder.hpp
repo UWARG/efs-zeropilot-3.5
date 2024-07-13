@@ -35,18 +35,20 @@
  *     std::cout << "pitchspeed: " << message.pitchspeed << std::endl;
  *     };
  */
-#define REGISTER_DECODER(msgId, baseName, postProcessor)    \
-    decodingFunctions[msgId] = [](mavlink_message_t &msg) { \
-        mavlink_##baseName##_t msgType;                     \
-        mavlink_msg_##baseName##_decode(&msg, &msgType);    \
-        postProcessor(msgType);                             \
-    };
+// #define REGISTER_DECODER(msgId, baseName, postProcessor)    \
+//     decodingFunctions[msgId] = [](mavlink_message_t &msg) { \
+//         mavlink_##baseName##_t msgType;                     \
+//         mavlink_msg_##baseName##_decode(&msg, &msgType);    \
+//         postProcessor(msgType);                             \
+//     };
 
 
 class MavlinkDecoder {
 
    public:
-    std::unordered_map<int, std::function<void(mavlink_message_t &)>> decodingFunctions;
+    long messagesHandledSuccessfully = 0;
+
+    // std::unordered_map<int, std::function<void(mavlink_message_t &)>> decodingFunctions;
     /**
      * Default constructor.
      * Register message types with their decoders and post-decoding callbacks here.
@@ -65,6 +67,7 @@ class MavlinkDecoder {
      * @param msg - The preformatted mavlink message, ready for decoding.
      * @param isMessageDecoded - Flag that indicates successful decoding.
      */
+    
     void decodeMsg(mavlink_message_t &msg, bool &isMessageDecoded);
 
     /**

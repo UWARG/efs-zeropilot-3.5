@@ -19,12 +19,10 @@
 #define MAVLINKTRANSLATOR_H
 
 class MavlinkTranslator {
-   private:
+      public:
     // The decoder and encoder objects.
     MavlinkDecoder decoder;
     MavlinkEncoder encoder;
-
-   public:
     // The number of messages that have been decoded - used for testing purposes.
     long decodedMessages = 0;
     /**
