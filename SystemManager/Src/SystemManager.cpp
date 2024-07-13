@@ -12,6 +12,7 @@
 #include "tim.h"
 
 #define TIMEOUT_CYCLES 250000 // 25k = 1 sec fro testing 10/14/2023 => 250k = 10 sec
+#define TIMOUT_MS      10000 // 10 sec
 
 static uint32_t DisconnectionCount = 0;
 float prevthrottle;
@@ -26,7 +27,7 @@ SystemManager::SystemManager():
     rollMotorChannel_(&htim2, TIM_CHANNEL_3),
     pitchMotorChannel_(&htim2, TIM_CHANNEL_4),
     invertedRollMotorChannel_(&htim3, TIM_CHANNEL_1),
-    watchdog_(&hiwdg)
+    watchdog_(TIMOUT_MS)
 {}
 
 SystemManager::~SystemManager() {}
