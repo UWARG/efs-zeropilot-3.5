@@ -66,7 +66,7 @@ enum CMD_ID {
     MAV_CMD_NAV_RETURN_TO_LAUNCH,
     MAV_CMD_NAV_LAND,
     MAV_CMD_NAV_TAKEOFF
-}
+};
 
 struct TelemWaypoint {
     uint8_t waypoint_id;

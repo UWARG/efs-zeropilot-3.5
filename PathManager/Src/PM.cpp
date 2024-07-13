@@ -33,21 +33,21 @@ void PathManager::execute()
 }
 
 /* Getters and Setters for Queue Ids */
-void PathManager::storeSmPmQueue(osMessageQId queueId) {
-    SM_to_PM_queue = queueId;
-}
+// void PathManager::storeSmPmQueue(osMessageQId queueId) {
+//     SM_to_PM_queue = queueId;
+// }
 
-osMessageQId PathManager::getSmPmQueue() {
-    return SM_to_PM_queue;
-}
+// osMessageQId PathManager::getSmPmQueue() {
+//     return SM_to_PM_queue;
+// }
 
-void PathManager::storePmAmQueue(osMessageQId queueId) {
-    PM_to_AM_queue = queueId;
-}
+// void PathManager::storePmAmQueue(osMessageQId queueId) {
+//     PM_to_AM_queue = queueId;
+// }
 
-osMessageQId PathManager::getPmAmQueue() {
-    return PM_to_AM_queue;
-}
+// osMessageQId PathManager::getPmAmQueue() {
+//     return PM_to_AM_queue;
+// }
 
 /* Getters and Setters for SM and AM Structs */
 void PathManager::setSmStruct(const SM_PM_Commands &from_sm_data) {

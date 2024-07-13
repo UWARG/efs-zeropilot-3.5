@@ -273,6 +273,9 @@ PathManagerState& CommsWithAttitude::getInstance()
     return singleton;
 }
 
+void CommsWithSystemManager::execute(PathManager* pathMgr) {
+}
+
 void FatalFailureMode::execute(PathManager* pathMgr)
 {
     pathMgr->setState(FatalFailureMode::getInstance());

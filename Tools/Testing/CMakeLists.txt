@@ -1,8 +1,9 @@
+
 cmake_minimum_required(VERSION 3.18)
 project(unit_testing)
 
-set(CMAKE_C_COMPILER "gcc")
-set(CMAKE_CXX_COMPILER "g++")
+#set(CMAKE_C_COMPILER "gcc")
+#set(CMAKE_CXX_COMPILER "g++")
 
 # GoogleTest requires at least C++14
 set(CMAKE_CXX_STANDARD 14)
@@ -12,6 +13,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
+# include(FetchContent)
+# FetchContent_Declare(
+#   googletest
+#   # Specify the commit you depend on and update it regularly.
+#   URL https://github.com/google/googletest/archive/f8d7d77c06936315286eb55f8de22cd23c188571.zip
+# )
+# # For Windows: Prevent overriding the parent project's compiler/linker settings
+# set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+# FetchContent_MakeAvailable(googletest)
+
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
@@ -20,7 +31,9 @@ enable_testing()
 set(ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../..")
 
 # --- ZeroPilot File Indexing Begin ---
-
+set(COMM_FOLDER "${ROOT_DIR}/Common")
+set(COMM_FOLDER_INC "${COMM_FOLDER}/Inc")
+include_directories(${COMM_FOLDER_INC})
 # Attitude Manager
 set(AM_FOLDER "${ROOT_DIR}/AttitudeManager")
 set(AM_INC "{$AM_FOLDER}/Inc")
@@ -46,9 +59,9 @@ file(GLOB PM_CODE
     # add necessary PathManager source files below
     # "${PM_SRC}/foo.cpp"
 
-    # "${PM_SRC}/*.cpp"
-    "${PM_SRC}/PM_Waypoint.cpp"
-    "${PM_SRC}/PM_CruisingStateManager.cpp"
+    "${PM_SRC}/*.cpp"
+    #"${PM_SRC}/PM_Waypoint.cpp"
+    #"${PM_SRC}/PM_CruisingStateManager.cpp"
 )
 
 # System Manager
@@ -106,3 +119,5 @@ target_link_libraries(${PROJECT_NAME}
 
 include(GoogleTest)
 gtest_discover_tests(${PROJECT_NAME})
+
+

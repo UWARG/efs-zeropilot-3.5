@@ -325,5 +325,3 @@ TEST(CruisingStateManagerSuite, CruisingStateManagerTestAppendFlightPoint) {
   EXPECT_TRUE(checkEqual(telemetryData.waypoints[2], *(waypoint_buffer[7])));
   EXPECT_TRUE(checkEqual(telemetryData.waypoints[3], *(waypoint_buffer[8])));
 }
-
-s

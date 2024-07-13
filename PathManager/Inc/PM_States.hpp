@@ -4,7 +4,7 @@
 #include "PM_StateManager.hpp"
 #include "PM.hpp"
 #include "PM_LandingTakeoffManager.hpp"
-#include "CommonDataTypes.hpp"
+#include "../../Common/Inc/CommonDataTypes.hpp"
 #include "PM_DataTypes.hpp"
 
 namespace PM {

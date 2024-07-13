@@ -2,10 +2,10 @@
 #define ZPSW3_PM_HPP
 
 #include <stdint.h>
-#include "cmsis_os.h"
+//#include "cmsis_os.h"
 
 #include "PM_StateManager.hpp"
-#include "CommonDataTypes.hpp"
+#include "../../Common/Inc/CommonDataTypes.hpp"
 #include "PM_DataTypes.hpp"
 #include "PM_LandingTakeoffManager.hpp"
 #include "PM_CruisingStateManager.hpp"
@@ -34,11 +34,11 @@ namespace PM
             CruisingStateManager waypoint_manager;
             bool new_waypoints;
 
-            void storeSmPmQueue(osMessageQId queueId);
-            osMessageQId getSmPmQueue();
+            //void storeSmPmQueue(osMessageQId queueId);
+            //osMessageQId getSmPmQueue();
 
-            void storePmAmQueue(osMessageQId queueId);
-            osMessageQId getPmAmQueue();
+            //void storePmAmQueue(osMessageQId queueId);
+            //osMessageQId getPmAmQueue();
 
         // void storeUsePmFlag();
 
@@ -59,8 +59,8 @@ namespace PM
             Path_Manager_Cycle_Status status;
 
             // Message Q
-            osMessageQId SM_to_PM_queue;
-            osMessageQId PM_to_AM_queue;
+            //osMessageQId SM_to_PM_queue;
+            //osMessageQId PM_to_AM_queue;
 
             SM_PM_Commands sm_instructions; 
             AM::AttitudeManagerInput am_data; 
