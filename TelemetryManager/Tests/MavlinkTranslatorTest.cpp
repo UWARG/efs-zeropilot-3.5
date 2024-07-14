@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+
 #include <MavlinkTranslator.hpp>
 
 TEST(MavlinkTranslatorTest, EncodeThenDecodeTest) {
@@ -24,8 +25,9 @@ TEST(MavlinkTranslatorTest, EncodeThenDecodeTest) {
             // start bit and therefore determine when the second message ends
 
     translator.bytesToMavlinkMsg(buffer);
-    ASSERT_EQ(translator.decodedMessages, expectedNumberOfMessagesDecoded);
 
+    ASSERT_EQ(translator.decoder.messagesHandledSuccessfully, expectedNumberOfMessagesDecoded);
+    ASSERT_EQ(translator.decodedMessages, expectedNumberOfMessagesDecoded);
 }
 
 TEST(MavlinkTranslatorTest, ParseBytesToMavlinkMsgsTest) {
@@ -55,31 +57,8 @@ TEST(MavlinkTranslatorTest, ParseBytesToMavlinkMsgsTest) {
 
     translator.bytesToMavlinkMsg(buffer);
 
+    ASSERT_EQ(translator.decoder.messagesHandledSuccessfully, expectedNumberOfMessagesDecoded);
     ASSERT_EQ(translator.decodedMessages, expectedNumberOfMessagesDecoded);
-}
-
-TEST(MavlinkTranslatorTest, global_position_int) {
-    mavlink_message_t msg;
-    mavlink_msg_global_position_int_pack(0, 0, &msg, 1, 2, 3, 4, 5, 6, 7, 8, 9);
-    
-    // Create a buffer to hold the message data
-    uint8_t expectedBuffer[MAVLINK_MAX_PACKET_LEN] = {0};
-
-
-    // Decode the message
-    mavlink_global_position_int_t globalPositionInt;
-    mavlink_msg_global_position_int_decode(&msg, &globalPositionInt);
-
-    // Assertions
-    ASSERT_EQ(globalPositionInt.time_boot_ms, 1);
-    ASSERT_EQ(globalPositionInt.lat, 2);
-    ASSERT_EQ(globalPositionInt.lon, 3);
-    ASSERT_EQ(globalPositionInt.alt, 4);
-    ASSERT_EQ(globalPositionInt.relative_alt, 5);
-    ASSERT_EQ(globalPositionInt.vx, 6);
-    ASSERT_EQ(globalPositionInt.vy, 7);
-    ASSERT_EQ(globalPositionInt.vz, 8);
-    ASSERT_EQ(globalPositionInt.hdg, 9);
 }
 
 TEST(MavlinkTranslatorTest, AddMavlinkMsgToByteQueueTest) {

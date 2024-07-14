@@ -16,7 +16,6 @@
 
 #include "GroundStationCommunication.hpp"
 #include "MavlinkTranslator.hpp"
-#include "TelemetryTask.hpp"
 
 class TelemetryManager {
    private:

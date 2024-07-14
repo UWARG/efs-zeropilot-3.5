@@ -1,4 +1,5 @@
 #include "TelemetryManager.hpp"
+#include "TelemetryTask.hpp"
 
 /**
  * @brief This task is called every 500ms. It is responsible for
@@ -17,7 +18,9 @@ TelemetryManager::TelemetryManager(uint8_t& altitude)
       GSC(*DMAReceiveBuffer, lowPriorityTransmitBuffer, highPriorityTransmitBuffer,
           RFD900_BUF_SIZE),
       MT(),
-      altitude(altitude) {}
+      altitude(altitude) {
+
+      }
 
 TelemetryManager::~TelemetryManager() {
     // Destructor
@@ -97,4 +100,6 @@ void TelemetryManager::update() {
     GSC.transmit(GSC.lowPriorityTransmitBuffer);
 }
 
-void TelemetryManager::teardownTasks() { delete routineDataTransmission; }
+void TelemetryManager::teardownTasks() { 
+    delete routineDataTransmission; 
+    }
