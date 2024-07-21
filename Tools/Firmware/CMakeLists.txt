@@ -22,6 +22,11 @@ include_directories(
 
     ## Telemetry Manager Includes ##
     ${ROOT_DIR}/TelemetryManager/Inc
+    ${ROOT_DIR}/TelemetryManager/Inc/Official_Mavlink_2_Library
+    ${ROOT_DIR}/TelemetryManager/Inc/Official_Mavlink_2_Library/common
+    ${ROOT_DIR}/TelemetryManager/Inc/Official_Mavlink_2_Library/message_definitions
+    ${ROOT_DIR}/TelemetryManager/Inc/Official_Mavlink_2_Library/minimal
+    ${ROOT_DIR}/TelemetryManager/Inc/Official_Mavlink_2_Library/standard
 
     ## Driver Includes ##
     
