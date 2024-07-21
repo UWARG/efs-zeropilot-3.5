@@ -21,6 +21,7 @@
 class TMCircularBuffer : public CircularBuffer {
    public:
     using MAVLinkByte = unsigned char;  // not 100% sure if this is the right type
+    long messagesInQueue = 0;
     /**
      * @brief Construct a new Circular Buffer object. Do whatever needs to be done here.
      *

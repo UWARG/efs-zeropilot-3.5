@@ -16,17 +16,30 @@
 
 #include "GroundStationCommunication.hpp"
 #include "MavlinkTranslator.hpp"
+// #include "DiagnosticLEDs.hpp"
+#include "FreeRTOS.h"
+#include "task.h"
 
 class TelemetryManager {
-   private:
+   public:
     GroundStationCommunication GSC;
     MavlinkTranslator MT;
     TMCircularBuffer* DMAReceiveBuffer;
     uint8_t* lowPriorityTransmitBuffer;
     uint8_t* highPriorityTransmitBuffer;
 
-    //A reference to the drone's altitude variable
-    uint8_t& altitude;
+    // A reference to the drone's altitude variable
+    int32_t& alt;
+    int32_t& lat;
+    int32_t& lon;
+    int32_t& relative_alt;
+    int16_t& vx;
+    int16_t& vy;
+    int16_t& vz;
+    int& hdg;
+    int32_t& time_boot_ms;
+    MAV_STATE& state;
+    MAV_MODE_FLAG& mode;
 
     /**
      * @brief Create and configure FreeRTOS tasks.
@@ -39,14 +52,13 @@ class TelemetryManager {
      *
      */
     void teardownTasks();
-
-   public:
     /**
      * @brief Construct a new Telemetry Manager object. Does not initialize the tasks.
      * To do so call the init() method.
      * @param altitude A reference to the drone's altitude variable
      */
-    TelemetryManager(uint8_t& altitude);
+    TelemetryManager(int32_t& lat, int32_t& lon, int32_t& alt, int32_t& relative_alt, int16_t& vx,
+                     int16_t& vy, int16_t& vz, int& hdg, int32_t& time_boot_ms, MAV_STATE& state, MAV_MODE_FLAG& mode);
 
     /**
      * @brief Destroy the Telemetry Manager object. Also destroys the tasks.

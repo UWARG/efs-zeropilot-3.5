@@ -10,7 +10,6 @@ MavlinkTranslator::~MavlinkTranslator() {
 
 void MavlinkTranslator::bytesToMavlinkMsg(TMCircularBuffer &rxFromGroundByteQueue) {
     // Take bytes in rxFromGroundByteQueue and convert them to Mavlink messages
-    // MavlinkDecoder decoder;
     bool success = true;
     uint8_t bytesUntilEnd = 0;
 
@@ -34,4 +33,5 @@ void MavlinkTranslator::bytesToMavlinkMsg(TMCircularBuffer &rxFromGroundByteQueu
 void MavlinkTranslator::addMavlinkMsgToByteQueue(mavlink_message_t &msg,
                                                  TMCircularBuffer &txToGroundByteQueue) {
     encoder.encodeMsgIntoBuffer(msg, txToGroundByteQueue);
+    txToGroundByteQueue.messagesInQueue++;
 }
