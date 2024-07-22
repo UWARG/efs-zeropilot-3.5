@@ -14,7 +14,7 @@ void MavlinkTranslator::bytesToMavlinkMsg(TMCircularBuffer &rxFromGroundByteQueu
     uint8_t bytesUntilEnd = 0;
 
     while (success) {
-        bytesUntilEnd = rxFromGroundByteQueue.bytesUntilLastMessageEnd(&success);
+        bytesUntilEnd = rxFromGroundByteQueue.bytesUntilMessageEnd(&success);
 
         if (success) {
             if (bytesUntilEnd != 0) {

@@ -1,17 +1,24 @@
-//
-// Created by Yarema Dzulynsky on 2023-07-10.
-//
+/**
+ * @file MavlinkEncoder.hpp
+ * @brief This file is responsible for decoding MAVLink messages received from the ground station.
+ *
+ * @note Anything future maintainers should know about this file?
+ *
+ * @version Milestone 2
+ * @date 2023-08-24
+ * @author Yarema Dzulynsky: initial structure & implementation
+ *
+ * @warning Any issues you think are important/foresee in the future?
+ */
 
 #ifndef MAVLINKDECODER_H
 #define MAVLINKDECODER_H
 
 #include <functional>
 // #include <iostream>
-#include <unordered_map>
+// #include <unordered_map>
 
 #include "Official_Mavlink_2_Library/common/mavlink.h"
-
-
 
 /**
  * Macro for registering a decoder function for a specific message type.
@@ -42,33 +49,28 @@
 //         postProcessor(msgType);                             \
 //     };
 
-
 class MavlinkDecoder {
-
    public:
+    // The number of messages that have been decoded - used for testing purposes.
     long messagesHandledSuccessfully = 0;
 
     // std::unordered_map<int, std::function<void(mavlink_message_t &)>> decodingFunctions;
     /**
      * Default constructor.
-     * Register message types with their decoders and post-decoding callbacks here.
-     * Without using REGISTER_DECODER, the decoder map remains unpopulated.
      */
     MavlinkDecoder();
 
     /**
      * Default destructor.
-     * No specific cleanup is required since no dynamic memory is utilized.
      */
     ~MavlinkDecoder();
 
     /**
-     * Unpacks the message, triggering the respective callback set during construction.
+     * Unpacks the message, triggering the respective callback set in the switch statement.
      * @param msg - The preformatted mavlink message, ready for decoding.
-     * @param isMessageDecoded - Flag that indicates successful decoding.
      */
-    
-    void decodeMsg(mavlink_message_t &msg, bool &isMessageDecoded);
+
+    bool decodeMsg(mavlink_message_t &msg);
 
     /**
      * Transforms a byte sequence into mavlink messages, then activates the respective callbacks.
@@ -78,4 +80,4 @@ class MavlinkDecoder {
     void parseBytesToMavlinkMsgs(uint8_t *buffer, std::size_t bufferSize);
 };
 
-#endif  
+#endif

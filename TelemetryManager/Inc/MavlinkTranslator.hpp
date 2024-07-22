@@ -1,10 +1,10 @@
 /**
  * @file MavlinkTranslator.hpp
- * @brief What does this file do?
+ * @brief This file is responsible for decoding/encoding MAVLink messages received_from/sent_to the ground station.
  *
  * @note Anything future maintainers should know about this file?
  *
- * @version 1.0
+ * @version Milestone 2
  * @date 2023-08-24
  * @author Yarema Dzulynsky: initial structure & implementation
  *

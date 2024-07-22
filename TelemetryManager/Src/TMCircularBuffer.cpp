@@ -44,7 +44,7 @@ bool TMCircularBuffer::enqueue(MAVLinkByte* bytes, uint16_t size) {
     return true;
 }
 
-int TMCircularBuffer::bytesUntilLastMessageEnd(bool* success) {
+int TMCircularBuffer::bytesUntilMessageEnd(bool* success) {
     int index = 0;
     uint8_t byte = 0;
     uint16_t size = writePtr_ - readPtr_;

@@ -2,11 +2,11 @@
  * @file TelemetryManager.hpp
  * @brief Manages multiple subclasses and FreeRTOS tasks that handle a 2 way communication link
  * between the drone and the ground station and encoding and decoding Mavlink messages. This class
- * essentially handles the link between the drone and Mission Planner.
+ * essentially handles the link between the drone, other managers and Mission Planner.
  *
  * @note Anything future maintainers should know about this file?
  *
- * @version 1.0
+ * @version Milestone 2
  * @date 2023-08-24
  * @author Yarema Dzulynsky: initial structure & Implementation
  *
@@ -25,8 +25,13 @@ class TelemetryManager {
    public:
     GroundStationCommunication GSC;
     MavlinkTranslator MT;
+    // the buffer that stores the bytes received from the ground station.
     TMCircularBuffer* DMAReceiveBuffer;
+    // the buffer that stores non_routine/low_priority bytes (ex. Battery Voltage) to be sent to the
+    // ground station.
     uint8_t* lowPriorityTransmitBuffer;
+    // the buffer that stores routine/high_priority bytes (ex. heading, general state data) to be
+    // sent to the ground station.
     uint8_t* highPriorityTransmitBuffer;
 
     /*References to variables that contain the state of the drone (lat, lng, yaw, pitch, etc..).
@@ -136,7 +141,7 @@ class TelemetryManager {
 
     /**
      * @brief Destroy the Telemetry Manager object. Also destroys the FreeRTOS tasks associated with
-     * TM    .
+     * TM.
      */
     ~TelemetryManager();
 

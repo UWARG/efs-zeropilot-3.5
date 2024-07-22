@@ -25,9 +25,8 @@ void MavlinkDecoder::parseBytesToMavlinkMsgs(uint8_t *buffer, std::size_t buffer
         // Try to parse the current byte and see if it corresponds to a MAVLink message
         if (mavlink_parse_char(MAVLINK_COMM_0, buffer[currentBufferIndex], &currentMessage,
                                &currentMessageDecodingStatus)) {
-            bool isMessageDecoded;
             // Attempt to decode the constructed MAVLink message
-            decodeMsg(currentMessage, isMessageDecoded);
+            bool isMessageDecoded = decodeMsg(currentMessage);
         }
         currentBufferIndex++;
     }
@@ -61,22 +60,30 @@ bool handle_heartbeat(mavlink_message_t &msg) {
     return true;
 }
 
-void MavlinkDecoder::decodeMsg(mavlink_message_t &msg, bool &isMessageDecoded) {
+bool MavlinkDecoder::decodeMsg(mavlink_message_t &msg) {
     int messageId = msg.msgid;  // Extract message ID
 
     switch (messageId) {
         case MAVLINK_MSG_ID_ATTITUDE:
-            handle_attitude(msg) ? messagesHandledSuccessfully++ : messagesHandledSuccessfully;
+            bool handledSuccessfully = handle_attitude(msg);
+            handledSuccessfully ? messagesHandledSuccessfully++ : messagesHandledSuccessfully;
+            return handledSuccessfully;
 
             break;
         case MAVLINK_MSG_ID_GLOBAL_POSITION_INT:
-            handle_global_position_int(msg) ? messagesHandledSuccessfully++
-                                            : messagesHandledSuccessfully;
+            bool handledSuccessfully = handle_global_position_int(msg);
+            handledSuccessfully ? messagesHandledSuccessfully++ : messagesHandledSuccessfully;
+            return handledSuccessfully;
+
             break;
         case MAVLINK_MSG_ID_HEARTBEAT:
-            handle_heartbeat(msg) ? messagesHandledSuccessfully++ : messagesHandledSuccessfully;
+            bool handledSuccessfully = handle_heartbeat(msg);
+            handledSuccessfully ? messagesHandledSuccessfully++ : messagesHandledSuccessfully;
+            return handledSuccessfully;
+            
             break;
         default:
             break;
     }
+    return false;
 }

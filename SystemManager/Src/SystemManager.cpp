@@ -27,9 +27,10 @@ SystemManager::SystemManager()
       rollMotorChannel_(&htim2, TIM_CHANNEL_3),
       pitchMotorChannel_(&htim2, TIM_CHANNEL_4),
       invertedRollMotorChannel_(&htim3, TIM_CHANNEL_1),
-      watchdog_(&hiwdg) {}
-
-SystemManager::~SystemManager() {
+      watchdog_(&hiwdg) {
+    // VARIABLES FOR TELEMETRY MANAGER TO HAVE AS REFERENCES THEY OBV SHOULD BE PUT SOMEWHERE ELSE,
+    // BUT I FEEL LIKE SM PM WOULD KNOW WHERE. MAYBE IN THE HPP FILE? IDK HOW YOU ARE PLANNING ON
+    // GATHERING THE DATA. I JUST PUT THEM HERE FOR NOW
     int32_t lat = 0;
     int32_t lon = 0;
     int32_t alt = 0;
@@ -37,14 +38,26 @@ SystemManager::~SystemManager() {
     int16_t vx = 0;
     int16_t vy = 0;
     int16_t vz = 0;
-    int hdg = 0;
+    uint16_t hdg = 0;
     int32_t time_boot_ms = 0;
     MAV_STATE state = MAV_STATE::MAV_STATE_STANDBY;
-    MAV_MODE_FLAG mode= MAV_MODE_FLAG::MAV_MODE_FLAG_MANUAL_INPUT_ENABLED;
+    MAV_MODE_FLAG mode = MAV_MODE_FLAG::MAV_MODE_FLAG_MANUAL_INPUT_ENABLED;
+    float roll = 0;
+    float pitch = 0;
+    float yaw = 0;
+    float rollspeed = 0;
+    float pitchspeed = 0;
+    float yawspeed = 0;
 
-    this->telemetryManager = new TelemetryManager(lat, lon, alt, relative_alt, vx, vy, vz, hdg, time_boot_ms, state, mode);
+    this->telemetryManager =
+        new TelemetryManager(lat, lon, alt, relative_alt, vx, vy, vz, hdg, time_boot_ms, state,
+                             mode, roll, pitch, yaw, rollspeed, pitchspeed, yawspeed);
     this->telemetryManager->init();
+    // IDK WHERE SM PLANS TO DO THIS, BUT telemetryManager.update() NEEDS TO BE CALLED AT A SEMI
+    // REGULAR INTERVAL AS IT DEALS WITH MESSAGE DECODING AND LOW PRIORITY DATA TRANSMISSION
 }
+
+SystemManager::~SystemManager() {}
 
 void SystemManager::flyManually() {
     for (;;) {

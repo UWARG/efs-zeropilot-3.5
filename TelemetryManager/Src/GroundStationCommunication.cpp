@@ -16,33 +16,28 @@ GroundStationCommunication::~GroundStationCommunication() {
     // Destructor
 }
 
-// ** Implement transmit first **
-
 void GroundStationCommunication::transmit(TMCircularBuffer &transmissionBuffer) {
-    // bool noMoreMessages = false;
     // START: Send the bytes in transmissionBuffer to the ground station via RFD900
 
+    // While there are still messages in the transmissionBuffer, send em
     while (transmissionBuffer.messagesInQueue >= 0) {
-        // HAL_Delay(1000);
-        int bytesToTransmit = transmissionBuffer.bytesUntilLastMessageEnd();
+        int bytesToTransmit = transmissionBuffer.bytesUntilMessageEnd();
 
-        // while (!noMoreMessages) {
-        // HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
-        // HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
-        // HAL_Delay(1000);
+        // Make sure we don't overflow the buffer
         if (bytesToTransmit > RFD900_BUF_SIZE) {
             bytesToTransmit = RFD900_BUF_SIZE;
         }
 
+        // Dequeue the bytes from the transmissionBuffer and put them in the internal buffer
         for (int i{0}; i < bytesToTransmit; ++i) {
             internalBuffer_[i] = transmissionBuffer.dequeue();
         }
+        // Send the bytes in the internal buffer to the ground station via RFD900
         pRFD900->transmit(internalBuffer_, bytesToTransmit);
+
+        // Decrement the number of messages in the transmissionBuffer
         transmissionBuffer.messagesInQueue--;
     }
-
-    // bytesToTransmit = transmissionBuffer.bytesUntilLastMessageEnd(&noMoreMessages);
-    // }
 
     // END: Send the bytes in transmissionBuffer to the ground station via RFD900
 

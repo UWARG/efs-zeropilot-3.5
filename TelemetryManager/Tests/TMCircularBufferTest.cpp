@@ -27,7 +27,7 @@ TEST(TMCircularBufferTest, BytesUntilLastMessageEndEmptyBuffer) {  // failing
     uint8_t buffer[bufferSize];
     TMCircularBuffer circularBuffer(buffer, bufferSize);
     bool success = true;
-    circularBuffer.bytesUntilLastMessageEnd(&success);
+    circularBuffer.bytesUntilMessageEnd(&success);
 
     EXPECT_FALSE(success);
 }
@@ -97,7 +97,7 @@ TEST(TMCircularBufferTest, BytesUntilLastMessageEnd) {
     for (auto byte : bytes) {
         circularBuffer.enqueue(byte);
     }
-    EXPECT_EQ(circularBuffer.bytesUntilLastMessageEnd(), 4);  // The index of the second 0xFD
+    EXPECT_EQ(circularBuffer.bytesUntilMessageEnd(), 4);  // The index of the second 0xFD
 }
 
 TEST(TMCircularBufferTest, EnqueueWhenFull) {
