@@ -62,25 +62,22 @@ bool handle_heartbeat(mavlink_message_t &msg) {
 
 bool MavlinkDecoder::decodeMsg(mavlink_message_t &msg) {
     int messageId = msg.msgid;  // Extract message ID
-
+    bool handledSuccessfully = false;
     switch (messageId) {
         case MAVLINK_MSG_ID_ATTITUDE:
-            bool handledSuccessfully = handle_attitude(msg);
+            handledSuccessfully = handle_attitude(msg);
             handledSuccessfully ? messagesHandledSuccessfully++ : messagesHandledSuccessfully;
-            return handledSuccessfully;
 
             break;
         case MAVLINK_MSG_ID_GLOBAL_POSITION_INT:
-            bool handledSuccessfully = handle_global_position_int(msg);
+            handledSuccessfully = handle_global_position_int(msg);
             handledSuccessfully ? messagesHandledSuccessfully++ : messagesHandledSuccessfully;
-            return handledSuccessfully;
 
             break;
         case MAVLINK_MSG_ID_HEARTBEAT:
-            bool handledSuccessfully = handle_heartbeat(msg);
+            handledSuccessfully = handle_heartbeat(msg);
             handledSuccessfully ? messagesHandledSuccessfully++ : messagesHandledSuccessfully;
-            return handledSuccessfully;
-            
+
             break;
         default:
             break;
