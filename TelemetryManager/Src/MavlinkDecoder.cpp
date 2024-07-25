@@ -82,5 +82,5 @@ bool MavlinkDecoder::decodeMsg(mavlink_message_t &msg) {
         default:
             break;
     }
-    return false;
+    return handledSuccessfully;
 }
