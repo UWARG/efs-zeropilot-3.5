@@ -1,23 +1,30 @@
 /**
  * @file MavlinkTranslator.hpp
- * @brief What does this file do?
+ * @brief This file is responsible for decoding/encoding MAVLink messages received_from/sent_to the ground station.
  *
  * @note Anything future maintainers should know about this file?
  *
- * @version 1.0
+ * @version Milestone 2
  * @date 2023-08-24
  * @author Yarema Dzulynsky: initial structure & implementation
  *
  * @warning Any issues you think are important/foresee in the future?
  */
 
-#include "TMCircularBuffer.hpp"
+#include "MavlinkDecoder.hpp"
+#include "MavlinkEncoder.hpp"
 #include "Official_Mavlink_2_Library/common/mavlink.h"
+#include "TMCircularBuffer.hpp"
 #ifndef MAVLINKTRANSLATOR_H
 #define MAVLINKTRANSLATOR_H
 
 class MavlinkTranslator {
-   public:
+      public:
+    // The decoder and encoder objects.
+    MavlinkDecoder decoder;
+    MavlinkEncoder encoder;
+    // The number of messages that have been decoded - used for testing purposes.
+    long decodedMessages = 0;
     /**
      * @brief Construct a new MavlinkTranslator object. Do whatever needs to be done here.
      *
@@ -47,8 +54,7 @@ class MavlinkTranslator {
      * @param txToGroundByteQueue The CircularBuffer containing the bytes to be sent to the ground
      * station.
      */
-    void addMavlinkMsgToByteQueue(mavlink_message_t &msg,
-                                          TMCircularBuffer &txToGroundByteQueue);
+    void addMavlinkMsgToByteQueue(mavlink_message_t &msg, TMCircularBuffer &txToGroundByteQueue);
 };
 
 #endif  // MAVLINKTRANSLATOR_H

@@ -8,7 +8,10 @@ CircularBuffer::CircularBuffer(uint8_t* buf, uint16_t size) {
 }
 
 CircularBuffer::CircularBuffer(const CircularBuffer& other) {
-  
+    buf_ = other.buf_;
+    size_ = other.size_;
+    readPtr_ = other.readPtr_;
+    writePtr_ = other.writePtr_;
 }
 
 bool CircularBuffer::peek(uint8_t& byte, uint16_t index) {
