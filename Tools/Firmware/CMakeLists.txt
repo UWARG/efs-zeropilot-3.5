@@ -22,6 +22,11 @@ include_directories(
 
     ## Telemetry Manager Includes ##
     ${ROOT_DIR}/TelemetryManager/Inc
+    ${ROOT_DIR}/TelemetryManager/Inc/Official_Mavlink_2_Library
+    ${ROOT_DIR}/TelemetryManager/Inc/Official_Mavlink_2_Library/common
+    ${ROOT_DIR}/TelemetryManager/Inc/Official_Mavlink_2_Library/message_definitions
+    ${ROOT_DIR}/TelemetryManager/Inc/Official_Mavlink_2_Library/minimal
+    ${ROOT_DIR}/TelemetryManager/Inc/Official_Mavlink_2_Library/standard
 
     ## Driver Includes ##
     
@@ -84,11 +89,15 @@ set(ATTITUDE_MANAGER_C_SOURCES "${ATTITUDE_MANAGER}/Src/*.c"
                               "${ATTITUDE_MANAGER}/FlightModes/Src/*.c")
 set(ATTITUDE_MANAGER_CXX_SOURCES "${ATTITUDE_MANAGER}/Src/*.cpp"
                                 "${ATTITUDE_MANAGER}/FlightModes/Src/*.cpp")
-set(TELEMETRY_MANAGER_CXX_SOURCES "${TELEMETRY_MANAGER}/Src/*.cpp")
+# set(TELEMETRY_MANAGER_CXX_SOURCES "${TELEMETRY_MANAGER}/Src/*.cpp")
 
 set(SYSTEM_MANAGER ${ROOT_DIR}/SystemManager)
 set(SYSTEM_MANAGER_C_SOURCES "${SYSTEM_MANAGER}/Src/*.c")
 set(SYSTEM_MANAGER_CXX_SOURCES "${SYSTEM_MANAGER}/Src/*.cpp")
+
+set(TELEMETRY_MANAGER ${ROOT_DIR}/TelemetryManager)
+# set(TELEMETRY_MANAGER_C_SOURCES "${TELEMETRY_MANAGER}/Src/*.c")
+set(TELEMETRY_MANAGER_CXX_SOURCES "${TELEMETRY_MANAGER}/Src/*.cpp")
 
 set(DRIVERS_DIR ${ROOT_DIR}/Drivers)
 set(DRIVERS_C_SOURCES "${DRIVERS_DIR}/sensor_fusion/ccontrol/Src/*.c")

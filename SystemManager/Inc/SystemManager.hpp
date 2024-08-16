@@ -9,6 +9,7 @@
 #include "rcreceiver_datatypes.h"
 #include "independent_watchdog.h"
 #include "ZP_D_PWMChannel.hpp"
+#include "TelemetryManager.hpp"
 
 #define SBUS_THRESHOLD 25
 #define SBUS_MIN 0
@@ -19,6 +20,9 @@ public:
     /* Constructors and Destructors */
     SystemManager();
     ~SystemManager();
+
+    /* Other managers*/
+    TelemetryManager *telemetryManager;
 
     /* Class Functions */
     void flyManually();
