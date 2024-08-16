@@ -129,7 +129,6 @@ int main(void)
   MX_TIM5_Init();
   MX_ADC1_Init();
   MX_ICACHE_Init();
-  MX_IWDG_Init();
   MX_TIM3_Init();
   MX_SDMMC1_SD_Init();
   if (MX_FATFS_Init() != APP_OK) {

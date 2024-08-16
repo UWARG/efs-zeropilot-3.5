@@ -12,7 +12,9 @@
 #include "sbus_receiver.hpp"
 #include "tim.h"
 
-#define TIMEOUT_CYCLES 250000  // 25k = 1 sec fro testing 10/14/2023 => 250k = 10 sec
+
+#define TIMEOUT_CYCLES 250000 // 25k = 1 sec fro testing 10/14/2023 => 250k = 10 sec
+#define TIMOUT_MS      10000 // 10 sec
 
 static uint32_t DisconnectionCount = 0;
 float prevthrottle;
@@ -27,7 +29,7 @@ SystemManager::SystemManager()
       rollMotorChannel_(&htim2, TIM_CHANNEL_3),
       pitchMotorChannel_(&htim2, TIM_CHANNEL_4),
       invertedRollMotorChannel_(&htim3, TIM_CHANNEL_1),
-      watchdog_(&hiwdg) {
+      watchdog_(TIMOUT_MS) {
     // VARIABLES FOR TELEMETRY MANAGER TO HAVE AS REFERENCES THEY OBV SHOULD BE PUT SOMEWHERE ELSE,
     // BUT I FEEL LIKE SM PM WOULD KNOW WHERE. MAYBE IN THE HPP FILE? IDK HOW YOU ARE PLANNING ON
     // GATHERING THE DATA. I JUST PUT THEM HERE FOR NOW
@@ -56,6 +58,7 @@ SystemManager::SystemManager()
     // IDK WHERE SM PLANS TO DO THIS, BUT telemetryManager.update() NEEDS TO BE CALLED AT A SEMI
     // REGULAR INTERVAL AS IT DEALS WITH MESSAGE DECODING AND LOW PRIORITY DATA TRANSMISSION
 }
+
 
 SystemManager::~SystemManager() {}
 
