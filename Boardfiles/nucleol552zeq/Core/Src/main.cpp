@@ -78,11 +78,7 @@ extern "C" {
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void SMTask(void *pvParameters) {
-	printf("enter first thread");
-    SystemManager SM;
-    SM.startSystemManager();
-}
+
 /* USER CODE END 0 */
 
 /**
@@ -139,19 +135,11 @@ int main(void)
   /* USER CODE BEGIN 2 */
   logInit();
 
-  /* USER CODE END 2 */
+//   /* USER CODE END 2 */
 
-  /* Init scheduler */
-  osKernelInitialize();  /* Call init function for freertos objects (in freertos.c) */
-  MX_FREERTOS_Init();
-  osThreadAttr_t sm_task_attri = {
-  .name = "smTask",
-  .priority = (osPriority_t) osPriorityNormal,
-};
-  osThreadNew(SMTask, NULL, &sm_task_attri);
+  SystemManager SM;
+  SM.startSystemManager();
 
-  /* Start scheduler */
-  osKernelStart();
   /* We should never get here as control is now taken by the scheduler */
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */

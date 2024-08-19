@@ -89,7 +89,6 @@ void SystemManager::systemManagerTask(){
         watchdog_.refreshWatchdog();
         vTaskDelay(1000); 
 
-        /*
         this->rcInputs_ = rcController_->GetRCControl();
 
         // TO-DO: need to implement it using is_Data_New;
@@ -129,7 +128,6 @@ void SystemManager::systemManagerTask(){
             this->pitchMotorChannel_.set(SBUS_MAX / 2);
             this->invertedRollMotorChannel_.set(SBUS_MAX / 2);
         }
-        */
     }
 }
 
@@ -154,11 +152,14 @@ void SystemManager::telemetryManagerTask(){
 }
 
 void SystemManager::startSystemManager() {
+    printf("Initializing Tasks\r\n");
+    osKernelInitialize();  /* Call init function for freertos objects (in freertos.c) */
+
     //BaseType_t xTaskCreate( TaskFunction_t pvTaskCode, const char * const pcName, configSTACK_DEPTH_TYPE usStackDepth, void * pvParameters, UBaseType_t uxPriority, TaskHandle_t * pxCreatedTask ); 
     //                          function's name             description                 size of stack to allocate        parameters for task        priority                    handler 
-    xTaskCreate(systemManagerTaskWrapper, "System Check", 150U, this, osPriorityNormal, taskHandles);
+    xTaskCreate(systemManagerTaskWrapper, "System Check", 150U, this, osPriorityNormal1, taskHandles);
     xTaskCreate(attitudeManagerTaskWrapper, "Attitude Manager", 200U, this, osPriorityNormal, taskHandles + 1);
     xTaskCreate(telemetryManagerTaskWrapper, "Telemetry Manager", 200U, this, osPriorityNormal, taskHandles + 2);
 
-    vTaskDelete(NULL);
+    osKernelStart();
 }
