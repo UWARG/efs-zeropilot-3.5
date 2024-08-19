@@ -79,6 +79,7 @@ extern "C" {
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 void SMTask(void *pvParameters) {
+	printf("enter first thread");
     SystemManager SM;
     SM.startSystemManager();
 }

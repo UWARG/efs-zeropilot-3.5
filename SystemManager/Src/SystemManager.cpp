@@ -86,6 +86,7 @@ void SystemManager::telemetryManagerTaskWrapper(void* pvParameters){
 void SystemManager::systemManagerTask(){
     for(;;){
         printf("systemCheckTask called\r\n");
+        watchdog_.refreshWatchdog();
         vTaskDelay(1000); 
 
         /*
