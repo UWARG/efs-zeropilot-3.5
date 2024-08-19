@@ -85,9 +85,7 @@ void SystemManager::telemetryManagerTaskWrapper(void* pvParameters){
 
 void SystemManager::systemManagerTask(){
     for(;;){
-        printf("systemCheckTask called\r\n");
-        watchdog_.refreshWatchdog();
-        vTaskDelay(1000); 
+        printf("SM called\r\n");
 
         this->rcInputs_ = rcController_->GetRCControl();
 
@@ -128,6 +126,8 @@ void SystemManager::systemManagerTask(){
             this->pitchMotorChannel_.set(SBUS_MAX / 2);
             this->invertedRollMotorChannel_.set(SBUS_MAX / 2);
         }
+
+        vTaskDelay(1000); 
     }
 }
 

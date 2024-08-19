@@ -78,7 +78,6 @@ extern "C" {
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
 /* USER CODE END 0 */
 
 /**
@@ -135,7 +134,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   logInit();
 
-//   /* USER CODE END 2 */
+  /* USER CODE END 2 */
 
   SystemManager SM;
   SM.startSystemManager();
