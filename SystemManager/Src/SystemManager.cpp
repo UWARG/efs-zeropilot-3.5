@@ -56,10 +56,10 @@ SystemManager::SystemManager()
     float pitchspeed = 0;
     float yawspeed = 0;
 
-    this->telemetryManager =
-        new TelemetryManager(lat, lon, alt, relative_alt, vx, vy, vz, hdg, time_boot_ms, state,
-                             mode, roll, pitch, yaw, rollspeed, pitchspeed, yawspeed);
-    this->telemetryManager->init();
+    // this->telemetryManager =
+    //     new TelemetryManager(lat, lon, alt, relative_alt, vx, vy, vz, hdg, time_boot_ms, state,
+    //                          mode, roll, pitch, yaw, rollspeed, pitchspeed, yawspeed);
+    // this->telemetryManager->init();
     // IDK WHERE SM PLANS TO DO THIS, BUT telemetryManager.update() NEEDS TO BE CALLED AT A SEMI
     // REGULAR INTERVAL AS IT DEALS WITH MESSAGE DECODING AND LOW PRIORITY DATA TRANSMISSION
 }
@@ -84,82 +84,91 @@ void SystemManager::telemetryManagerTaskWrapper(void* pvParameters){
 }
 
 void SystemManager::systemManagerTask(){
+    TickType_t xNextWakeTime = xTaskGetTickCount();
+    uint16_t frequency = 5;
+
     for(;;){
         printf("SM called\r\n");
+        HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_7); // toggle led light for testing
 
-        this->rcInputs_ = rcController_->GetRCControl();
+        // this->rcInputs_ = rcController_->GetRCControl();
 
-        // TO-DO: need to implement it using is_Data_New;
-        //  boolean is true if data has not changed since the last cycle
-        bool is_unchanged{rcInputs_.throttle == prevthrottle && rcInputs_.yaw == prevyaw &&
-                          rcInputs_.roll == prevroll && rcInputs_.pitch == prevpitch};
+        // // TO-DO: need to implement it using is_Data_New;
+        // //  boolean is true if data has not changed since the last cycle
+        // bool is_unchanged{rcInputs_.throttle == prevthrottle && rcInputs_.yaw == prevyaw &&
+        //                   rcInputs_.roll == prevroll && rcInputs_.pitch == prevpitch};
 
-        if (is_unchanged) {
-            DisconnectionCount += 1;  // if its not changed we increment the timeout counter
-            if (DisconnectionCount > TIMEOUT_CYCLES) {  // if timeout has occured
-                DisconnectionCount =
-                    TIMEOUT_CYCLES + 1;   // avoid overflow but keep value above threshold
-                this->rcInputs_.arm = 0;  // failsafe
-            }
-        } else {
-            DisconnectionCount = 0;  // if the data has changed we want to reset out counter
-        }
+        // if (is_unchanged) {
+        //     DisconnectionCount += 1;  // if its not changed we increment the timeout counter
+        //     if (DisconnectionCount > TIMEOUT_CYCLES) {  // if timeout has occured
+        //         DisconnectionCount =
+        //             TIMEOUT_CYCLES + 1;   // avoid overflow but keep value above threshold
+        //         this->rcInputs_.arm = 0;  // failsafe
+        //     }
+        // } else {
+        //     DisconnectionCount = 0;  // if the data has changed we want to reset out counter
+        // }
 
-        watchdog_.refreshWatchdog();  // always hit the dog
+        // watchdog_.refreshWatchdog();  // always hit the dog
 
-        if (this->rcInputs_.arm >= (SBUS_MAX / 2)) {
-            this->throttleMotorChannel_.set(rcInputs_.throttle);
-            this->yawMotorChannel_.set(rcInputs_.yaw);
-            this->rollMotorChannel_.set(SBUS_MAX - rcInputs_.roll);
-            this->pitchMotorChannel_.set(SBUS_MAX - rcInputs_.pitch);
-            this->invertedRollMotorChannel_.set(SBUS_MAX - rcInputs_.roll);
+        // if (this->rcInputs_.arm >= (SBUS_MAX / 2)) {
+        //     this->throttleMotorChannel_.set(rcInputs_.throttle);
+        //     this->yawMotorChannel_.set(rcInputs_.yaw);
+        //     this->rollMotorChannel_.set(SBUS_MAX - rcInputs_.roll);
+        //     this->pitchMotorChannel_.set(SBUS_MAX - rcInputs_.pitch);
+        //     this->invertedRollMotorChannel_.set(SBUS_MAX - rcInputs_.roll);
 
-            prevthrottle = rcInputs_.throttle;
-            prevyaw = rcInputs_.yaw;
-            prevroll = rcInputs_.roll;
-            prevpitch = rcInputs_.pitch;
+        //     prevthrottle = rcInputs_.throttle;
+        //     prevyaw = rcInputs_.yaw;
+        //     prevroll = rcInputs_.roll;
+        //     prevpitch = rcInputs_.pitch;
 
-        } else {
-            this->throttleMotorChannel_.set(0);
-            this->yawMotorChannel_.set(SBUS_MAX / 2);
-            this->rollMotorChannel_.set(SBUS_MAX / 2);
-            this->pitchMotorChannel_.set(SBUS_MAX / 2);
-            this->invertedRollMotorChannel_.set(SBUS_MAX / 2);
-        }
+        // } else {
+        //     this->throttleMotorChannel_.set(0);
+        //     this->yawMotorChannel_.set(SBUS_MAX / 2);
+        //     this->rollMotorChannel_.set(SBUS_MAX / 2);
+        //     this->pitchMotorChannel_.set(SBUS_MAX / 2);
+        //     this->invertedRollMotorChannel_.set(SBUS_MAX / 2);
+        // }
 
-        vTaskDelay(1000); 
+        vTaskDelayUntil(&xNextWakeTime, 1000 / frequency); 
     }
 }
 
 void SystemManager::attitudeManagerTask(){
+    TickType_t xNextWakeTime = xTaskGetTickCount();
+    uint16_t frequency = 5;
+
     for(;;){
         //call AM
 
         printf("AM called\r\n");
-        HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
-        vTaskDelay(2000); 
+        HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7); // toggle led light for testing
+        vTaskDelayUntil(&xNextWakeTime, 1000 / frequency);  
     }
 }
 
 void SystemManager::telemetryManagerTask(){
+    TickType_t xNextWakeTime = xTaskGetTickCount();
+    uint16_t frequency = 5;
+
     for(;;){
         //call TM
 
         printf("TM called\r\n");
-        HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_9);
-        vTaskDelay(3000); 
+        HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_9); // toggle led light for testing
+        vTaskDelayUntil(&xNextWakeTime, 1000 / frequency);  
     }
 }
 
 void SystemManager::startSystemManager() {
     printf("Initializing Tasks\r\n");
-    osKernelInitialize();  /* Call init function for freertos objects (in freertos.c) */
 
     //BaseType_t xTaskCreate( TaskFunction_t pvTaskCode, const char * const pcName, configSTACK_DEPTH_TYPE usStackDepth, void * pvParameters, UBaseType_t uxPriority, TaskHandle_t * pxCreatedTask ); 
     //                          function's name             description                 size of stack to allocate        parameters for task        priority                    handler 
-    xTaskCreate(systemManagerTaskWrapper, "System Check", 150U, this, osPriorityNormal1, taskHandles);
-    xTaskCreate(attitudeManagerTaskWrapper, "Attitude Manager", 200U, this, osPriorityNormal, taskHandles + 1);
-    xTaskCreate(telemetryManagerTaskWrapper, "Telemetry Manager", 200U, this, osPriorityNormal, taskHandles + 2);
+    xTaskCreate(systemManagerTaskWrapper, "SM TASK", 500U, this, osPriorityNormal, taskHandles);
+    xTaskCreate(attitudeManagerTaskWrapper, "AM TASK", 500U, this, osPriorityNormal, taskHandles + 1);
+    xTaskCreate(telemetryManagerTaskWrapper, "TM TASK", 100U, this, osPriorityNormal, taskHandles + 2);
 
-    osKernelStart();
+    vTaskStartScheduler();
 }
