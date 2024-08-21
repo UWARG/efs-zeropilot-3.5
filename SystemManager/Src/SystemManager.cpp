@@ -15,6 +15,10 @@
 #include "FreeRTOS.h"
 #include <iostream>
 
+extern "C" {
+  #include "app_fatfs.h"
+  #include "log_util.h"
+}
 
 #define TIMEOUT_CYCLES 250000 // 25k = 1 sec fro testing 10/14/2023 => 250k = 10 sec
 #define TIMOUT_MS      10000 // 10 sec
@@ -34,7 +38,7 @@ SystemManager::SystemManager()
       rollMotorChannel_(&htim2, TIM_CHANNEL_3),
       pitchMotorChannel_(&htim2, TIM_CHANNEL_4),
       invertedRollMotorChannel_(&htim3, TIM_CHANNEL_1),
-      watchdog_(TIMOUT_MS) {
+      watchdog_() {
     // VARIABLES FOR TELEMETRY MANAGER TO HAVE AS REFERENCES THEY OBV SHOULD BE PUT SOMEWHERE ELSE,
     // BUT I FEEL LIKE SM PM WOULD KNOW WHERE. MAYBE IN THE HPP FILE? IDK HOW YOU ARE PLANNING ON
     // GATHERING THE DATA. I JUST PUT THEM HERE FOR NOW
@@ -56,10 +60,10 @@ SystemManager::SystemManager()
     float pitchspeed = 0;
     float yawspeed = 0;
 
-    // this->telemetryManager =
-    //     new TelemetryManager(lat, lon, alt, relative_alt, vx, vy, vz, hdg, time_boot_ms, state,
-    //                          mode, roll, pitch, yaw, rollspeed, pitchspeed, yawspeed);
-    // this->telemetryManager->init();
+    this->telemetryManager =
+        new TelemetryManager(lat, lon, alt, relative_alt, vx, vy, vz, hdg, time_boot_ms, state,
+                             mode, roll, pitch, yaw, rollspeed, pitchspeed, yawspeed);
+    this->telemetryManager->init();
     // IDK WHERE SM PLANS TO DO THIS, BUT telemetryManager.update() NEEDS TO BE CALLED AT A SEMI
     // REGULAR INTERVAL AS IT DEALS WITH MESSAGE DECODING AND LOW PRIORITY DATA TRANSMISSION
 }
@@ -164,11 +168,17 @@ void SystemManager::telemetryManagerTask(){
 void SystemManager::startSystemManager() {
     printf("Initializing Tasks\r\n");
 
+    // enabling SD card logging
+    if (MX_FATFS_Init() != APP_OK) {
+        Error_Handler();
+    }
+    logInit();  
+
     //BaseType_t xTaskCreate( TaskFunction_t pvTaskCode, const char * const pcName, configSTACK_DEPTH_TYPE usStackDepth, void * pvParameters, UBaseType_t uxPriority, TaskHandle_t * pxCreatedTask ); 
     //                          function's name             description                 size of stack to allocate        parameters for task        priority                    handler 
-    xTaskCreate(systemManagerTaskWrapper, "SM TASK", 500U, this, osPriorityNormal, taskHandles);
-    xTaskCreate(attitudeManagerTaskWrapper, "AM TASK", 500U, this, osPriorityNormal, taskHandles + 1);
-    xTaskCreate(telemetryManagerTaskWrapper, "TM TASK", 100U, this, osPriorityNormal, taskHandles + 2);
+    xTaskCreate(systemManagerTaskWrapper, "SM TASK", 800U, this, osPriorityNormal, taskHandles);
+    xTaskCreate(attitudeManagerTaskWrapper, "AM TASK", 800U, this, osPriorityNormal, taskHandles + 1);
+    xTaskCreate(telemetryManagerTaskWrapper, "TM TASK", 800U, this, osPriorityNormal, taskHandles + 2);
 
     vTaskStartScheduler();
 }

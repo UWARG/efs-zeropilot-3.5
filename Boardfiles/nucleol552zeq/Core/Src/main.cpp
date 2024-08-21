@@ -40,10 +40,6 @@
 #include "drivers_config.hpp"
 #include "independent_watchdog.h"
 
-extern "C" {
-  #include "app_fatfs.h"
-  #include "log_util.h"
-}
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -128,11 +124,7 @@ int main(void)
   MX_ICACHE_Init();
   MX_TIM3_Init();
   MX_SDMMC1_SD_Init();
-  if (MX_FATFS_Init() != APP_OK) {
-    Error_Handler();
-  }
   /* USER CODE BEGIN 2 */
-  logInit();
 
   /* USER CODE END 2 */
 
