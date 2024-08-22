@@ -37,13 +37,14 @@ class SystemManager {
         PWMChannel pitchMotorChannel_;
         IndependentWatchdog watchdog_;
 
-        static void systemManagerTaskWrapper(void *pvParameters);
         static void attitudeManagerTaskWrapper(void *pvParameters);
         static void telemetryManagerTaskWrapper(void *pvParameters);
+        static void pathManagerTaskWrapper(void *pvParameters);
         
         void systemManagerTask();
         void attitudeManagerTask();
         void telemetryManagerTask();
+        void pathManagerTask();
 };
 
 #endif //ZEROPILOT_3_5_SYSTEMMANAGER_HPP

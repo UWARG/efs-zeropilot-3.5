@@ -21,8 +21,6 @@ class IndependentWatchdog : public Watchdog {
 		bool counterCalculation(uint32_t timeout, uint32_t &prescaler, uint32_t &counter);
 		bool windowCalculation(uint32_t timeout, uint32_t prescaler, uint32_t &window);
 	public:
-		IndependentWatchdog();
-
 		/* Time out in ms */
 		IndependentWatchdog(uint32_t timeout);
 

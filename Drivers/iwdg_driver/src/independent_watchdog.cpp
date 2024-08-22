@@ -7,7 +7,6 @@
 #define PR_OFFSET		2
 #define MAX_TIMEOUT_MS		(((1 << RELOAD_LENGTH)*4*(1 << MAX_PR)*1000) / LSI_SPEED) // should be about 32768
 
-IndependentWatchdog::IndependentWatchdog(){}
 
 /*	A general watchdog, the window feature is not used
 	If it fails, no one could notice it, which is not really desired

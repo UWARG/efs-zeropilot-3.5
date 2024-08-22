@@ -74,6 +74,10 @@ extern "C" {
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void SMTask(void * pvParameters){
+  SystemManager SM;
+  SM.startSystemManager();
+}
 /* USER CODE END 0 */
 
 /**
@@ -128,9 +132,8 @@ int main(void)
 
   /* USER CODE END 2 */
 
-  SystemManager SM;
-  SM.startSystemManager();
-
+  xTaskCreate(SMTask, "SM Task", 1500U, NULL, osPriorityNormal, NULL);
+  vTaskStartScheduler();
   /* We should never get here as control is now taken by the scheduler */
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
