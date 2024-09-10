@@ -1,4 +1,5 @@
 #include "../Inc/PM_Waypoint.hpp"
+#include <iostream>
 
 // Reference Coordinates (University of Waterloo, Parking Lot C)
 #define REFERENCE_LONGITUDE -80.537331184
@@ -9,14 +10,22 @@ namespace PM::Waypoint {
     void calculate_direction_to_waypoint(float* nextWaypointCoordinates, float* prevWaypointCoordnates, float* waypointDirection)
     {
         float norm = sqrt(pow(nextWaypointCoordinates[0] - prevWaypointCoordnates[0],2) + pow(nextWaypointCoordinates[1] - prevWaypointCoordnates[1],2) + pow(nextWaypointCoordinates[2] - prevWaypointCoordnates[2],2));
+        std::cout << "norm is " << norm << std::endl;
+          if (norm == 0) {
+        std::cerr << "Error: Waypoints are the same, cannot calculate direction." << std::endl;
+    }
         waypointDirection[0] = (nextWaypointCoordinates[0] - prevWaypointCoordnates[0])/norm;
+        //std::cout << "waypoint 0 is " << waypointDirection[0] << std::endl;
         waypointDirection[1] = (nextWaypointCoordinates[1] - prevWaypointCoordnates[1])/norm;
+        //std::cout << "waypoint 2 is " << waypointDirection[1] << std::endl;
         waypointDirection[2] = (nextWaypointCoordinates[2] - prevWaypointCoordnates[2])/norm;
+        //std::cout << "waypoint 3 is " << waypointDirection[2] << std::endl;
     }
 
     float calculate_distance_to_waypoint(float* nextWaypointCoordinates, float* position)
     {
         return sqrt(pow(nextWaypointCoordinates[0] - position[0],2) + pow(nextWaypointCoordinates[1] - position[1],2) + pow(nextWaypointCoordinates[2] - position[2],2));
+       
     }
 
     float dot_product(float* waypointDirection, float* position, float* halfPlane)
@@ -34,13 +43,16 @@ namespace PM::Waypoint {
         // This calculation uses the Haversine formula
         long double change_in_Lat = DEG_TO_RAD(lat2 - lat1); //Converts change in latitude to radians
         long double change_in_lon = DEG_TO_RAD(lon2 - lon1); //Converts change in longitude to radians
-
+        std::cout << "all get distance " << lat1 << ", " << lon1 <<  ", " << lat2 <<  ", " << lon2 << std::endl;
         double haversine_ans = sin(change_in_Lat / 2) * sin(change_in_Lat / 2) + cos(DEG_TO_RAD(lat1)) * cos(DEG_TO_RAD(lat2)) * sin(change_in_lon / 2) * sin(change_in_lon / 2); // In kilometers
-
         if ((change_in_Lat >= 0 && change_in_lon >=0)||(change_in_Lat < 0 && change_in_lon < 0)){
+            float answer = EARTH_RADIUS * (2 * atan2(sqrt(haversine_ans),sqrt(1 - haversine_ans))) * 1000; //Multiply by 1000 to convert to metres
+            //std::cout << "try " << answer << std::endl;
             return EARTH_RADIUS * (2 * atan2(sqrt(haversine_ans),sqrt(1 - haversine_ans))) * 1000; //Multiply by 1000 to convert to metres
         } else {
-            return EARTH_RADIUS * (2 * atan2(sqrt(haversine_ans),sqrt(1 - haversine_ans))) * -1000;
+            float answer = EARTH_RADIUS * (2 * atan2(sqrt(haversine_ans),sqrt(1 - haversine_ans))) * 1000; //Multiply by 1000 to convert to metres
+             //std::cout << "try " << answer << std::endl;
+             return EARTH_RADIUS * (2 * atan2(sqrt(haversine_ans),sqrt(1 - haversine_ans))) * -1000;
         }
     }
 
@@ -102,7 +114,7 @@ namespace PM::Waypoint {
         } else if (calcTrack < 0.0) {
             calcTrack = fmod(calcTrack, 360.0) + 360.0;
         }
-        
+ 
         return calcTrack;
     }
 

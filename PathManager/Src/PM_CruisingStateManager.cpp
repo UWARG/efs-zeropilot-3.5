@@ -233,10 +233,12 @@ namespace PM {
         // follow waypoints
         float position[3]; 
         // Gets current track
+
+           
         float currentTrack = (float) currentStatus.track;
         PM::Waypoint::get_coordinates(currentStatus.longitude, currentStatus.latitude, position);
         position[2] = (float) currentStatus.altitude;
-
+        std::cout << "what is my current position? " << position[2] << std::endl;
         follow_waypoints(waypointBuffer[currentIndex], position, currentTrack);
 
         // update return data
@@ -258,20 +260,21 @@ namespace PM {
         else
         { // If there are two waypoints after target waypoint
             next_waypoints(currentWaypoint, position, track);
+            
         }
     }
 
     void CruisingStateManager::next_waypoints(WaypointData* currentWaypoint, float* position, float track)
-    {
+    {\
         float waypointPosition[3]; 
         PM::Waypoint::get_coordinates(currentWaypoint->longitude, currentWaypoint->latitude, waypointPosition);
         waypointPosition[2] = currentWaypoint->altitude;
-
         // Defines target waypoint
         WaypointData * targetWaypoint = currentWaypoint->next;
         float targetCoordinates[3];
         PM::Waypoint::get_coordinates(targetWaypoint->longitude, targetWaypoint->latitude, targetCoordinates);
         targetCoordinates[2] = targetWaypoint->altitude;
+        std::cout << "targetcoordinate, " << targetCoordinates[0] << " " << targetCoordinates[1] <<std::endl;
 
         // Defines waypoint after target waypoint
         WaypointData* waypointAfterTarget = targetWaypoint->next;
@@ -281,10 +284,13 @@ namespace PM {
 
         float waypointDirection[3];
         PM::Waypoint::calculate_direction_to_waypoint(targetCoordinates, waypointPosition, waypointDirection);
+        std::cout << "waypointDirection " << waypointDirection[2] <<std::endl;
+
 
         float nextWaypointDirection[3];
-        PM::Waypoint::calculate_direction_to_waypoint(waypointAfterTargetCoordinates, targetCoordinates, waypointDirection);
-
+        PM::Waypoint::calculate_direction_to_waypoint(waypointAfterTargetCoordinates, targetCoordinates, nextWaypointDirection);
+        //Before it was PM::Waypoint::calculate_direction_to_waypoint(targetCoordinates, waypointPosition, waypointDirection); Is this intended to be overwritten? I think not...
+        
 
         // Required turning angle
         float turningAngle = acos(-DEG_TO_RAD(waypointDirection[0] * nextWaypointDirection[0] + waypointDirection[1] * nextWaypointDirection[1] + waypointDirection[2] * nextWaypointDirection[2]));
@@ -296,12 +302,18 @@ namespace PM {
         halfPlane[1] = targetCoordinates[1] - tangentFactor * waypointDirection[1];
         halfPlane[2] = targetCoordinates[2] - tangentFactor * waypointDirection[2];
 
+
         // Calculates distance to next waypoint
-        distanceToNextWaypoint = PM::Waypoint::calculate_distance_to_waypoint(targetCoordinates, position);
+        distanceToNextWaypoint = PM::Waypoint::calculate_distance_to_waypoint(waypointPosition, position);
+
+        std::cout << "distance to next waypoint " << distanceToNextWaypoint << std::endl;
+
+        
 
         // Checks if plane is orbiting or flying in a straight line
         if (orbitPathStatus == PATH_FOLLOW) {
             float dotProduct = PM::Waypoint::dot_product(waypointDirection, position, halfPlane);
+            std::cout << "Path follow " << dotProduct << std::endl;
             if (dotProduct > 0){
                 orbitPathStatus = ORBIT_FOLLOW;
                 // if (targetWaypoint->waypointType == HOLD_WAYPOINT) {
@@ -316,7 +328,10 @@ namespace PM {
                 // }
             }
 
-            track = PM::Waypoint::follow_straight_path(waypointDirection, targetCoordinates, position, track);
+            desiredAltitude = targetCoordinates[2];
+
+            desiredTrack = PM::Waypoint::follow_straight_path(waypointDirection, targetCoordinates, position, track);
+            //std::cout << "track is " << track << std::endl;
         } else {
             // Determines turn direction (CCW returns 2; CW returns 1)
             turnDirection = waypointDirection[0] * nextWaypointDirection[1] - waypointDirection[1] * nextWaypointDirection[0]>0?1:-1;
@@ -373,6 +388,7 @@ namespace PM {
         outputType = PATH_FOLLOW;
         desiredAltitude = targetCoordinates[2];
 
+
         for (int i=0; i<3; ++i)
         {
             direction[i] = waypointDirection[i];
@@ -421,6 +437,7 @@ namespace PM {
         
         outputType = PATH_FOLLOW;
         desiredAltitude = targetCoordinates[2];
+  
 
         for (int i=0; i<3; ++i)
         {
