@@ -11,17 +11,14 @@
 #include <cmath>
 #include <cstdint>
 
+#include "config_foundation.hpp"
+
 /***********************************************************************************************************************
  * Prototypes
  **********************************************************************************************************************/
 
 class PIDController {
    public:
-    class PID {
-       public:
-        float kp, kd, ki, i_max, min_output, max_output;
-    };
-
     /**
      * Initialises the Pid object.
      * @param[in]	_kp 	The proportional gain.
@@ -37,15 +34,16 @@ class PIDController {
      * value.
      */
     PIDController(float _kp, float _ki, float _kd, float _i_max, float _min_output,
-                  float _max_output)
-        : pid{.kp = _kp,
-              .kd = _kd,
-              .ki = _ki,
+                  float _max_output, bool enable)
+        : pid{.p = _kp,
+              .d = _kd,
+              .i = _ki,
               .i_max = _i_max,
-              .min_output = _min_output,
-              .max_output = _max_output} {}
+              .out_min = _min_output,
+              .out_max = _max_output,
+              .isEnabled = enable} {}
 
-    PIDController(PIDController::PID _pid) : pid(_pid) {}
+    PIDController(config::AxisPID_t _pid) : pid(_pid) {}
 
     /**
      * Executes a PID computation.
@@ -65,19 +63,20 @@ class PIDController {
     float execute(float desired, float actual, float actualRate = std::nanf(""));
     float execute_p(float desired, float actual);
 
-    void setNewPid(PID _pid) { pid = _pid; }
+    void setNewPid(config::AxisPID_t _pid) { pid = _pid; }
     void setNewPid(float _kp, float _ki, float _kd, float _i_max, float _min_output,
-                   float _max_output) {
-        pid = PID{.kp = _kp,
-                  .kd = _kd,
-                  .ki = _ki,
+                   float _max_output, bool enable) {
+        pid = config::AxisPID_t{.p = _kp,
+                  .d = _kd,
+                  .i = _ki,
                   .i_max = _i_max,
-                  .min_output = _min_output,
-                  .max_output = _max_output};
+                  .out_min = _min_output,
+                  .out_max = _max_output,
+                  .isEnabled = enable};
     }
 
    private:
-    PID pid;
+    config::AxisPID_t pid;
 
     float integral = 0.0f;
     float historicalValue[3] = {0.0f};  // Allows us to compute our derivative
