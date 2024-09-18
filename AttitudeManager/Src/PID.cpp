@@ -32,7 +32,7 @@ float PIDController::execute(float desired, float actual, float actualRate) {
         derivative = ((3 * historicalValue[0]) - (4 * historicalValue[1]) + (historicalValue[2]));
     }
 
-    float ret = constrain<float>((pid.kp * error) + (pid.ki * integral) - (pid.kd * derivative),
-                                 pid.max_output, pid.min_output);
+    float ret = constrain<float>((pid.p * error) + (pid.i * integral) - (pid.d * derivative),
+                                 pid.out_max, pid.out_min);
     return ret;
 }

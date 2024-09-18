@@ -35,13 +35,13 @@ class PIDController {
      */
     PIDController(float _kp, float _ki, float _kd, float _i_max, float _min_output,
                   float _max_output, bool enable)
-        : pid{.p = _kp,
-              .d = _kd,
+        : pid{.isEnabled = enable,
+               .p = _kp,
               .i = _ki,
+              .d = _kd,
               .i_max = _i_max,
               .out_min = _min_output,
-              .out_max = _max_output,
-              .isEnabled = enable} {}
+              .out_max = _max_output} {}
 
     PIDController(config::AxisPID_t _pid) : pid(_pid) {}
 
@@ -66,13 +66,13 @@ class PIDController {
     void setNewPid(config::AxisPID_t _pid) { pid = _pid; }
     void setNewPid(float _kp, float _ki, float _kd, float _i_max, float _min_output,
                    float _max_output, bool enable) {
-        pid = config::AxisPID_t{.p = _kp,
-                  .d = _kd,
+        pid = config::AxisPID_t{.isEnabled = enable,
+        .p = _kp,
                   .i = _ki,
+                  .d = _kd,
                   .i_max = _i_max,
                   .out_min = _min_output,
-                  .out_max = _max_output,
-                  .isEnabled = enable};
+                  .out_max = _max_output};
     }
 
    private:

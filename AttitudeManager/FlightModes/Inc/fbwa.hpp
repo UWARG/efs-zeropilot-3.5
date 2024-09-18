@@ -21,6 +21,11 @@ class FBWA : public Flightmode {
     // TODO: FIXME to be a control limit class
     ControlLimits_t fbwa_control_limits;
     config::ControlTuning_t tuningData;
+
+    // PIDController::PID pitch_pids = {0.1, 0.1, 0.1, 1.0, -100.0, +100.0};
+    PIDController pitch_pid_controller{tuningData.PIDValues.pitchPID};
+    PIDController roll_pid_controller{tuningData.PIDValues.rollPID};
+    PIDController yaw_pid_controller{tuningData.PIDValues.yawPID};
 };
 
 }  // namespace AM
