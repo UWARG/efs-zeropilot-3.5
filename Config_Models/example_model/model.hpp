@@ -119,7 +119,11 @@ namespace config
                     }
                 }
             },
-            .flightmodeConstructor = constructObject<AM::Flightmode, AM::FBWA>
+
+            // TODO: Verify legitamacy of this chatGPT'd statement
+            .flightmodeConstructor = [] { 
+                return constructObject<AM::Flightmode, AM::FBWA>(flightmodes[1].tuningData); 
+            }
         }
     };
 
