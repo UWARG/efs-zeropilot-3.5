@@ -37,6 +37,14 @@ namespace AM {
             (fbwa_control_limits.throttleLimit.max - fbwa_control_limits.throttleLimit.min) /
             (AM::AttitudeManager::INPUT_MAX - AM::AttitudeManager::INPUT_MIN);
         
+
+        // TODO: replace this with PID outputs
+        float TEMP_VAL = 0;
+        float TEMP_VAL_RATE = 0;
+        mappedOutputs.pitch = pitch_pid_controller.execute(mappedOutputs.pitch, TEMP_VAL, TEMP_VAL_RATE);
+        mappedOutputs.roll = pitch_pid_controller.execute(mappedOutputs.roll, TEMP_VAL, TEMP_VAL_RATE);
+        mappedOutputs.yaw = pitch_pid_controller.execute(mappedOutputs.yaw, TEMP_VAL_RATE);
+        
         return mappedOutputs;
     }
 
