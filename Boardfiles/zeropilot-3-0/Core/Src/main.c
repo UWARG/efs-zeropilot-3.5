@@ -62,7 +62,12 @@ void MX_FREERTOS_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+void GPIOTask(void *pvParameters){
+	while(1){
+		HAL_GPIO_TogglePin (GPIOF, GPIO_PIN_15);
+		osDelay(500);
+	}
+}
 /* USER CODE END 0 */
 
 /**
@@ -108,15 +113,11 @@ int main(void)
 
   /* USER CODE END 2 */
 
-  /* Init scheduler */
-  osKernelInitialize();
+  /* TODO: Replace the following testing code with system manager init code */
+  TaskHandle_t hGPIO = NULL;
+  xTaskCreate(GPIOTask, "GPIO", 50U, NULL, osPriorityNormal, &hGPIO);
 
-  /* Call init function for freertos objects (in cmsis_os2.c) */
-  MX_FREERTOS_Init();
-
-  /* Start scheduler */
-  osKernelStart();
-
+  vTaskStartScheduler();
   /* We should never get here as control is now taken by the scheduler */
 
   /* Infinite loop */
@@ -126,6 +127,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+
   }
   /* USER CODE END 3 */
 }
