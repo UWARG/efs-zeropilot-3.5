@@ -115,7 +115,8 @@ int main(void)
 
   /* TODO: Replace the following testing code with system manager init code */
   TaskHandle_t hGPIO = NULL;
-  xTaskCreate(GPIOTask, "GPIO", 50U, NULL, osPriorityNormal, &hGPIO);
+  const configSTACK_DEPTH_TYPE GPIO_MEM_DEPTH  = 50U; 
+  xTaskCreate(GPIOTask, "GPIO", GPIO_MEM_DEPTH, NULL, osPriorityNormal, &hGPIO);
 
   vTaskStartScheduler();
   /* We should never get here as control is now taken by the scheduler */
