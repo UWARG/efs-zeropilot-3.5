@@ -5,9 +5,17 @@
 
 #include "imu_driver.hpp"
 #include <stdint.h>
+#include "stm32f4xx_hal.h"
+#include "stm32f4xx_hal_gpio.h"
+
+#define GYRO_CALIBRATION_DATA_BUFFER_SIZE 14
+#define GYRO_CALIBRATION_RAW_DATA_BUFFER_SIZE 7
+#define RAW_DATA_BUFFER_SIZE 7
 
 class ICM42688 : public IMUDriver {
     public:
+        ICM42688(SPI_HandleTypeDef * SPI_HANDLE, GPIO_TypeDef * CS_GPIO_PORT, uint16_t CS_PIN);
+
         /**
         * Sets up the IMU's initial starting conditions by setting 
         * the cs pin and calling reset(), setLowNoiseMode(), and calibrate()
@@ -32,6 +40,7 @@ class ICM42688 : public IMUDriver {
          */
         IMUData_t getResult(uint8_t * data_buffer) override;
 
+    private:
         /**
         * Communicate with IMU via SPI to read raw data
          * 
@@ -85,7 +94,6 @@ class ICM42688 : public IMUDriver {
          */
         void setGyroFS(uint8_t fssel);
 
-    private:
         //Constants (can be found in ICM42688 documentation https://www.cdiweb.com/datasheets/invensense/ds-000347-icm-42688-p-v1.2.pdf)
         const uint8_t REG_BANK_SEL = 0x76;
         const uint8_t UB0_REG_DEVICE_CONFIG = 0x11;
@@ -99,11 +107,15 @@ class ICM42688 : public IMUDriver {
         float gyroBD[3] = {0, 0, 0};
         float gyrB[3] = {0, 0, 0};
         float gyr[3] = {0, 0, 0};
-        uint8_t gyro_buffer[14];
-        int16_t raw_meas_gyro[7];
+        uint8_t gyro_buffer[GYRO_CALIBRATION_DATA_BUFFER_SIZE];
+        int16_t raw_meas_gyro[GYRO_CALIBRATION_RAW_DATA_BUFFER_SIZE];
 
         //Used to hold raw IMU data
-        int16_t raw_meas[7];
+        int16_t raw_meas[RAW_DATA_BUFFER_SIZE];
+
+        SPI_HandleTypeDef * SPI_HANDLE;
+        GPIO_TypeDef * CS_GPIO_PORT;
+        uint16_t CS_PIN;
 };
 
 #endif //ICM42688_HPP

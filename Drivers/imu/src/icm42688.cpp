@@ -1,7 +1,7 @@
 // icm42688.cpp
 
 #include "icm42688.hpp"
-#include "stm32l5xx_hal_conf"
+#include "stm32l5xx_hal_conf.h"
 #include "stm32l5xx_it.h"
 #include "spi.h"
 #include "gpio.h"
@@ -9,12 +9,35 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#define CS_GPIO_PORT GPIOA
-#define CS_PIN GPIO_PIN_4
+//#define CS_GPIO_PORT GPIOA
+//#define CS_PIN GPIO_PIN_4
+
+#define REG_BANK_SEL 0x76;
+#define UB0_REG_DEVICE_CONFIG 0x11;
+#define UB0_REG_PWR_MGMT0 0x4E;
+#define UB0_REG_TEMP_DATA1 0x1D;
+
+#define READ_BIT 0x80
+
+//Scale Factors (refer to page 11-12 of https://product.tdk.com/system/files/dam/doc/product/sensor/mortion-inertial/imu/data_sheet/ds-000347-icm-42688-p-v1.6.pdf)
+
+#define GYRO_SENSITIVITY_2000DPS 16.4           //Currently in Primary Use
+#define GYRO_SENSITIVITY_1000DPS 32.8
+#define GYRO_SENSITIVITY_500DPS 65.5
+#define GYRO_SENSITIVITY_250DPS 131
+#define GYRO_SENSITIVITY_125DPS 262
+#define GYRO_SENSITIVITY_62_5DPS 524.3
+#define GYRO_SENSITIVITY_31_25DPS 1048.6
+#define GYRO_SENSITIVITY_15_625PS 2097.2
+
+#define ACCEL_SENSITIVITY_2G 16384 
+#define ACCEL_SENSITIVITY_4G 8192
+#define ACCEL_SENSITIVITY_8G 4096
+#define ACCEL_SENSITIVITY_16G 2048              //Currently in Primary Use
 
 void ICM42688::readRegister(uint8_t sub_address, uint8_t count, uint8_t * dest) {
     //Set read bit for register address
-    uint8_t tx = sub_address | 0x80;
+    uint8_t tx = sub_address | READ_BIT;
 
     //Dummy transmit and receive buffers
     uint8_t dummy_tx[count];
@@ -25,8 +48,8 @@ void ICM42688::readRegister(uint8_t sub_address, uint8_t count, uint8_t * dest) 
 
     HAL_GPIO_WritePin(CS_GPIO_PORT, CS_PIN, GPIO_PIN_RESET);
 
-    HAL_SPI_TransmitReceive(&hspi1, &tx, &dummy_rx, 1, HAL_MAX_DELAY);
-    HAL_SPI_TransmitReceive(&hspi1, dummy_tx, dest, count, HAL_MAX_DELAY);
+    HAL_SPI_TransmitReceive(SPI_HANDLE, &tx, &dummy_rx, 1, HAL_MAX_DELAY);
+    HAL_SPI_TransmitReceive(SPI_HANDLE, dummy_tx, dest, count, HAL_MAX_DELAY);
 
     HAL_GPIO_WritePin(CS_GPIO_PORT, CS_PIN, GPIO_PIN_SET);
 }
@@ -37,7 +60,7 @@ void ICM42688::writeRegister(uint8_t sub_address, uint8_t data) {
 
     HAL_GPIO_WritePin(CS_GPIO_PORT, CS_PIN, GPIO_PIN_RESET);
 
-    HAL_SPI_Transmit(&hspi1, tx_buf, 2, HAL_MAX_DELAY);
+    HAL_SPI_Transmit(SPI_HANDLE, tx_buf, sizeof(tx_buf), HAL_MAX_DELAY);
     
     HAL_GPIO_WritePin(CS_GPIO_PORT, CS_PIN, GPIO_PIN_SET);
 }
@@ -125,13 +148,13 @@ IMUData_t ICM42688::getResult(uint8_t * data_buffer) {
 
     IMUData_t IMUData {};
 
-    IMUData.accx = (float)raw_meas[1] / 2048.0;     //Sensitivity Scale Factor in LSB/g
-    IMUData.accy = (float)raw_meas[2] / 2048.0;     //2048.0 Corresponds with +/- 16g
-    IMUData.accz = (float)raw_meas[3] / 2048.0;
+    IMUData.accx = (float)raw_meas[1] / ACCEL_SENSITIVITY_16G;
+    IMUData.accy = (float)raw_meas[2] / ACCEL_SENSITIVITY_16G;
+    IMUData.accz = (float)raw_meas[3] / ACCEL_SENSITIVITY_16G;
 
-    IMUData.gyrx = (float)raw_meas[4] / 16.4;       //Sensitivity Scale Factor LSB/dps
-    IMUData.gyry = (float)raw_meas[5] / 16.4;       //16.4 Corresponds with +/- 2000dps
-    IMUData.gyrz = (float)raw_meas[6] / 16.4;
+    IMUData.gyrx = (float)raw_meas[4] / GYRO_SENSITIVITY_2000DPS;
+    IMUData.gyry = (float)raw_meas[5] / GYRO_SENSITIVITY_2000DPS;
+    IMUData.gyrz = (float)raw_meas[6] / GYRO_SENSITIVITY_2000DPS;
 
     return IMUData;
 }
