@@ -12,7 +12,7 @@
 #include "sbus_receiver.hpp"
 #include "tim.h"
 #include "GroundStationCommunication.hpp"
-
+#include "TelemetryManager.hpp"
 
 #define TIMEOUT_CYCLES 250000 // 25k = 1 sec fro testing 10/14/2023 => 250k = 10 sec
 #define TIMOUT_MS      10000 // 10 sec
@@ -34,28 +34,32 @@ SystemManager::SystemManager()
     // VARIABLES FOR TELEMETRY MANAGER TO HAVE AS REFERENCES THEY OBV SHOULD BE PUT SOMEWHERE ELSE,
     // BUT I FEEL LIKE SM PM WOULD KNOW WHERE. MAYBE IN THE HPP FILE? IDK HOW YOU ARE PLANNING ON
     // GATHERING THE DATA. I JUST PUT THEM HERE FOR NOW
-    int32_t lat = 0;
-    int32_t lon = 0;
-    int32_t alt = 0;
-    int32_t relative_alt = 0;
-    int16_t vx = 0;
-    int16_t vy = 0;
-    int16_t vz = 0;
-    uint16_t hdg = 0;
-    int32_t time_boot_ms = 0;
+
+    // Struct containing the state of the drone
+    StateData stateData;
+    stateData.lat = 0;
+    stateData.lon = 0;
+    stateData.alt = 0;
+    stateData.relative_alt = 0;
+    stateData.vx = 0;
+    stateData.vy = 0;
+    stateData.vz = 0;
+    stateData.hdg = 0;
+    stateData.time_boot_ms = 0;
+    stateData.roll = 0;
+    stateData.pitch = 0;
+    stateData.yaw = 0;
+    stateData.rollspeed = 0;
+    stateData.pitchspeed = 0;
+    stateData.yawspeed = 0;
+
     MAV_STATE state = MAV_STATE::MAV_STATE_STANDBY;
     MAV_MODE_FLAG mode = MAV_MODE_FLAG::MAV_MODE_FLAG_MANUAL_INPUT_ENABLED;
-    float roll = 0;
-    float pitch = 0;
-    float yaw = 0;
-    float rollspeed = 0;
-    float pitchspeed = 0;
-    float yawspeed = 0;
 
     // Creating parameters for the GroundStationCommunication that will be passed to telemetryManager
     TMCircularBuffer* DMAReceiveBuffer = &(new TMCircularBuffer(rfd900_circular_buffer));
 
-     // the buffer that stores non_routine/low_priority bytes (ex. Battery Voltage) to be sent to the
+    // the buffer that stores non_routine/low_priority bytes (ex. Battery Voltage) to be sent to the
     // ground station.
     uint8_t* lowPriorityTransmitBuffer = new uint8_t[RFD900_BUF_SIZE];
 
@@ -66,9 +70,10 @@ SystemManager::SystemManager()
     GroundStationCommunication GSC = new GroundStationCommunication(DMAReceiveBuffer, lowPriorityTransmitBuffer, 
                                                                     highPriorityTransmitBuffer, RFD900_BUF_SIZE);
 
-    this->telemetryManager =
-        new TelemetryManager(lat, lon, alt, relative_alt, vx, vy, vz, hdg, time_boot_ms, state,
-                             mode, roll, pitch, yaw, rollspeed, pitchspeed, yawspeed, GSC);
+    // the buffer that stores the bytes received from the ground station.                                           
+    MavlinkTranslator MT;
+
+    this->telemetryManager = new TelemetryManager(stateData, state, mode, GSC, MT);
     this->telemetryManager->init();
     // IDK WHERE SM PLANS TO DO THIS, BUT telemetryManager.update() NEEDS TO BE CALLED AT A SEMI
     // REGULAR INTERVAL AS IT DEALS WITH MESSAGE DECODING AND LOW PRIORITY DATA TRANSMISSION
