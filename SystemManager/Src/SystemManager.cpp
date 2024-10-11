@@ -11,6 +11,7 @@
 #include "sbus_defines.h"
 #include "sbus_receiver.hpp"
 #include "tim.h"
+#include "GroundStationCommunication.hpp"
 
 
 #define TIMEOUT_CYCLES 250000 // 25k = 1 sec fro testing 10/14/2023 => 250k = 10 sec
@@ -51,9 +52,23 @@ SystemManager::SystemManager()
     float pitchspeed = 0;
     float yawspeed = 0;
 
+    // Creating parameters for the GroundStationCommunication that will be passed to telemetryManager
+    TMCircularBuffer* DMAReceiveBuffer = &(new TMCircularBuffer(rfd900_circular_buffer));
+
+     // the buffer that stores non_routine/low_priority bytes (ex. Battery Voltage) to be sent to the
+    // ground station.
+    uint8_t* lowPriorityTransmitBuffer = new uint8_t[RFD900_BUF_SIZE];
+
+    // the buffer that stores routine/high_priority bytes (ex. heading, general state data) to be
+    // sent to the ground station.
+    uint8_t* highPriorityTransmitBuffer = new uint8_t[RFD900_BUF_SIZE];
+
+    GroundStationCommunication GSC = new GroundStationCommunication(DMAReceiveBuffer, lowPriorityTransmitBuffer, 
+                                                                    highPriorityTransmitBuffer, RFD900_BUF_SIZE);
+
     this->telemetryManager =
         new TelemetryManager(lat, lon, alt, relative_alt, vx, vy, vz, hdg, time_boot_ms, state,
-                             mode, roll, pitch, yaw, rollspeed, pitchspeed, yawspeed);
+                             mode, roll, pitch, yaw, rollspeed, pitchspeed, yawspeed, GSC);
     this->telemetryManager->init();
     // IDK WHERE SM PLANS TO DO THIS, BUT telemetryManager.update() NEEDS TO BE CALLED AT A SEMI
     // REGULAR INTERVAL AS IT DEALS WITH MESSAGE DECODING AND LOW PRIORITY DATA TRANSMISSION

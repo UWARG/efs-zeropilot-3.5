@@ -23,16 +23,13 @@
 
 class TelemetryManager {
    public:
-    GroundStationCommunication GSC;
+
     MavlinkTranslator MT;
     // the buffer that stores the bytes received from the ground station.
-    TMCircularBuffer* DMAReceiveBuffer;
-    // the buffer that stores non_routine/low_priority bytes (ex. Battery Voltage) to be sent to the
-    // ground station.
-    uint8_t* lowPriorityTransmitBuffer;
-    // the buffer that stores routine/high_priority bytes (ex. heading, general state data) to be
-    // sent to the ground station.
-    uint8_t* highPriorityTransmitBuffer;
+
+    // The object that facilitates communication with the ground station (?)
+    // I'm not 100% sure what GroundStationCommunication does
+    GroundStationCommunication& GSC;
 
     /*References to variables that contain the state of the drone (lat, lng, yaw, pitch, etc..).
      * They are updated by System Manager*/
@@ -137,7 +134,7 @@ class TelemetryManager {
     TelemetryManager(int32_t& lat, int32_t& lon, int32_t& alt, int32_t& relative_alt, int16_t& vx,
                      int16_t& vy, int16_t& vz, uint16_t& hdg, int32_t& time_boot_ms,
                      MAV_STATE& state, MAV_MODE_FLAG& mode, float& roll, float& pitch, float& yaw,
-                     float& rollspeed, float& pitchspeed, float& yawspeed);
+                     float& rollspeed, float& pitchspeed, float& yawspeed, GroundStationCommunication& GSC);
 
     /**
      * @brief Destroy the Telemetry Manager object. Also destroys the FreeRTOS tasks associated with

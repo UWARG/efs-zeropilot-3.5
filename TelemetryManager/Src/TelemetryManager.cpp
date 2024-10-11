@@ -8,12 +8,8 @@ TelemetryManager::TelemetryManager(int32_t& lat, int32_t& lon, int32_t& alt, int
                                    int16_t& vx, int16_t& vy, int16_t& vz, uint16_t& hdg,
                                    int32_t& time_boot_ms, MAV_STATE& state, MAV_MODE_FLAG& mode,
                                    float& roll, float& pitch, float& yaw, float& rollspeed,
-                                   float& pitchspeed, float& yawspeed)
-    : DMAReceiveBuffer(new TMCircularBuffer(rfd900_circular_buffer)),
-      lowPriorityTransmitBuffer(new uint8_t[RFD900_BUF_SIZE]),
-      highPriorityTransmitBuffer(new uint8_t[RFD900_BUF_SIZE]),
-      GSC(*DMAReceiveBuffer, lowPriorityTransmitBuffer, highPriorityTransmitBuffer,
-          RFD900_BUF_SIZE),
+                                   float& pitchspeed, float& yawspeed, GroundStationCommunication& GSC)
+    : GSC(GSC)
       lat(lat),
       lon(lon),
       alt(alt),
