@@ -68,10 +68,10 @@ void routineDataTransmission(void* pvParameters) {
 
         // Pack the message with the actual data
         mavlink_msg_global_position_int_pack(system_id, component_id, &globalPositionIntMsg,
-                                             tm->stateData.time_boot_ms, tm->stateData.lat, 
-                                             tm->stateData.lon, tm->stateData.alt,
-                                             tm->stateData.relative_alt, tm->stateData.vx, 
-                                             tm->stateData.vy, tm->stateData.vz, tm->stateData.hdg);
+                                             *(tm->stateData.time_boot_ms), *(tm->stateData.lat), 
+                                             *(tm->stateData.lon), *(tm->stateData.alt),
+                                             *(tm->stateData.relative_alt), *(tm->stateData.vx), 
+                                             *(tm->stateData.vy), *(tm->stateData.vz), *(tm->stateData.hdg));
 
         // Add the packed message to the byte queue for later transmission
         tm->MT.addMavlinkMsgToByteQueue(globalPositionIntMsg, tm->GSC.highPriorityTransmitBuffer);
@@ -80,9 +80,9 @@ void routineDataTransmission(void* pvParameters) {
         mavlink_message_t attitudeMsg = {0};
         // Pack the message with the actual data
         mavlink_msg_attitude_pack(system_id, component_id, &attitudeMsg, 
-                                  tm->stateData.time_boot_ms, tm->stateData.roll, tm->stateData.pitch, 
-                                  tm->stateData.yaw, tm->stateData.rollspeed, tm->stateData.pitchspeed, 
-                                  tm->stateData.yawspeed);
+                                  *(tm->stateData.time_boot_ms), *(tm->stateData.roll), *(tm->stateData.pitch), 
+                                  *(tm->stateData.yaw), *(tm->stateData.rollspeed), *(tm->stateData.pitchspeed), 
+                                  *(tm->stateData.yawspeed));
 
         // Add the packed message to the byte queue for later transmission
         tm->MT.addMavlinkMsgToByteQueue(attitudeMsg, tm->GSC.highPriorityTransmitBuffer);

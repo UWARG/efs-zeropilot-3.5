@@ -57,7 +57,8 @@ SystemManager::SystemManager()
     MAV_MODE_FLAG mode = MAV_MODE_FLAG::MAV_MODE_FLAG_MANUAL_INPUT_ENABLED;
 
     // Creating parameters for the GroundStationCommunication that will be passed to telemetryManager
-    TMCircularBuffer* DMAReceiveBuffer = &(new TMCircularBuffer(rfd900_circular_buffer));
+    TMCircularBuffer& DMAReceiveBuffer = *(new TMCircularBuffer(rfd900_circular_buffer));
+
 
     // the buffer that stores non_routine/low_priority bytes (ex. Battery Voltage) to be sent to the
     // ground station.

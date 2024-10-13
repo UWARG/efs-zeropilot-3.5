@@ -26,62 +26,62 @@ struct StateData {
      * They are updated by System Manager*/
     // Altitude (MSL) (unit:
     // mm)(https://mavlink.io/en/messages/common.html#GLOBAL_POSITION_INT).
-    int32_t& alt;
+    int32_t* alt;
 
     // The latitude of the drone (unit:
     // degE7)(https://mavlink.io/en/messages/common.html#GLOBAL_POSITION_INT).
-    int32_t& lat;
+    int32_t* lat;
 
     // The longitude of the drone (unit:
     // degE7)(https://mavlink.io/en/messages/common.html#GLOBAL_POSITION_INT).
-    int32_t& lon;
+    int32_t* lon;
 
     // Altitude above home (unit:
     // mm)(https://mavlink.io/en/messages/common.html#GLOBAL_POSITION_INT).
-    int32_t& relative_alt;
+    int32_t* relative_alt;
 
     // Ground X Speed (Latitude, positive north) (unit:
     // cm/s)(https://mavlink.io/en/messages/common.html#GLOBAL_POSITION_INT).
-    int16_t& vx;
+    int16_t* vx;
 
     // Ground Y Speed (Longitude, positive east) (unit:
     // cm/s)(https://mavlink.io/en/messages/common.html#GLOBAL_POSITION_INT).
-    int16_t& vy;
+    int16_t* vy;
 
     // Ground Z Speed (Altitude, positive down) (unit:
     // cm/s)(https://mavlink.io/en/messages/common.html#GLOBAL_POSITION_INT).
-    int16_t& vz;
+    int16_t* vz;
 
     // Vehicle heading (yaw angle), 0.0..359.99 degrees. If unknown, set to: UINT16_MAX
     // (unit: cdeg)(https://mavlink.io/en/messages/common.html#GLOBAL_POSITION_INT).
-    uint16_t& hdg;
+    uint16_t* hdg;
     // Timestamp (time since system boot) (unit: ms)
     // (https://mavlink.io/en/messages/common.html#GLOBAL_POSITION_INT).
-    int32_t& time_boot_ms;
+    int32_t* time_boot_ms;
 
     // Roll angle (-pi..+pi) (unit: rad)
     // (https://mavlink.io/en/messages/common.html#ATTITUDE).
-    float& roll;
+    float* roll;
 
     // Pitch angle (-pi..+pi) (unit: rad)
     // (https://mavlink.io/en/messages/common.html#ATTITUDE).
-    float& pitch;
+    float* pitch;
 
     // Yaw angle (-pi..+pi) (unit: rad)
     // (https://mavlink.io/en/messages/common.html#ATTITUDE).
-    float& yaw;
+    float* yaw;
 
     // Roll angular speed (unit: rad/s)
     // (https://mavlink.io/en/messages/common.html#ATTITUDE).
-    float& rollspeed;
+    float* rollspeed;
 
     // Pitch angular speed (unit: rad/s)
     // (https://mavlink.io/en/messages/common.html#ATTITUDE).
-    float& pitchspeed;
+    float* pitchspeed;
 
     // yawspeed Yaw angular speed (unit: rad/s)
     // (https://mavlink.io/en/messages/common.html#ATTITUDE).
-    float& yawspeed;
+    float* yawspeed;
 
 };
 
