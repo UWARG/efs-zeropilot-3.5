@@ -68,8 +68,8 @@ SystemManager::SystemManager()
     // sent to the ground station.
     uint8_t* highPriorityTransmitBuffer = new uint8_t[RFD900_BUF_SIZE];
 
-    GroundStationCommunication GSC = new GroundStationCommunication(DMAReceiveBuffer, lowPriorityTransmitBuffer, 
-                                                                    highPriorityTransmitBuffer, RFD900_BUF_SIZE);
+    GroundStationCommunication GSC = *(new GroundStationCommunication(DMAReceiveBuffer, lowPriorityTransmitBuffer, 
+                                                                    highPriorityTransmitBuffer, RFD900_BUF_SIZE));
 
     // the buffer that stores the bytes received from the ground station.                                           
     MavlinkTranslator MT;
