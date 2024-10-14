@@ -8,7 +8,7 @@ TelemetryManager::TelemetryManager(StateData& stateData, MAV_STATE& state, MAV_M
                                    GroundStationCommunication& GSC, MavlinkTranslator& MT)
     : stateData(stateData),
       state(state),
-      mode(mode) 
+      mode(mode),
       GSC(GSC),
       MT(MT) {}
 
