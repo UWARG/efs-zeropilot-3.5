@@ -37,21 +37,40 @@ SystemManager::SystemManager()
 
     // Struct containing the state of the drone
     StateData stateData;
-    stateData.lat = 0;
-    stateData.lon = 0;
-    stateData.alt = 0;
-    stateData.relative_alt = 0;
-    stateData.vx = 0;
-    stateData.vy = 0;
-    stateData.vz = 0;
-    stateData.hdg = 0;
-    stateData.time_boot_ms = 0;
-    stateData.roll = 0;
-    stateData.pitch = 0;
-    stateData.yaw = 0;
-    stateData.rollspeed = 0;
-    stateData.pitchspeed = 0;
-    stateData.yawspeed = 0;
+
+    // values to be assigned to stateData
+    int32_t alt = 0;
+    int32_t lat = 0;
+    int32_t lon = 0;
+    int32_t relative_alt = 0;
+    int16_t vx = 0;
+    int16_t vy = 0;
+    int16_t vz = 0;
+    uint16_t hdg = 0;
+    int32_t time_boot_ms = 0;
+    float roll = 0;
+    float pitch = 0;
+    float yaw = 0;
+    float rollspeed = 0;
+    float pitchspeed = 0;
+    float yawspeed = 0;
+
+    // use the memory address of the above, since stateData uses pointers
+    stateData.alt = &alt;
+    stateData.lat = &lat;
+    stateData.lon = &lon;
+    stateData.relative_alt = &relative_alt;
+    stateData.vx = &vx;
+    stateData.vy = &vy;
+    stateData.vz = &vz;
+    stateData.hdg = &hdg;
+    stateData.time_boot_ms = &time_boot_ms;
+    stateData.roll = &roll;
+    stateData.pitch = &pitch;
+    stateData.yaw = &yaw;
+    stateData.rollspeed = &rollspeed;
+    stateData.pitchspeed = &pitchspeed;
+    stateData.yawspeed = &yawspeed;
 
     MAV_STATE state = MAV_STATE::MAV_STATE_STANDBY;
     MAV_MODE_FLAG mode = MAV_MODE_FLAG::MAV_MODE_FLAG_MANUAL_INPUT_ENABLED;
