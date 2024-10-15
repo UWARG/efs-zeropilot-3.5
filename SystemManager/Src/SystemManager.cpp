@@ -13,6 +13,8 @@
 #include "tim.h"
 #include "GroundStationCommunication.hpp"
 #include "TelemetryManager.hpp"
+#include "GroundStationCommunication.hpp"
+#include "TelemetryManager.hpp"
 
 #define TIMEOUT_CYCLES 250000 // 25k = 1 sec fro testing 10/14/2023 => 250k = 10 sec
 #define TIMOUT_MS      10000 // 10 sec
