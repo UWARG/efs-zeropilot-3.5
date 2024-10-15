@@ -74,8 +74,8 @@ SystemManager::SystemManager()
     stateData.pitchspeed = &pitchspeed;
     stateData.yawspeed = &yawspeed;
 
-    MAV_STATE state = MAV_STATE::MAV_STATE_STANDBY;
-    MAV_MODE_FLAG mode = MAV_MODE_FLAG::MAV_MODE_FLAG_MANUAL_INPUT_ENABLED;
+    MAV_STATE mavState = MAV_STATE::MAV_STATE_STANDBY;
+    MAV_MODE_FLAG mavMode = MAV_MODE_FLAG::MAV_MODE_FLAG_MANUAL_INPUT_ENABLED;
 
     // Creating parameters for the GroundStationCommunication that will be passed to telemetryManager
     TMCircularBuffer DMAReceiveBuffer = *(new TMCircularBuffer(rfd900_circular_buffer));
@@ -95,7 +95,7 @@ SystemManager::SystemManager()
     // the buffer that stores the bytes received from the ground station.                                           
     MavlinkTranslator MT;
 
-    this->telemetryManager = new TelemetryManager(stateData, state, mode, GSC, MT);
+    this->telemetryManager = new TelemetryManager(stateData, mavState, mavMode, GSC, MT);
     this->telemetryManager->init();
     // IDK WHERE SM PLANS TO DO THIS, BUT telemetryManager.update() NEEDS TO BE CALLED AT A SEMI
     // REGULAR INTERVAL AS IT DEALS WITH MESSAGE DECODING AND LOW PRIORITY DATA TRANSMISSION

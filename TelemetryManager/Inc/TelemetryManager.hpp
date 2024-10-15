@@ -101,9 +101,9 @@ class TelemetryManager {
 
 
     // System status flag (https://mavlink.io/en/messages/minimal.html#MAV_STATE).
-    MAV_STATE& state;
+    MAV_STATE& mavState;
     // System mode bitmap (https://mavlink.io/en/messages/minimal.html#MAV_MODE_FLAG).
-    MAV_MODE_FLAG& mode;
+    MAV_MODE_FLAG& mavMode;
     
 
     /**
@@ -121,13 +121,13 @@ class TelemetryManager {
     /**
      * @brief Construct a new Telemetry Manager object. Does not initialize the tasks.
      * To do so call the init() method.
-     * @param TM The state of the drone (lat, lng, yaw, pitch, etc..).
-     * @param state System status flag (https://mavlink.io/en/messages/minimal.html#MAV_STATE).
-     * @param mode System mode bitmap (https://mavlink.io/en/messages/minimal.html#MAV_MODE_FLAG).
+     * @param stateData The state of the drone (lat, lng, yaw, pitch, etc..).
+     * @param mav_state System status flag (https://mavlink.io/en/messages/minimal.html#MAV_STATE).
+     * @param mav_mode System mode bitmap (https://mavlink.io/en/messages/minimal.html#MAV_MODE_FLAG).
      * @param GSC Object to handle communication with the groundstation
      * @param MT Object to translate MAVLink data
      */
-    TelemetryManager(TMStateData& stateData, MAV_STATE& state, MAV_MODE_FLAG& mode, 
+    TelemetryManager(TMStateData& stateData, MAV_STATE& mavState, MAV_MODE_FLAG& mavMode, 
                      GroundStationCommunication& GSC, MavlinkTranslator& MT);
 
     /**

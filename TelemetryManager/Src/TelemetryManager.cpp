@@ -4,11 +4,11 @@
 // FreeRTOS task handle for the routineDataTransmission task
 TaskHandle_t routineDataTransmissionH = NULL;
 
-TelemetryManager::TelemetryManager(TMStateData& stateData, MAV_STATE& state, MAV_MODE_FLAG& mode, 
+TelemetryManager::TelemetryManager(TMStateData& stateData, MAV_STATE& mav_state, MAV_MODE_FLAG& mav_mode, 
                                    GroundStationCommunication& GSC, MavlinkTranslator& MT)
     : stateData(stateData),
-      state(state),
-      mode(mode),
+      mavState(mavState),
+      mavMode(mavMode),
       GSC(GSC),
       MT(MT) {}
 
@@ -93,7 +93,7 @@ void routineDataTransmission(void* pvParameters) {
         mavlink_message_t heartbeatMsg = {0};
         // Pack the message with the actual data
         mavlink_msg_heartbeat_pack(system_id, component_id, &heartbeatMsg, MAV_TYPE_QUADROTOR,
-                                   MAV_AUTOPILOT_INVALID, tm->mode, 0, tm->state);
+                                   MAV_AUTOPILOT_INVALID, tm->mavMode, 0, tm->mavState);
         // Add the packed message to the byte queue for later transmission
         tm->MT.addMavlinkMsgToByteQueue(heartbeatMsg, tm->GSC.highPriorityTransmitBuffer);
 
