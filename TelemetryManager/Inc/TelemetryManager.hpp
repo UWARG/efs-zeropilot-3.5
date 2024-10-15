@@ -75,8 +75,6 @@ struct TMStateData {
     // (https://mavlink.io/en/messages/common.html#ATTITUDE).
     float* rollspeed;
 
-    float* rollspeed;
-
     // Pitch angular speed (unit: rad/s)
     // (https://mavlink.io/en/messages/common.html#ATTITUDE).
     float* pitchspeed;
