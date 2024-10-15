@@ -16,6 +16,7 @@ TelemetryManager::TelemetryManager(int32_t& lat, int32_t& lon, int32_t& alt, int
           RFD900_BUF_SIZE),
       lat(lat),
       lon(lon),
+      
       alt(alt),
       relative_alt(relative_alt),
       vx(vx),
