@@ -21,7 +21,7 @@
 #include "MavlinkTranslator.hpp"
 #include "task.h"
 
-struct StateData {
+struct TMStateData {
     /*References to variables that contain the state of the drone (lat, lng, yaw, pitch, etc..).
      * They are updated by System Manager*/
     // Altitude (MSL) (unit:
@@ -89,7 +89,7 @@ class TelemetryManager {
    public:
 
     // struct containing variables that relate to the state of the drone (lat, lng, yaw, pitch, etc..).
-    StateData stateData;
+    TMStateData stateData;
 
     // the buffer that stores the bytes received from the ground station.
     MavlinkTranslator& MT;
@@ -119,13 +119,13 @@ class TelemetryManager {
     /**
      * @brief Construct a new Telemetry Manager object. Does not initialize the tasks.
      * To do so call the init() method.
-     * @param stateData The state of the drone (lat, lng, yaw, pitch, etc..).
+     * @param TM The state of the drone (lat, lng, yaw, pitch, etc..).
      * @param state System status flag (https://mavlink.io/en/messages/minimal.html#MAV_STATE).
      * @param mode System mode bitmap (https://mavlink.io/en/messages/minimal.html#MAV_MODE_FLAG).
      * @param GSC Object to handle communication with the groundstation
      * @param MT Object to translate MAVLink data
      */
-    TelemetryManager(StateData& stateData, MAV_STATE& state, MAV_MODE_FLAG& mode, 
+    TelemetryManager(TMStateData& stateData, MAV_STATE& state, MAV_MODE_FLAG& mode, 
                      GroundStationCommunication& GSC, MavlinkTranslator& MT);
 
     /**

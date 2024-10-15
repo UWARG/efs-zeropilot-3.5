@@ -36,7 +36,7 @@ SystemManager::SystemManager()
     // GATHERING THE DATA. I JUST PUT THEM HERE FOR NOW
 
     // Struct containing the state of the drone
-    StateData stateData;
+    TMStateData stateData;
 
     // values to be assigned to stateData
     int32_t alt = 0;

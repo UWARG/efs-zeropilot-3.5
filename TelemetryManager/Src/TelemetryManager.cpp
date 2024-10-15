@@ -4,7 +4,7 @@
 // FreeRTOS task handle for the routineDataTransmission task
 TaskHandle_t routineDataTransmissionH = NULL;
 
-TelemetryManager::TelemetryManager(StateData& stateData, MAV_STATE& state, MAV_MODE_FLAG& mode, 
+TelemetryManager::TelemetryManager(TMStateData& stateData, MAV_STATE& state, MAV_MODE_FLAG& mode, 
                                    GroundStationCommunication& GSC, MavlinkTranslator& MT)
     : stateData(stateData),
       state(state),
