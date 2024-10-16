@@ -23,6 +23,7 @@ extern "C" {
 #define TIMEOUT_CYCLES 250000 // 25k = 1 sec fro testing 10/14/2023 => 250k = 10 sec
 #define TIMOUT_MS      10000 // 10 sec
 
+// 0 - AM, 1 - TM, 2 - PM
 static TaskHandle_t taskHandles[3];
 
 static uint32_t DisconnectionCount = 0;
@@ -68,8 +69,6 @@ SystemManager::SystemManager()
     // REGULAR INTERVAL AS IT DEALS WITH MESSAGE DECODING AND LOW PRIORITY DATA TRANSMISSION
 }
 
-
-SystemManager::~SystemManager() {}
 
 //wrapper functions are needed as FreeRTOS xTaskCreate function does not accept functions that have "this" pointers
 void SystemManager::attitudeManagerTaskWrapper(void* pvParameters){

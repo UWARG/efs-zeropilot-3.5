@@ -19,7 +19,6 @@ class SystemManager {
     public:
         /* Constructors and Destructors */
         SystemManager();
-        ~SystemManager();
 
         /* Other managers*/
         TelemetryManager *telemetryManager;
