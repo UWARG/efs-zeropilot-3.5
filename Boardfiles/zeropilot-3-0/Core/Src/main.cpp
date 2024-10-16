@@ -29,7 +29,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "SystemManager.hpp"
+#include "drivers_config.hpp"
+#include "independent_watchdog.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -54,19 +56,19 @@
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
-void SystemClock_Config(void);
-void MX_FREERTOS_Init(void);
+extern "C" {
+    void SystemClock_Config(void);
+    void MX_FREERTOS_Init(void);
+}
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void GPIOTask(void *pvParameters){
-	while(1){
-		HAL_GPIO_TogglePin (GPIOF, GPIO_PIN_15);
-		osDelay(500);
-	}
+void SMTask(void * pvParameters){
+  SystemManager SM;
+  SM.startSystemManager();
 }
 /* USER CODE END 0 */
 
@@ -100,24 +102,20 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_DMA_Init();
-  MX_TIM2_Init();
   MX_TIM3_Init();
+  MX_TIM4_Init();
   MX_USART2_UART_Init();
   MX_USART3_UART_Init();
-  if (MX_FATFS_Init() != APP_OK) {
-    Error_Handler();
-  }
-  MX_SDMMC1_SD_Init();
-  MX_IWDG_Init();
+  // if (MX_FATFS_Init() != APP_OK) {
+  //   Error_Handler();
+  // }
+  // MX_SDMMC1_SD_Init();
+  // MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
 
-  /* TODO: Replace the following testing code with system manager init code */
-  TaskHandle_t hGPIO = NULL;
-  const configSTACK_DEPTH_TYPE GPIO_MEM_DEPTH  = 50U; 
-  xTaskCreate(GPIOTask, "GPIO", GPIO_MEM_DEPTH, NULL, osPriorityNormal, &hGPIO);
-
+  xTaskCreate(SMTask, "SM Task", 1500U, NULL, osPriorityNormal, NULL);
   vTaskStartScheduler();
   /* We should never get here as control is now taken by the scheduler */
 

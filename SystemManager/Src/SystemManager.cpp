@@ -23,6 +23,9 @@ extern "C" {
 #define TIMEOUT_CYCLES 250000 // 25k = 1 sec fro testing 10/14/2023 => 250k = 10 sec
 #define TIMOUT_MS      10000 // 10 sec
 
+#define LED1_GPIO GPIOF
+#define LED1_PIN GPIO_PIN_15
+
 // 0 - AM, 1 - TM, 2 - PM
 static TaskHandle_t taskHandles[3];
 
@@ -34,11 +37,11 @@ float prevpitch;
 
 SystemManager::SystemManager()
     : rcController_(sbus_pointer),
-      throttleMotorChannel_(&htim2, TIM_CHANNEL_1),
-      yawMotorChannel_(&htim2, TIM_CHANNEL_2),
-      rollMotorChannel_(&htim2, TIM_CHANNEL_3),
-      pitchMotorChannel_(&htim2, TIM_CHANNEL_4),
-      invertedRollMotorChannel_(&htim3, TIM_CHANNEL_1),
+      throttleMotorChannel_(&htim3, TIM_CHANNEL_1),
+      yawMotorChannel_(&htim3, TIM_CHANNEL_2),
+      rollMotorChannel_(&htim3, TIM_CHANNEL_3),
+      pitchMotorChannel_(&htim3, TIM_CHANNEL_4),
+      invertedRollMotorChannel_(&htim4, TIM_CHANNEL_1),
       watchdog_(TIMOUT_MS) {
     // VARIABLES FOR TELEMETRY MANAGER TO HAVE AS REFERENCES THEY OBV SHOULD BE PUT SOMEWHERE ELSE,
     // BUT I FEEL LIKE SM PM WOULD KNOW WHERE. MAYBE IN THE HPP FILE? IDK HOW YOU ARE PLANNING ON
@@ -92,7 +95,7 @@ void SystemManager::systemManagerTask(){
 
     for(;;){
         printf("SM called\r\n");
-        HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_7); // toggle led light for testing
+        HAL_GPIO_TogglePin(LED1_GPIO, LED1_PIN); // toggle led light for testing
 
         this->rcInputs_ = rcController_->GetRCControl();
 
@@ -112,7 +115,7 @@ void SystemManager::systemManagerTask(){
             DisconnectionCount = 0;  // if the data has changed we want to reset out counter
         }
 
-        watchdog_.refreshWatchdog();  // always hit the dog
+        // watchdog_.refreshWatchdog();  // always hit the dog
 
         if (this->rcInputs_.arm >= (SBUS_MAX / 2)) {
             this->throttleMotorChannel_.set(rcInputs_.throttle);
