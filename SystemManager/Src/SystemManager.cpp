@@ -115,7 +115,7 @@ void SystemManager::systemManagerTask(){
             DisconnectionCount = 0;  // if the data has changed we want to reset out counter
         }
 
-        // watchdog_.refreshWatchdog();  // always hit the dog
+        watchdog_.refreshWatchdog();  // always hit the dog
 
         if (this->rcInputs_.arm >= (SBUS_MAX / 2)) {
             this->throttleMotorChannel_.set(rcInputs_.throttle);

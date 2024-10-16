@@ -110,7 +110,7 @@ int main(void)
   //   Error_Handler();
   // }
   // MX_SDMMC1_SD_Init();
-  // MX_IWDG_Init();
+  MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
