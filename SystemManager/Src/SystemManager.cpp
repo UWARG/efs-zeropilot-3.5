@@ -15,9 +15,20 @@
 #include "TelemetryManager.hpp"
 #include "GroundStationCommunication.hpp"
 #include "TelemetryManager.hpp"
+#include "cmsis_os.h"
+#include "FreeRTOS.h"
+#include <iostream>
+
+extern "C" {
+  #include "app_fatfs.h"
+  #include "log_util.h"
+}
 
 #define TIMEOUT_CYCLES 250000 // 25k = 1 sec fro testing 10/14/2023 => 250k = 10 sec
 #define TIMOUT_MS      10000 // 10 sec
+
+// 0 - AM, 1 - TM, 2 - PM
+static TaskHandle_t taskHandles[3];
 
 static uint32_t DisconnectionCount = 0;
 float prevthrottle;
@@ -102,10 +113,30 @@ SystemManager::SystemManager()
 }
 
 
-SystemManager::~SystemManager() {}
+//wrapper functions are needed as FreeRTOS xTaskCreate function does not accept functions that have "this" pointers
+void SystemManager::attitudeManagerTaskWrapper(void* pvParameters){
+    SystemManager *systemManagerInstance = static_cast<SystemManager *>(pvParameters);  
+    systemManagerInstance->attitudeManagerTask();
+}
 
-void SystemManager::flyManually() {
-    for (;;) {
+void SystemManager::telemetryManagerTaskWrapper(void* pvParameters){
+    SystemManager *systemManagerInstance = static_cast<SystemManager *>(pvParameters);
+    systemManagerInstance->telemetryManagerTask();
+}
+
+void SystemManager::pathManagerTaskWrapper(void *pvParameters) {
+    SystemManager *systemManagerInstance = static_cast<SystemManager *>(pvParameters);
+    systemManagerInstance->pathManagerTask();
+}
+
+void SystemManager::systemManagerTask(){
+    TickType_t xNextWakeTime = xTaskGetTickCount();
+    uint16_t frequency = 5;
+
+    for(;;){
+        printf("SM called\r\n");
+        HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_7); // toggle led light for testing
+
         this->rcInputs_ = rcController_->GetRCControl();
 
         // TO-DO: need to implement it using is_Data_New;
@@ -145,5 +176,64 @@ void SystemManager::flyManually() {
             this->pitchMotorChannel_.set(SBUS_MAX / 2);
             this->invertedRollMotorChannel_.set(SBUS_MAX / 2);
         }
+
+        vTaskDelayUntil(&xNextWakeTime, 1000 / frequency); 
     }
+}
+
+void SystemManager::attitudeManagerTask(){
+    TickType_t xNextWakeTime = xTaskGetTickCount();
+    uint16_t frequency = 5;
+
+    for(;;){
+        //call AM
+
+        printf("AM called\r\n");
+        HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7); // toggle led light for testing
+        vTaskDelayUntil(&xNextWakeTime, 1000 / frequency);  
+    }
+}
+
+void SystemManager::telemetryManagerTask(){
+    TickType_t xNextWakeTime = xTaskGetTickCount();
+    uint16_t frequency = 5;
+
+    for(;;){
+        //call TM
+
+        printf("TM called\r\n");
+        HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_9); // toggle led light for testing
+        vTaskDelayUntil(&xNextWakeTime, 1000 / frequency);  
+    }
+}
+
+void SystemManager::pathManagerTask(){
+    TickType_t xNextWakeTime = xTaskGetTickCount();
+    uint16_t frequency = 5;
+
+    for(;;){
+        //call PM
+
+        printf("PM called\r\n");
+        vTaskDelayUntil(&xNextWakeTime, 1000 / frequency);
+    }
+}
+
+void SystemManager::startSystemManager() {
+    printf("Initializing Tasks\r\n");
+
+    // enabling SD card logging
+    if (MX_FATFS_Init() != APP_OK) {
+        Error_Handler();
+    }
+    logInit();  
+
+    //BaseType_t xTaskCreate( TaskFunction_t pvTaskCode, const char * const pcName, configSTACK_DEPTH_TYPE usStackDepth, void * pvParameters, UBaseType_t uxPriority, TaskHandle_t * pxCreatedTask ); 
+    //                          function's name             description                 size of stack to allocate        parameters for task        priority                    handler 
+    xTaskCreate(attitudeManagerTaskWrapper, "AM TASK", 800U, this, osPriorityNormal, taskHandles);
+    xTaskCreate(telemetryManagerTaskWrapper, "TM TASK", 800U, this, osPriorityNormal, taskHandles + 1);
+    // xTaskCreate(pathManagerTaskWrapper, "PM TASK", 800U, this, osPriorityNormal, taskHandles +2);
+
+    systemManagerTask();
+
 }
