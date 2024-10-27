@@ -1,23 +1,20 @@
 // icm42688.cpp
 
 #include "icm42688.hpp"
-#include "stm32l5xx_hal_conf.h"
-#include "stm32l5xx_it.h"
+#include "stm32l5xx_hal.h"
+#include "stm32l5xx_hal_gpio.h"
+#include "stm32l5xx_hal_spi.h"
 #include "spi.h"
 #include "gpio.h"
 #include <string.h>
 #include <stdio.h>
-#include <stdbool.h>
 
-//#define CS_GPIO_PORT GPIOA
-//#define CS_PIN GPIO_PIN_4
+#define REG_BANK_SEL 0x76
+#define UB0_REG_DEVICE_CONFIG 0x11
+#define UB0_REG_PWR_MGMT0 0x4E
+#define UB0_REG_TEMP_DATA1 0x1D
 
-#define REG_BANK_SEL 0x76;
-#define UB0_REG_DEVICE_CONFIG 0x11;
-#define UB0_REG_PWR_MGMT0 0x4E;
-#define UB0_REG_TEMP_DATA1 0x1D;
-
-#define READ_BIT 0x80
+#define BIT_READ 0x80
 
 //Scale Factors (refer to page 11-12 of https://product.tdk.com/system/files/dam/doc/product/sensor/mortion-inertial/imu/data_sheet/ds-000347-icm-42688-p-v1.6.pdf)
 
@@ -35,9 +32,15 @@
 #define ACCEL_SENSITIVITY_8G 4096
 #define ACCEL_SENSITIVITY_16G 2048              //Currently in Primary Use
 
+ICM42688::ICM42688(SPI_HandleTypeDef * spi_handle, GPIO_TypeDef * cs_gpio_port, uint16_t cs_pin) {
+    SPI_HANDLE = spi_handle;
+    CS_GPIO_PORT = cs_gpio_port;
+    CS_PIN = cs_pin;
+}
+
 void ICM42688::readRegister(uint8_t sub_address, uint8_t count, uint8_t * dest) {
     //Set read bit for register address
-    uint8_t tx = sub_address | READ_BIT;
+    uint8_t tx = sub_address | BIT_READ;
 
     //Dummy transmit and receive buffers
     uint8_t dummy_tx[count];

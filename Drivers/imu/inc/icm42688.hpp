@@ -5,8 +5,9 @@
 
 #include "imu_driver.hpp"
 #include <stdint.h>
-#include "stm32f4xx_hal.h"
-#include "stm32f4xx_hal_gpio.h"
+#include "stm32l5xx_hal.h"
+#include "stm32l5xx_hal_gpio.h"
+#include <stm32l552xx.h>
 
 #define GYRO_CALIBRATION_DATA_BUFFER_SIZE 14
 #define GYRO_CALIBRATION_RAW_DATA_BUFFER_SIZE 7

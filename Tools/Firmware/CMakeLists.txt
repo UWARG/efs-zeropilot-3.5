@@ -144,7 +144,8 @@ file(GLOB_RECURSE CXX_SOURCES ${HAL_CORE_CXX_SOURCES}
                               ${DRIVERS_Common_CXX_SOURCES}
                               ${DRIVERS_CXX_SOURCES}
                               ${DRIVERS_IWDGDriver_CXX_SOURCES}
-                              ${DRIVERS_MotorChannel_CXX_SOURCES})
+                              ${DRIVERS_MotorChannel_CXX_SOURCES}
+                              ${DRIVERS_IMU_CXX_SOURCES})
 message("C++ Sources: ${CXX_SOURCES}")
 
 ## Find the startup and linker script ##
