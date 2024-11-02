@@ -23,6 +23,8 @@ class SystemManager {
         /* Other managers*/
         TelemetryManager *telemetryManager;
 
+        TelemetryManager* setupTM();
+
         /* Class Functions */
         void startSystemManager(); 
 

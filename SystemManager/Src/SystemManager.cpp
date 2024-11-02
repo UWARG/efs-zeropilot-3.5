@@ -47,12 +47,22 @@ SystemManager::SystemManager()
     // BUT I FEEL LIKE SM PM WOULD KNOW WHERE. MAYBE IN THE HPP FILE? IDK HOW YOU ARE PLANNING ON
     // GATHERING THE DATA. I JUST PUT THEM HERE FOR NOW
 
-    this->telemetryManager = setupTM();
+
+=======
+    // Create and initialize TM object
+    this->telemetryManager = SystemManager::setupTM();
+>>>>>>> origin/Dependency-Injection
     this->telemetryManager->init();
     // IDK WHERE SM PLANS TO DO THIS, BUT telemetryManager.update() NEEDS TO BE CALLED AT A SEMI
     // REGULAR INTERVAL AS IT DEALS WITH MESSAGE DECODING AND LOW PRIORITY DATA TRANSMISSION
 }
 
+<<<<<<< HEAD
+=======
+
+SystemManager::~SystemManager() {}
+
+>>>>>>> origin/Dependency-Injection
 TelemetryManager* SystemManager::setupTM() {
     // Struct containing the state of the drone
     TMStateData stateData;
@@ -76,6 +86,21 @@ TelemetryManager* SystemManager::setupTM() {
     float yawspeed = 0;
 
     // use the memory address of the above, since stateData uses pointers
+    stateData.set_alt(&alt);
+    stateData.set_lat(&lat);
+    stateData.set_lon(&lon);
+    stateData.set_relative_alt(&relative_alt);
+    stateData.set_vx(&vx);
+    stateData.set_vy(&vy);
+    stateData.set_vz(&vz);
+    stateData.set_hdg(&hdg);
+    stateData.set_time_boot_ms(&time_boot_ms);
+    stateData.set_roll(&roll);
+    stateData.set_pitch(&pitch);
+    stateData.set_yaw(&yaw);
+    stateData.set_rollspeed(&rollspeed);
+    stateData.set_pitchspeed(&pitchspeed);
+    stateData.set_yawspeed(&yawspeed);
     stateData.set_alt(&alt);
     stateData.set_lat(&lat);
     stateData.set_lon(&lon);
