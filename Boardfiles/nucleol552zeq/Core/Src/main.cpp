@@ -32,6 +32,7 @@
 #include "ucpd.h"
 #include "usb.h"
 #include "gpio.h"
+#include "SystemManager.hpp"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -39,10 +40,6 @@
 #include "drivers_config.hpp"
 #include "independent_watchdog.h"
 
-extern "C" {
-  #include "app_fatfs.h"
-  #include "log_util.h"
-}
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -77,9 +74,9 @@ extern "C" {
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void SMTask(void *pvParameters) {
-    SystemManager SM;
-    SM.flyManually();
+void SMTask(void * pvParameters){
+  SystemManager SM;
+  SM.startSystemManager();
 }
 /* USER CODE END 0 */
 
@@ -131,23 +128,12 @@ int main(void)
   MX_ICACHE_Init();
   MX_TIM3_Init();
   MX_SDMMC1_SD_Init();
-  if (MX_FATFS_Init() != APP_OK) {
-    Error_Handler();
-  }
   /* USER CODE BEGIN 2 */
-  logInit();
-
-  TaskHandle_t hSM = NULL;
-  xTaskCreate(SMTask, "SM", 500U, NULL, osPriorityNormal, &hSM);
 
   /* USER CODE END 2 */
 
-  /* Init scheduler */
-  osKernelInitialize();  /* Call init function for freertos objects (in freertos.c) */
-  MX_FREERTOS_Init();
-
-  /* Start scheduler */
-  osKernelStart();
+  xTaskCreate(SMTask, "SM Task", 1500U, NULL, osPriorityNormal, NULL);
+  vTaskStartScheduler();
   /* We should never get here as control is now taken by the scheduler */
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */

@@ -21,7 +21,11 @@
 #include "usart.h"
 
 /* USER CODE BEGIN 0 */
-
+int __io_putchar(int ch)
+{
+  HAL_UART_Transmit(&hlpuart1, (uint8_t *)&ch, 1, 100);
+  return ch;
+}
 /* USER CODE END 0 */
 
 UART_HandleTypeDef hlpuart1;
@@ -44,7 +48,7 @@ void MX_LPUART1_UART_Init(void)
 
   /* USER CODE END LPUART1_Init 1 */
   hlpuart1.Instance = LPUART1;
-  hlpuart1.Init.BaudRate = 209700;
+  hlpuart1.Init.BaudRate = 112500;
   hlpuart1.Init.WordLength = UART_WORDLENGTH_8B;
   hlpuart1.Init.StopBits = UART_STOPBITS_1;
   hlpuart1.Init.Parity = UART_PARITY_NONE;

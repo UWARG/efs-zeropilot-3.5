@@ -5,19 +5,29 @@
 
 #include "SystemManager.hpp"
 
+#include <iostream>
+
+#include "FreeRTOS.h"
+#include "GroundStationCommunication.hpp"
+#include "TelemetryManager.hpp"
+#include "cmsis_os.h"
 #include "drivers_config.hpp"
 #include "independent_watchdog.h"
 #include "rcreceiver_datatypes.h"
 #include "sbus_defines.h"
 #include "sbus_receiver.hpp"
 #include "tim.h"
-#include "GroundStationCommunication.hpp"
-#include "TelemetryManager.hpp"
-#include "GroundStationCommunication.hpp"
-#include "TelemetryManager.hpp"
 
-#define TIMEOUT_CYCLES 250000 // 25k = 1 sec fro testing 10/14/2023 => 250k = 10 sec
-#define TIMOUT_MS      10000 // 10 sec
+extern "C" {
+#include "app_fatfs.h"
+#include "log_util.h"
+}
+
+#define TIMEOUT_CYCLES 250000  // 25k = 1 sec fro testing 10/14/2023 => 250k = 10 sec
+#define TIMOUT_MS 10000        // 10 sec
+
+// 0 - AM, 1 - TM, 2 - PM
+static TaskHandle_t taskHandles[3];
 
 static uint32_t DisconnectionCount = 0;
 float prevthrottle;
@@ -52,6 +62,7 @@ TelemetryManager* SystemManager::setupTM() {
     TMStateData stateData;
 
     // values to be assigned to stateData
+    // THIS IS JUST A PLACEHOLDER, THE MEMORY ADDRESSES NEED TO LIVE LONGER THAN THE SM CONSTRUCTOR
     int32_t alt = 0;
     int32_t lat = 0;
     int32_t lon = 0;
@@ -69,48 +80,71 @@ TelemetryManager* SystemManager::setupTM() {
     float yawspeed = 0;
 
     // use the memory address of the above, since stateData uses pointers
-    stateData.alt = &alt;
-    stateData.lat = &lat;
-    stateData.lon = &lon;
-    stateData.relative_alt = &relative_alt;
-    stateData.vx = &vx;
-    stateData.vy = &vy;
-    stateData.vz = &vz;
-    stateData.hdg = &hdg;
-    stateData.time_boot_ms = &time_boot_ms;
-    stateData.roll = &roll;
-    stateData.pitch = &pitch;
-    stateData.yaw = &yaw;
-    stateData.rollspeed = &rollspeed;
-    stateData.pitchspeed = &pitchspeed;
-    stateData.yawspeed = &yawspeed;
+    stateData.set_alt(&alt);
+    stateData.set_lat(&lat);
+    stateData.set_lon(&lon);
+    stateData.set_relative_alt(&relative_alt);
+    stateData.set_vx(&vx);
+    stateData.set_vy(&vy);
+    stateData.set_vz(&vz);
+    stateData.set_hdg(&hdg);
+    stateData.set_time_boot_ms(&time_boot_ms);
+    stateData.set_roll(&roll);
+    stateData.set_pitch(&pitch);
+    stateData.set_yaw(&yaw);
+    stateData.set_rollspeed(&rollspeed);
+    stateData.set_pitchspeed(&pitchspeed);
+    stateData.set_yawspeed(&yawspeed);
 
     MAV_STATE mavState = MAV_STATE::MAV_STATE_STANDBY;
     MAV_MODE_FLAG mavMode = MAV_MODE_FLAG::MAV_MODE_FLAG_MANUAL_INPUT_ENABLED;
 
-    // Creating parameters for the GroundStationCommunication that will be passed to telemetryManager
+    // Creating parameters for the GroundStationCommunication that will be passed to
+    // telemetryManager
     TMCircularBuffer DMAReceiveBuffer = *(new TMCircularBuffer(rfd900_circular_buffer));
-
 
     // the buffer that stores non_routine/low_priority bytes (ex. Battery Voltage) to be sent to the
     // ground station.
-    uint8_t* lowPriorityTransmitBuffer = new uint8_t[RFD900_BUF_SIZE];
+    uint8_t *lowPriorityTransmitBuffer = new uint8_t[RFD900_BUF_SIZE];
 
     // the buffer that stores routine/high_priority bytes (ex. heading, general state data) to be
     // sent to the ground station.
-    uint8_t* highPriorityTransmitBuffer = new uint8_t[RFD900_BUF_SIZE];
+    uint8_t *highPriorityTransmitBuffer = new uint8_t[RFD900_BUF_SIZE];
 
-    GroundStationCommunication GSC = *(new GroundStationCommunication(DMAReceiveBuffer, lowPriorityTransmitBuffer, 
-                                                                    highPriorityTransmitBuffer, RFD900_BUF_SIZE));
+    GroundStationCommunication GSC = *(new GroundStationCommunication(
+        DMAReceiveBuffer, lowPriorityTransmitBuffer, highPriorityTransmitBuffer, RFD900_BUF_SIZE));
 
-    // the buffer that stores the bytes received from the ground station.                                           
+    // the buffer that stores the bytes received from the ground station.
     MavlinkTranslator MT;
 
     return new TelemetryManager(stateData, mavState, mavMode, GSC, MT);
 }
 
-void SystemManager::flyManually() {
+// wrapper functions are needed as FreeRTOS xTaskCreate function does not accept functions that have
+// "this" pointers
+void SystemManager::attitudeManagerTaskWrapper(void *pvParameters) {
+    SystemManager *systemManagerInstance = static_cast<SystemManager *>(pvParameters);
+    systemManagerInstance->attitudeManagerTask();
+}
+
+void SystemManager::telemetryManagerTaskWrapper(void *pvParameters) {
+    SystemManager *systemManagerInstance = static_cast<SystemManager *>(pvParameters);
+    systemManagerInstance->telemetryManagerTask();
+}
+
+void SystemManager::pathManagerTaskWrapper(void *pvParameters) {
+    SystemManager *systemManagerInstance = static_cast<SystemManager *>(pvParameters);
+    systemManagerInstance->pathManagerTask();
+}
+
+void SystemManager::systemManagerTask() {
+    TickType_t xNextWakeTime = xTaskGetTickCount();
+    uint16_t frequency = 5;
+
     for (;;) {
+        printf("SM called\r\n");
+        HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_7);  // toggle led light for testing
+
         this->rcInputs_ = rcController_->GetRCControl();
 
         // TO-DO: need to implement it using is_Data_New;
@@ -150,5 +184,68 @@ void SystemManager::flyManually() {
             this->pitchMotorChannel_.set(SBUS_MAX / 2);
             this->invertedRollMotorChannel_.set(SBUS_MAX / 2);
         }
+
+        vTaskDelayUntil(&xNextWakeTime, 1000 / frequency);
     }
+}
+
+void SystemManager::attitudeManagerTask() {
+    TickType_t xNextWakeTime = xTaskGetTickCount();
+    uint16_t frequency = 5;
+
+    for (;;) {
+        // call AM
+
+        printf("AM called\r\n");
+        HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);  // toggle led light for testing
+        vTaskDelayUntil(&xNextWakeTime, 1000 / frequency);
+    }
+}
+
+void SystemManager::telemetryManagerTask() {
+    TickType_t xNextWakeTime = xTaskGetTickCount();
+    uint16_t frequency = 5;
+
+    for (;;) {
+        // call TM
+
+        printf("TM called\r\n");
+        HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_9);  // toggle led light for testing
+        vTaskDelayUntil(&xNextWakeTime, 1000 / frequency);
+    }
+}
+
+void SystemManager::pathManagerTask() {
+    TickType_t xNextWakeTime = xTaskGetTickCount();
+    uint16_t frequency = 5;
+
+    for (;;) {
+        // call PM
+
+        printf("PM called\r\n");
+        vTaskDelayUntil(&xNextWakeTime, 1000 / frequency);
+    }
+}
+
+void SystemManager::startSystemManager() {
+    printf("Initializing Tasks\r\n");
+
+    // enabling SD card logging
+    if (MX_FATFS_Init() != APP_OK) {
+        Error_Handler();
+    }
+    logInit();
+
+    // BaseType_t xTaskCreate( TaskFunction_t pvTaskCode, const char * const pcName,
+    // configSTACK_DEPTH_TYPE usStackDepth, void * pvParameters, UBaseType_t uxPriority,
+    // TaskHandle_t * pxCreatedTask );
+    //                           function's name             description                 size of
+    //                           stack to allocate        parameters for task        priority
+    //                           handler
+    xTaskCreate(attitudeManagerTaskWrapper, "AM TASK", 800U, this, osPriorityNormal, taskHandles);
+    xTaskCreate(telemetryManagerTaskWrapper, "TM TASK", 800U, this, osPriorityNormal,
+                taskHandles + 1);
+    // xTaskCreate(pathManagerTaskWrapper, "PM TASK", 800U, this, osPriorityNormal, taskHandles +2);
+
+    systemManagerTask();
 }
