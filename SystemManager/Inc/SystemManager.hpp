@@ -25,6 +25,8 @@ class SystemManager {
 
         /* Class Functions */
         void startSystemManager(); 
+
+        TelemetryManager* setupTM();
         
     private:
         SBUSReceiver* rcController_;
