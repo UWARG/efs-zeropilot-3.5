@@ -26,6 +26,7 @@ public:
 
     /* Class Functions */
     void flyManually();
+    TelemetryManager* setupTM();
 
 private:
     SBUSReceiver* rcController_;

@@ -37,6 +37,17 @@ SystemManager::SystemManager()
     // BUT I FEEL LIKE SM PM WOULD KNOW WHERE. MAYBE IN THE HPP FILE? IDK HOW YOU ARE PLANNING ON
     // GATHERING THE DATA. I JUST PUT THEM HERE FOR NOW
 
+    // Create and initialize TM object
+    this->telemetryManager = SystemManager::setupTM();
+    this->telemetryManager->init();
+    // IDK WHERE SM PLANS TO DO THIS, BUT telemetryManager.update() NEEDS TO BE CALLED AT A SEMI
+    // REGULAR INTERVAL AS IT DEALS WITH MESSAGE DECODING AND LOW PRIORITY DATA TRANSMISSION
+}
+
+
+SystemManager::~SystemManager() {}
+
+TelemetryManager* SystemManager::setupTM() {
     // Struct containing the state of the drone
     TMStateData stateData;
 
@@ -95,14 +106,8 @@ SystemManager::SystemManager()
     // the buffer that stores the bytes received from the ground station.                                           
     MavlinkTranslator MT;
 
-    this->telemetryManager = new TelemetryManager(stateData, mavState, mavMode, GSC, MT);
-    this->telemetryManager->init();
-    // IDK WHERE SM PLANS TO DO THIS, BUT telemetryManager.update() NEEDS TO BE CALLED AT A SEMI
-    // REGULAR INTERVAL AS IT DEALS WITH MESSAGE DECODING AND LOW PRIORITY DATA TRANSMISSION
+    return new TelemetryManager(stateData, mavState, mavMode, GSC, MT);
 }
-
-
-SystemManager::~SystemManager() {}
 
 void SystemManager::flyManually() {
     for (;;) {
