@@ -4,33 +4,10 @@
 // FreeRTOS task handle for the routineDataTransmission task
 TaskHandle_t routineDataTransmissionH = NULL;
 
-TelemetryManager::TelemetryManager(int32_t& lat, int32_t& lon, int32_t& alt, int32_t& relative_alt,
-                                   int16_t& vx, int16_t& vy, int16_t& vz, uint16_t& hdg,
-                                   int32_t& time_boot_ms, MAV_STATE& state, MAV_MODE_FLAG& mode,
-                                   float& roll, float& pitch, float& yaw, float& rollspeed,
-                                   float& pitchspeed, float& yawspeed)
-    : DMAReceiveBuffer(new TMCircularBuffer(rfd900_circular_buffer)),
-      lowPriorityTransmitBuffer(new uint8_t[RFD900_BUF_SIZE]),
-      highPriorityTransmitBuffer(new uint8_t[RFD900_BUF_SIZE]),
-      GSC(*DMAReceiveBuffer, lowPriorityTransmitBuffer, highPriorityTransmitBuffer,
-          RFD900_BUF_SIZE),
-      lat(lat),
-      lon(lon),
-      alt(alt),
-      relative_alt(relative_alt),
-      vx(vx),
-      vy(vy),
-      vz(vz),
-      hdg(hdg),
-      time_boot_ms(time_boot_ms),
-      state(state),
-      mode(mode),
-      roll(roll),
-      pitch(pitch),
-      yaw(yaw),
-      rollspeed(rollspeed),
-      pitchspeed(pitchspeed),
-      yawspeed(yawspeed) {}
+TelemetryManager::TelemetryManager(TMStateData& stateData, MAV_STATE& mav_state,
+                                   MAV_MODE_FLAG& mav_mode, GroundStationCommunication& GSC,
+                                   MavlinkTranslator& MT)
+    : stateData(stateData), mavState(mavState), mavMode(mavMode), GSC(GSC), MT(MT) {}
 
 TelemetryManager::~TelemetryManager() {
     // Destructor
@@ -86,10 +63,31 @@ void routineDataTransmission(void* pvParameters) {
          * spatial data)*/
         mavlink_message_t globalPositionIntMsg = {0};
 
+        /*
+        * We need getters here because the state data contains raw pointers and we need to be 100% sure 
+        * we are note going to access a nullptr. If we do, the program will crash. If the getter function
+        * sees that the pointer is nullptr, it will return the maximum value of the type of the variable
+        */
+        auto time_boot_ms = tm->stateData.get_time_boot_ms();
+        auto lat = tm->stateData.get_lat();
+        auto lon = tm->stateData.get_lon();
+        auto alt = tm->stateData.get_alt();
+        auto relative_alt = tm->stateData.get_relative_alt();
+        auto vx = tm->stateData.get_vx();
+        auto vy = tm->stateData.get_vy();
+        auto vz = tm->stateData.get_vz();
+        auto hdg = tm->stateData.get_hdg();
+        auto roll = tm->stateData.get_roll();
+        auto pitch = tm->stateData.get_pitch();
+        auto yaw = tm->stateData.get_yaw();
+        auto rollspeed = tm->stateData.get_rollspeed();
+        auto pitchspeed = tm->stateData.get_pitchspeed();
+        auto yawspeed = tm->stateData.get_yawspeed();
+
         // Pack the message with the actual data
         mavlink_msg_global_position_int_pack(system_id, component_id, &globalPositionIntMsg,
-                                             tm->time_boot_ms, tm->lat, tm->lon, tm->alt,
-                                             tm->relative_alt, tm->vx, tm->vy, tm->vz, tm->hdg);
+                                             time_boot_ms, lat, lon, alt, relative_alt, vx, vy, vz,
+                                             hdg);
 
         // Add the packed message to the byte queue for later transmission
         tm->MT.addMavlinkMsgToByteQueue(globalPositionIntMsg, tm->GSC.highPriorityTransmitBuffer);
@@ -97,8 +95,9 @@ void routineDataTransmission(void* pvParameters) {
         // Create an attitude message
         mavlink_message_t attitudeMsg = {0};
         // Pack the message with the actual data
-        mavlink_msg_attitude_pack(system_id, component_id, &attitudeMsg, tm->time_boot_ms, tm->roll,
-                                  tm->pitch, tm->yaw, tm->rollspeed, tm->pitchspeed, tm->yawspeed);
+        mavlink_msg_attitude_pack(system_id, component_id, &attitudeMsg, time_boot_ms, roll, pitch,
+                                  yaw, rollspeed, pitchspeed, yawspeed);
+
         // Add the packed message to the byte queue for later transmission
         tm->MT.addMavlinkMsgToByteQueue(attitudeMsg, tm->GSC.highPriorityTransmitBuffer);
 
@@ -108,7 +107,7 @@ void routineDataTransmission(void* pvParameters) {
         mavlink_message_t heartbeatMsg = {0};
         // Pack the message with the actual data
         mavlink_msg_heartbeat_pack(system_id, component_id, &heartbeatMsg, MAV_TYPE_QUADROTOR,
-                                   MAV_AUTOPILOT_INVALID, tm->mode, 0, tm->state);
+                                   MAV_AUTOPILOT_INVALID, tm->mavMode, 0, tm->mavState);
         // Add the packed message to the byte queue for later transmission
         tm->MT.addMavlinkMsgToByteQueue(heartbeatMsg, tm->GSC.highPriorityTransmitBuffer);
 
