@@ -10,8 +10,9 @@
 #include "drivers_config.hpp"
 #include "independent_watchdog.h"
 #include "tim.h"
+#include <stdio.h>
 
-#define TIMEOUT_CYCLES 250000 // 25k = 1 sec fro testing 10/14/2023 => 250k = 10 sec
+#define DATANEW_TIMEOUT 75
 
 static uint32_t DisconnectionCount = 0;
 float prevthrottle;
@@ -33,28 +34,24 @@ SystemManager::~SystemManager() {}
 
 void SystemManager::flyManually() {
     for(;;){
+
         this->rcInputs_ = rcController_->GetRCControl();
 
-        //TO-DO: need to implement it using is_Data_New;
-        // boolean is true if data has not changed since the last cycle
-        bool is_unchanged{
-        	rcInputs_.throttle == prevthrottle &&
-        	rcInputs_.yaw == prevyaw &&
-			rcInputs_.roll == prevroll &&
-			rcInputs_.pitch == prevpitch
-        };
+        printf("Arm: %f\r\n", this->rcInputs_.arm);
 
-        if (is_unchanged) {
-        	DisconnectionCount += 1; // if its not changed we increment the timeout counter
-        	if (DisconnectionCount > TIMEOUT_CYCLES) { // if timeout has occured
-        		DisconnectionCount = TIMEOUT_CYCLES+1; // avoid overflow but keep value above threshold
-        		this->rcInputs_.arm = 0; // failsafe
+        //Is_Data_new implementation for failsafe
+        if (!this->rcInputs_.isDataNew){ //if the data is not new
+
+        	DisconnectionCount += 1; //increment the counter
+        	if (DisconnectionCount > DATANEW_TIMEOUT){ //if the counter is greater than 75, then we can disarm
+        		this->rcInputs_.arm = 0; //disarm the drone for failsafe
         	}
-        } else {
-        	DisconnectionCount = 0; //if the data has changed we want to reset out counter
+        }
+        else{
+        	DisconnectionCount = 0; //if the data is new, then we reset to 0.
         }
 
-        watchdog_.refreshWatchdog(); // always hit the dog
+       // watchdog_.refreshWatchdog(); // always hit the dog
 
         if(this->rcInputs_.arm >= (SBUS_MAX/2)) {
         		this->throttleMotorChannel_.set(rcInputs_.throttle);
@@ -67,8 +64,6 @@ void SystemManager::flyManually() {
         		prevyaw = rcInputs_.yaw;
         		prevroll = rcInputs_.roll;
         		prevpitch = rcInputs_.pitch;
-
-
         }
         else{
             this->throttleMotorChannel_.set(0);

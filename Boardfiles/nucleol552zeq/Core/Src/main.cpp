@@ -32,6 +32,7 @@
 #include "usb.h"
 #include "gpio.h"
 
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "SystemManager.hpp"
@@ -125,7 +126,7 @@ int main(void)
   MX_TIM5_Init();
   MX_ADC1_Init();
   MX_ICACHE_Init();
-  MX_IWDG_Init();
+  //MX_IWDG_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 
@@ -217,6 +218,13 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+int __io_putchar(int ch)
+{
+    HAL_UART_Transmit(&hlpuart1,(uint8_t*)&ch,1,HAL_MAX_DELAY);
+    return ch;
+}
+
 
 /* USER CODE END 4 */
 

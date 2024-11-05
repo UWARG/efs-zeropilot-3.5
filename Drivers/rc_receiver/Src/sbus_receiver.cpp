@@ -1,5 +1,6 @@
 #include "sbus_receiver.hpp"
 #include "drivers_config.hpp"
+#include <stdio.h>
 
 SBUSReceiver::SBUSReceiver(UART_HandleTypeDef* uart) : uart_(uart)
 {
@@ -34,6 +35,7 @@ RCControl SBUSReceiver::GetRCControl(){
     	 HAL_UART_Receive_DMA (uart_, raw_sbus_, SBUS_FRAME_SIZE);
      }
     	cast_rccontrol();
+
     	received_rccontrol_.isDataNew = is_data_new_;
     	is_data_new_ = false;
 
@@ -92,6 +94,7 @@ void SBUSReceiver::parse()
     }else{
     	received_sbus_.isDataNew = false;
     }
+
 }
 
 void SBUSReceiver::cast_rccontrol()

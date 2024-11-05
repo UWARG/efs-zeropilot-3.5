@@ -113,8 +113,8 @@ extern "C" {
 /* To select into literal LL_ADC_REG_TRIG_x the relevant bits for:            */
 /* - regular trigger source                                                   */
 /* - regular trigger edge                                                     */
-#define ADC_REG_TRIG_EXT_EDGE_DEFAULT      (ADC_CFGR_EXTEN_0) /* Trigger edge set to rising edge (default setting for 
-                                                                 compatibility with some ADC on other STM32 series 
+#define ADC_REG_TRIG_EXT_EDGE_DEFAULT      (ADC_CFGR_EXTEN_0) /* Trigger edge set to rising edge (default setting for
+                                                                 compatibility with some ADC on other STM32 series
                                                                  having this setting set by HW default value) */
 
 /* Mask containing trigger source masks for each of possible                  */
@@ -143,8 +143,8 @@ extern "C" {
 /* To select into literal LL_ADC_INJ_TRIG_x the relevant bits for:            */
 /* - injected trigger source                                                  */
 /* - injected trigger edge                                                    */
-#define ADC_INJ_TRIG_EXT_EDGE_DEFAULT      (ADC_JSQR_JEXTEN_0) /* Trigger edge set to rising edge (default setting for 
-                                                                  compatibility with some ADC on other STM32 series 
+#define ADC_INJ_TRIG_EXT_EDGE_DEFAULT      (ADC_JSQR_JEXTEN_0) /* Trigger edge set to rising edge (default setting for
+                                                                  compatibility with some ADC on other STM32 series
                                                                   having this setting set by HW default value) */
 
 /* Mask containing trigger source masks for each of possible                  */
@@ -182,7 +182,7 @@ extern "C" {
 /*   and SMPx bits positions into SMPRx register                              */
 #define ADC_CHANNEL_ID_NUMBER_MASK         (ADC_CFGR_AWD1CH)
 #define ADC_CHANNEL_ID_BITFIELD_MASK       (ADC_AWD2CR_AWD2CH)
-#define ADC_CHANNEL_ID_NUMBER_BITOFFSET_POS (26UL)              /* Equivalent to bitfield "ADC_CHANNEL_ID_NUMBER_MASK" 
+#define ADC_CHANNEL_ID_NUMBER_BITOFFSET_POS (26UL)              /* Equivalent to bitfield "ADC_CHANNEL_ID_NUMBER_MASK"
                                                                    position in register                               */
 #define ADC_CHANNEL_ID_MASK                (ADC_CHANNEL_ID_NUMBER_MASK | ADC_CHANNEL_ID_BITFIELD_MASK \
                                             | ADC_CHANNEL_ID_INTERNAL_CH_MASK)
@@ -193,7 +193,7 @@ extern "C" {
 /* Channel differentiation between external and internal channels */
 #define ADC_CHANNEL_ID_INTERNAL_CH         (0x80000000UL) /* Marker of internal channel */
 #define ADC_CHANNEL_ID_INTERNAL_CH_2       (0x00080000UL) /* Marker of internal channel for other ADC instances, in case
-                                                             of different ADC internal channels mapped on same channel 
+                                                             of different ADC internal channels mapped on same channel
                                                              number on different ADC instances */
 #define ADC_CHANNEL_ID_INTERNAL_CH_MASK    (ADC_CHANNEL_ID_INTERNAL_CH | ADC_CHANNEL_ID_INTERNAL_CH_2)
 
@@ -206,7 +206,7 @@ extern "C" {
                                                                in ADC_CHANNEL_SMPRX_REGOFFSET_MASK */
 
 #define ADC_CHANNEL_SMPx_BITOFFSET_MASK    (0x01F00000UL)
-#define ADC_CHANNEL_SMPx_BITOFFSET_POS     (20UL)           /* Equivalent to bitfield "ADC_CHANNEL_SMPx_BITOFFSET_MASK" 
+#define ADC_CHANNEL_SMPx_BITOFFSET_POS     (20UL)           /* Equivalent to bitfield "ADC_CHANNEL_SMPx_BITOFFSET_MASK"
                                                                position in register */
 
 /* Definition of channels ID number information to be inserted into           */
@@ -1840,20 +1840,20 @@ typedef struct
                                              conversions are transferred by DMA: each ADC uses its own DMA channel,
                                              with its individual DMA transfer settings */
 #define LL_ADC_MULTI_REG_DMA_LIMIT_RES12_10B (ADC_CCR_MDMA_1)                  /*!< ADC multimode group regular
-                                             conversions are transferred by DMA, one DMA channel for both ADC(DMA of 
+                                             conversions are transferred by DMA, one DMA channel for both ADC(DMA of
                                              ADC master), in limited mode (one shot mode): DMA transfer requests
                                              are stopped when number of DMA data transfers (number of ADC conversions)
                                              is reached. This ADC mode is intended to be used with DMA mode
                                              non-circular. Setting for ADC resolution of 12 and 10 bits */
 #define LL_ADC_MULTI_REG_DMA_LIMIT_RES8_6B   (ADC_CCR_MDMA_1 | ADC_CCR_MDMA_0) /*!< ADC multimode group regular
-                                             conversions are transferred by DMA, one DMA channel for both ADC(DMA of 
+                                             conversions are transferred by DMA, one DMA channel for both ADC(DMA of
                                              ADC master), in limited mode (one shot mode): DMA transfer requests
                                              are stopped when number of DMA data transfers (number of ADC conversions)
                                              is reached. This ADC mode is intended to be used with DMA mode
                                              non-circular. Setting for ADC resolution of 8 and 6 bits */
 #define LL_ADC_MULTI_REG_DMA_UNLMT_RES12_10B (ADC_CCR_DMACFG | ADC_CCR_MDMA_1) /*!< ADC multimode group regular
-                                             conversions are transferred by DMA, one DMA channel for both ADC(DMA of 
-                                             ADC master), in unlimited mode: DMA transfer requests are unlimited, 
+                                             conversions are transferred by DMA, one DMA channel for both ADC(DMA of
+                                             ADC master), in unlimited mode: DMA transfer requests are unlimited,
                                              whatever number of DMA data transferred (number of ADC conversions).
                                              This ADC mode is intended to be used with DMA mode circular.
                                              Setting for ADC resolution of 12 and 10 bits */
@@ -1904,7 +1904,7 @@ typedef struct
 /** @defgroup ADC_LL_EC_MULTI_MASTER_SLAVE  Multimode - ADC master or slave
   * @{
   */
-#define LL_ADC_MULTI_MASTER                (ADC_CDR_RDATA_MST) /*!< In multimode, selection among several ADC 
+#define LL_ADC_MULTI_MASTER                (ADC_CDR_RDATA_MST) /*!< In multimode, selection among several ADC
                                            instances: ADC master */
 #define LL_ADC_MULTI_SLAVE                 (ADC_CDR_RDATA_SLV) /*!< In multimode, selection among several ADC
                                            instances: ADC slave */
@@ -7857,7 +7857,7 @@ __STATIC_INLINE uint32_t LL_ADC_IsEnabledIT_AWD3(const ADC_TypeDef *ADCx)
   */
 
 /* Initialization of some features of ADC common parameters and multimode */
-ErrorStatus LL_ADC_CommonDeInit(ADC_Common_TypeDef *ADCxy_COMMON);
+ErrorStatus LL_ADC_CommonDeInit(const ADC_Common_TypeDef *ADCxy_COMMON);
 ErrorStatus LL_ADC_CommonInit(ADC_Common_TypeDef *ADCxy_COMMON, const LL_ADC_CommonInitTypeDef *pADC_CommonInitStruct);
 void        LL_ADC_CommonStructInit(LL_ADC_CommonInitTypeDef *pADC_CommonInitStruct);
 
