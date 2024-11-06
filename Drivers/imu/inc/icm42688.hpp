@@ -9,9 +9,8 @@
 #include "stm32l5xx_hal_gpio.h"
 #include <stm32l552xx.h>
 
-#define GYRO_CALIBRATION_DATA_BUFFER_SIZE 14
-#define GYRO_CALIBRATION_RAW_DATA_BUFFER_SIZE 7
-#define RAW_DATA_BUFFER_SIZE 7
+#define GYRO_CALIBRATION_DATA_BUFFER_SIZE 14    //Size of buffer to store raw data from IMU, as there are 14 registers to be read from
+#define RAW_MEAS_BUFFER_SIZE 7                  //Size of buffer to store raw measurements from IMU (3 accel, 3 gyrop, 1 temp)
 
 class ICM42688 : public IMUDriver {
     public:
@@ -46,22 +45,22 @@ class ICM42688 : public IMUDriver {
         * Communicate with IMU via SPI to read raw data
          * 
         * @param sub_address -> memory address of starting byte to be retrieved
-        * @param count -> number of bytes to be retrieved
-        * @param dest -> array to be populated with raw data
+        * @param num_bytes_to_retrieve -> number of bytes to be retrieved
+        * @param destination -> array to be populated with raw data
          * 
         * @return none
          */
-        void readRegister(uint8_t sub_address, uint8_t count, uint8_t * dest);
+        void readRegister(uint8_t sub_address, uint8_t num_bytes_to_retrieve, uint8_t * destination);
         
         /**
         * Communicate with IMU via SPI to write data onto IMU
          * 
         * @param sub_address -> memory address of byte to be written on
-        * @param data -> data to be written onto IMU
+        * @param data_to_imu -> data to be written onto IMU
          * 
         * @return none
          */
-        void writeRegister(uint8_t sub_address, uint8_t data);
+        void writeRegister(uint8_t sub_address, uint8_t data_to_imu);
 
         /**
         * Resets the IMU's device configurations. Necessary to initilize IMU
@@ -95,24 +94,18 @@ class ICM42688 : public IMUDriver {
          */
         void setGyroFS(uint8_t fssel);
 
-        //Constants (can be found in ICM42688 documentation https://www.cdiweb.com/datasheets/invensense/ds-000347-icm-42688-p-v1.2.pdf)
-        const uint8_t REG_BANK_SEL = 0x76;
-        const uint8_t UB0_REG_DEVICE_CONFIG = 0x11;
-        const uint8_t UB0_REG_PWR_MGMT0 = 0x4E;
-        const uint8_t UB0_REG_TEMP_DATA1 = 0x1D;
-
         //Variables used in gyro calibration
-        float gyro_scale = 0;
-        uint8_t current_fssel = 0;
+        float gyro_scale = 0;       //gyro scale factor
+        uint8_t current_fssel = 0;  //current full-scale selection for the gyro
         uint8_t gyroFS = 0;
         float gyroBD[3] = {0, 0, 0};
         float gyrB[3] = {0, 0, 0};
         float gyr[3] = {0, 0, 0};
         uint8_t gyro_buffer[GYRO_CALIBRATION_DATA_BUFFER_SIZE];
-        int16_t raw_meas_gyro[GYRO_CALIBRATION_RAW_DATA_BUFFER_SIZE];
+        int16_t raw_meas_gyro[RAW_MEAS_BUFFER_SIZE];
 
         //Used to hold raw IMU data
-        int16_t raw_meas[RAW_DATA_BUFFER_SIZE];
+        int16_t raw_meas[RAW_MEAS_BUFFER_SIZE];
 
         SPI_HandleTypeDef * SPI_HANDLE;
         GPIO_TypeDef * CS_GPIO_PORT;

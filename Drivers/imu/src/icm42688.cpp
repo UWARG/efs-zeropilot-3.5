@@ -9,15 +9,17 @@
 #include <string.h>
 #include <stdio.h>
 
+//Register Addresses
 #define REG_BANK_SEL 0x76
 #define UB0_REG_DEVICE_CONFIG 0x11
 #define UB0_REG_PWR_MGMT0 0x4E
 #define UB0_REG_TEMP_DATA1 0x1D
 
-#define BIT_READ 0x80
+#define BIT_READ 0x80   //Read bit mask
+
+#define NUM_GYRO_SAMPLES 1000   //Number of samples to take for calibration
 
 //Scale Factors (refer to page 11-12 of https://product.tdk.com/system/files/dam/doc/product/sensor/mortion-inertial/imu/data_sheet/ds-000347-icm-42688-p-v1.6.pdf)
-
 #define GYRO_SENSITIVITY_2000DPS 16.4           //Currently in Primary Use
 #define GYRO_SENSITIVITY_1000DPS 32.8
 #define GYRO_SENSITIVITY_500DPS 65.5
@@ -38,28 +40,28 @@ ICM42688::ICM42688(SPI_HandleTypeDef * spi_handle, GPIO_TypeDef * cs_gpio_port, 
     CS_PIN = cs_pin;
 }
 
-void ICM42688::readRegister(uint8_t sub_address, uint8_t count, uint8_t * dest) {
+void ICM42688::readRegister(uint8_t sub_address, uint8_t num_bytes_to_retrieve, uint8_t * destination) {
     //Set read bit for register address
     uint8_t tx = sub_address | BIT_READ;
 
     //Dummy transmit and receive buffers
-    uint8_t dummy_tx[count];
+    uint8_t dummy_tx[num_bytes_to_retrieve];
     uint8_t dummy_rx;
 
     //Initialize values to 0
-    memset(dummy_tx, 0, count * sizeof(dummy_tx[0]));
+    memset(dummy_tx, 0, num_bytes_to_retrieve * sizeof(dummy_tx[0]));
 
     HAL_GPIO_WritePin(CS_GPIO_PORT, CS_PIN, GPIO_PIN_RESET);
 
     HAL_SPI_TransmitReceive(SPI_HANDLE, &tx, &dummy_rx, 1, HAL_MAX_DELAY);
-    HAL_SPI_TransmitReceive(SPI_HANDLE, dummy_tx, dest, count, HAL_MAX_DELAY);
+    HAL_SPI_TransmitReceive(SPI_HANDLE, dummy_tx, destination, num_bytes_to_retrieve, HAL_MAX_DELAY);
 
     HAL_GPIO_WritePin(CS_GPIO_PORT, CS_PIN, GPIO_PIN_SET);
 }
 
-void ICM42688::writeRegister(uint8_t sub_address, uint8_t data) {
+void ICM42688::writeRegister(uint8_t sub_address, uint8_t data_to_imu) {
     //Prepare transmit buffer
-    uint8_t tx_buf[2] = {sub_address, data};
+    uint8_t tx_buf[2] = {sub_address, data_to_imu};
 
     HAL_GPIO_WritePin(CS_GPIO_PORT, CS_PIN, GPIO_PIN_RESET);
 
@@ -109,25 +111,34 @@ void ICM42688::setGyroFS(uint8_t fssel) {
 void ICM42688::calibrate() {
     //Set at a lower range (more resolution since IMU not moving)
     const uint8_t current_fssel = gyroFS;
-    setGyroFS(0x03);        //Set to 250 dps
+    setGyroFS(GYRO_SENSITIVITY_250DPS);        //Set to 250 dps
 
     //Take samples and find bias
     gyroBD[0] = 0;
     gyroBD[1] = 0;
     gyroBD[2] = 0;
 
-    for (size_t i = 0; i < 3; i++) {
-        getResult(gyro_buffer);
-        for (size_t i = 0; i < 7; i++) {
-            raw_meas_gyro[i] = ((int16_t)gyro_buffer[i * 2] << 8) | gyro_buffer[i * 2 + 1];
-        }
-        for (size_t i = 0; i < 3; i++) {
-            gyr[i] = (float)raw_meas_gyro[i + 3] / 16.4;
+    for (size_t i = 0; i < NUM_GYRO_SAMPLES; i++) {
+        readRegister(UB0_REG_TEMP_DATA1, 14, gyro_buffer);
+
+        //Combine raw bytes into 16-bit values
+        for (size_t j = 0; j < 7; j++) {
+            raw_meas_gyro[j] = ((int16_t)gyro_buffer[j * 2] << 8) | gyro_buffer[j * 2 + 1];
         }
 
-        gyroBD[0] += (gyr[0] + gyrB[0]) / 1000;
-        gyroBD[1] += (gyr[1] + gyrB[1]) / 1000;
-        gyroBD[2] += (gyr[2] + gyrB[2]) / 1000;
+        //Process gyro data
+        for (size_t k = 0; k < 3; k++) {
+            gyr[k] = (float)raw_meas_gyro[k + 3] / GYRO_SENSITIVITY_250DPS;
+        }
+
+        /*
+        Calculate bias by collecting samples and considering pre-existing bias
+        For each iteration, add the existing bias with the new bias and divide by the sample size
+        to get an average bias over a specified number of gyro samples
+        */
+        gyroBD[0] += (gyr[0] + gyrB[0]) / NUM_GYRO_SAMPLES;
+        gyroBD[1] += (gyr[1] + gyrB[1]) / NUM_GYRO_SAMPLES;
+        gyroBD[2] += (gyr[2] + gyrB[2]) / NUM_GYRO_SAMPLES;
 
         HAL_Delay(1);
     }
