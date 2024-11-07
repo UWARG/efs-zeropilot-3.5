@@ -35,9 +35,9 @@
 #define ACCEL_SENSITIVITY_16G 2048              //Currently in Primary Use
 
 ICM42688::ICM42688(SPI_HandleTypeDef * spi_handle, GPIO_TypeDef * cs_gpio_port, uint16_t cs_pin) {
-    SPI_HANDLE = spi_handle;
-    CS_GPIO_PORT = cs_gpio_port;
-    CS_PIN = cs_pin;
+    spiHandle_ = spi_handle;
+    csGpioPort_ = cs_gpio_port;
+    csPin_ = cs_pin;
 }
 
 void ICM42688::readRegister(uint8_t sub_address, uint8_t num_bytes_to_retrieve, uint8_t * destination) {
@@ -51,27 +51,27 @@ void ICM42688::readRegister(uint8_t sub_address, uint8_t num_bytes_to_retrieve, 
     //Initialize values to 0
     memset(dummy_tx, 0, num_bytes_to_retrieve * sizeof(dummy_tx[0]));
 
-    HAL_GPIO_WritePin(CS_GPIO_PORT, CS_PIN, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(csGpioPort_, csPin_, GPIO_PIN_RESET);
 
-    HAL_SPI_TransmitReceive(SPI_HANDLE, &tx, &dummy_rx, 1, HAL_MAX_DELAY);
-    HAL_SPI_TransmitReceive(SPI_HANDLE, dummy_tx, destination, num_bytes_to_retrieve, HAL_MAX_DELAY);
+    HAL_SPI_TransmitReceive(spiHandle_, &tx, &dummy_rx, 1, HAL_MAX_DELAY);
+    HAL_SPI_TransmitReceive(spiHandle_, dummy_tx, destination, num_bytes_to_retrieve, HAL_MAX_DELAY);
 
-    HAL_GPIO_WritePin(CS_GPIO_PORT, CS_PIN, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(csGpioPort_, csPin_, GPIO_PIN_SET);
 }
 
 void ICM42688::writeRegister(uint8_t sub_address, uint8_t data_to_imu) {
     //Prepare transmit buffer
     uint8_t tx_buf[2] = {sub_address, data_to_imu};
 
-    HAL_GPIO_WritePin(CS_GPIO_PORT, CS_PIN, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(csGpioPort_, csPin_, GPIO_PIN_RESET);
 
-    HAL_SPI_Transmit(SPI_HANDLE, tx_buf, sizeof(tx_buf), HAL_MAX_DELAY);
+    HAL_SPI_Transmit(spiHandle_, tx_buf, sizeof(tx_buf), HAL_MAX_DELAY);
     
-    HAL_GPIO_WritePin(CS_GPIO_PORT, CS_PIN, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(csGpioPort_, csPin_, GPIO_PIN_SET);
 }
 
 void ICM42688::beginMeasuring() {
-    HAL_GPIO_WritePin(CS_GPIO_PORT, CS_PIN, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(csGpioPort_, csPin_, GPIO_PIN_SET);
     reset();
     setLowNoiseMode();
     calibrate();
@@ -104,31 +104,31 @@ void ICM42688::setGyroFS(uint8_t fssel) {
 
     writeRegister(0x4F, reg);
     
-    gyro_scale = (2000.0f / (float)(1 << fssel)) / 32768.0f;
-    gyroFS = fssel;
+    gyroScale_ = (2000.0f / (float)(1 << fssel)) / 32768.0f;
+    gyroFS_ = fssel;
 }
 
 void ICM42688::calibrate() {
     //Set at a lower range (more resolution since IMU not moving)
-    const uint8_t current_fssel = gyroFS;
+    const uint8_t currentFSSel_ = gyroFS_;
     setGyroFS(GYRO_SENSITIVITY_250DPS);        //Set to 250 dps
 
     //Take samples and find bias
-    gyroBD[0] = 0;
-    gyroBD[1] = 0;
-    gyroBD[2] = 0;
+    gyroBD_[0] = 0;
+    gyroBD_[1] = 0;
+    gyroBD_[2] = 0;
 
     for (size_t i = 0; i < NUM_GYRO_SAMPLES; i++) {
-        readRegister(UB0_REG_TEMP_DATA1, 14, gyro_buffer);
+        readRegister(UB0_REG_TEMP_DATA1, 14, gyro_buffer_);
 
         //Combine raw bytes into 16-bit values
         for (size_t j = 0; j < 7; j++) {
-            raw_meas_gyro[j] = ((int16_t)gyro_buffer[j * 2] << 8) | gyro_buffer[j * 2 + 1];
+            raw_meas_gyro_[j] = ((int16_t)gyro_buffer_[j * 2] << 8) | gyro_buffer_[j * 2 + 1];
         }
 
         //Process gyro data
         for (size_t k = 0; k < 3; k++) {
-            gyr[k] = (float)raw_meas_gyro[k + 3] / GYRO_SENSITIVITY_250DPS;
+            gyr_[k] = (float)raw_meas_gyro_[k + 3] / GYRO_SENSITIVITY_250DPS;
         }
 
         /*
@@ -136,19 +136,19 @@ void ICM42688::calibrate() {
         For each iteration, add the existing bias with the new bias and divide by the sample size
         to get an average bias over a specified number of gyro samples
         */
-        gyroBD[0] += (gyr[0] + gyrB[0]) / NUM_GYRO_SAMPLES;
-        gyroBD[1] += (gyr[1] + gyrB[1]) / NUM_GYRO_SAMPLES;
-        gyroBD[2] += (gyr[2] + gyrB[2]) / NUM_GYRO_SAMPLES;
+        gyroBD_[0] += (gyr_[0] + gyrB_[0]) / NUM_GYRO_SAMPLES;
+        gyroBD_[1] += (gyr_[1] + gyrB_[1]) / NUM_GYRO_SAMPLES;
+        gyroBD_[2] += (gyr_[2] + gyrB_[2]) / NUM_GYRO_SAMPLES;
 
         HAL_Delay(1);
     }
 
-    gyrB[0] = gyroBD[0];
-    gyrB[1] = gyroBD[1];
-    gyrB[2] = gyroBD[2];
+    gyrB_[0] = gyroBD_[0];
+    gyrB_[1] = gyroBD_[1];
+    gyrB_[2] = gyroBD_[2];
     
     //Recover the full scale setting
-    setGyroFS(current_fssel);
+    setGyroFS(currentFSSel_);
 }
 
 IMUData_t ICM42688::getResult(uint8_t * data_buffer) {
@@ -157,18 +157,18 @@ IMUData_t ICM42688::getResult(uint8_t * data_buffer) {
 
     //Formatting raw data
     for (size_t i = 0; i < 3; i++) {
-        raw_meas[i] = ((int16_t)data_buffer[i * 2] << 8) | data_buffer[i * 2 + 1];
+        raw_meas_[i] = ((int16_t)data_buffer[i * 2] << 8) | data_buffer[i * 2 + 1];
     }
 
     IMUData_t IMUData {};
 
-    IMUData.accx = (float)raw_meas[1] / ACCEL_SENSITIVITY_16G;
-    IMUData.accy = (float)raw_meas[2] / ACCEL_SENSITIVITY_16G;
-    IMUData.accz = (float)raw_meas[3] / ACCEL_SENSITIVITY_16G;
+    IMUData.accx = (float)raw_meas_[1] / ACCEL_SENSITIVITY_16G;
+    IMUData.accy = (float)raw_meas_[2] / ACCEL_SENSITIVITY_16G;
+    IMUData.accz = (float)raw_meas_[3] / ACCEL_SENSITIVITY_16G;
 
-    IMUData.gyrx = (float)raw_meas[4] / GYRO_SENSITIVITY_2000DPS;
-    IMUData.gyry = (float)raw_meas[5] / GYRO_SENSITIVITY_2000DPS;
-    IMUData.gyrz = (float)raw_meas[6] / GYRO_SENSITIVITY_2000DPS;
+    IMUData.gyrx = (float)raw_meas_[4] / GYRO_SENSITIVITY_2000DPS;
+    IMUData.gyry = (float)raw_meas_[5] / GYRO_SENSITIVITY_2000DPS;
+    IMUData.gyrz = (float)raw_meas_[6] / GYRO_SENSITIVITY_2000DPS;
 
     return IMUData;
 }
