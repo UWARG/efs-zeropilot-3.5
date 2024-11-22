@@ -41,6 +41,7 @@ struct RCControl{
 
     RCControl operator=(const RCControl& other){
         std::copy(other.ControlSignals, other.ControlSignals + SBUS_INPUT_CHANNELS, this->ControlSignals);
+        this->isDataNew = other.isDataNew; // Add this line to copy the isDataNew flag
         return *this;
     }
 
