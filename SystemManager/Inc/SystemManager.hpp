@@ -9,30 +9,43 @@
 #include "rcreceiver_datatypes.h"
 #include "independent_watchdog.h"
 #include "ZP_D_PWMChannel.hpp"
+#include "TelemetryManager.hpp"
 
 #define SBUS_THRESHOLD 25
 #define SBUS_MIN 0
 #define SBUS_MAX 100
 
 class SystemManager {
-public:
-    /* Constructors and Destructors */
-    SystemManager();
-    ~SystemManager();
+    public:
+        /* Constructors and Destructors */
+        SystemManager();
 
-    /* Class Functions */
-    void flyManually();
+        /* Other managers*/
+        TelemetryManager *telemetryManager;
 
-private:
-    SBUSReceiver* rcController_;
-    RCControl rcInputs_;
-    PWMChannel throttleMotorChannel_;
-    PWMChannel yawMotorChannel_;
-    PWMChannel rollMotorChannel_;
-    PWMChannel invertedRollMotorChannel_;
-    PWMChannel pitchMotorChannel_;
-    IndependentWatchdog watchdog_;
+        TelemetryManager* setupTM();
+
+        /* Class Functions */
+        void startSystemManager(); 
+        
+    private:
+        SBUSReceiver* rcController_;
+        RCControl rcInputs_;
+        PWMChannel throttleMotorChannel_;
+        PWMChannel yawMotorChannel_;
+        PWMChannel rollMotorChannel_;
+        PWMChannel invertedRollMotorChannel_;
+        PWMChannel pitchMotorChannel_;
+        IndependentWatchdog watchdog_;
+
+        static void attitudeManagerTaskWrapper(void *pvParameters);
+        static void telemetryManagerTaskWrapper(void *pvParameters);
+        static void pathManagerTaskWrapper(void *pvParameters);
+        
+        void systemManagerTask();
+        void attitudeManagerTask();
+        void telemetryManagerTask();
+        void pathManagerTask();
 };
-
 
 #endif //ZEROPILOT_3_5_SYSTEMMANAGER_HPP
