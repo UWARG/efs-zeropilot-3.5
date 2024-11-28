@@ -93,6 +93,9 @@ set(CIRCULAR_BUFFER_SRC "${DRIVERS_FOLDER}/common/circular_buffer/src")
 
 set(DRIVERS_CONFIG_INC "${DRIVERS_FOLDER}/Drivers/common/drivers_config/inc")
 
+set(IMU_INC "${DRIVERS_FOLDER}/IMU/inc")
+set(IMU_SRC "${DRIVERS_FOLDER}/IMU/src")
+
 set(MOTORCHANNEL_MOCK_INC "${ROOT_DIR}/Testing/Mocks/Inc")
 set(MOTORCHANNEL_MOCK_SRC "${ROOT_DIR}/Testing/Mocks/Src")
 
