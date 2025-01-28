@@ -9,6 +9,8 @@ namespace PM::Waypoint {
 
     void calculate_direction_to_waypoint(float* nextWaypointCoordinates, float* prevWaypointCoordnates, float* waypointDirection)
     {
+        std::cout << "prev waypoint is " << prevWaypointCoordnates[0] << ", " << prevWaypointCoordnates[1] << ", " << prevWaypointCoordnates[2] << std::endl;
+        std::cout << "next waypoint is " << nextWaypointCoordinates[0] << ", " << nextWaypointCoordinates[1] << ", " << nextWaypointCoordinates[2] << std::endl;
         float norm = sqrt(pow(nextWaypointCoordinates[0] - prevWaypointCoordnates[0],2) + pow(nextWaypointCoordinates[1] - prevWaypointCoordnates[1],2) + pow(nextWaypointCoordinates[2] - prevWaypointCoordnates[2],2));
         std::cout << "norm is " << norm << std::endl;
           if (norm == 0) {

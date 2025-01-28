@@ -233,12 +233,15 @@ namespace PM {
         // follow waypoints
         float position[3]; 
         // Gets current track
-
            
         float currentTrack = (float) currentStatus.track;
         PM::Waypoint::get_coordinates(currentStatus.longitude, currentStatus.latitude, position);
         position[2] = (float) currentStatus.altitude;
+        std::cout << "current longitude: " << currentStatus.longitude << std::endl;
+        std::cout << "current latitude: " << currentStatus.latitude << std::endl;
         std::cout << "what is my current position? " << position[2] << std::endl;
+        std::cout << "current track: " << currentTrack << std::endl;
+        std::cout << "current index: " << currentIndex << std::endl;
         follow_waypoints(waypointBuffer[currentIndex], position, currentTrack);
 
         // update return data
@@ -265,13 +268,16 @@ namespace PM {
     }
 
     void CruisingStateManager::next_waypoints(WaypointData* currentWaypoint, float* position, float track)
-    {\
+    {
         float waypointPosition[3]; 
+        // first waypoint
         PM::Waypoint::get_coordinates(currentWaypoint->longitude, currentWaypoint->latitude, waypointPosition);
         waypointPosition[2] = currentWaypoint->altitude;
+        std::cout << "altitude: " << waypointPosition[2] << std::endl;
         // Defines target waypoint
         WaypointData * targetWaypoint = currentWaypoint->next;
         float targetCoordinates[3];
+        // second waypoint
         PM::Waypoint::get_coordinates(targetWaypoint->longitude, targetWaypoint->latitude, targetCoordinates);
         targetCoordinates[2] = targetWaypoint->altitude;
         std::cout << "targetcoordinate, " << targetCoordinates[0] << " " << targetCoordinates[1] <<std::endl;
@@ -279,6 +285,7 @@ namespace PM {
         // Defines waypoint after target waypoint
         WaypointData* waypointAfterTarget = targetWaypoint->next;
         float waypointAfterTargetCoordinates[3];
+        // third waypoint
         PM::Waypoint::get_coordinates(waypointAfterTarget->longitude, waypointAfterTarget->latitude, waypointAfterTargetCoordinates);
         waypointAfterTargetCoordinates[2] = waypointAfterTarget->altitude;
 
@@ -304,6 +311,7 @@ namespace PM {
 
 
         // Calculates distance to next waypoint
+        std::cout << "position is " << position[0] << ", " << position[1] << ", " << position[2] << std::endl;
         distanceToNextWaypoint = PM::Waypoint::calculate_distance_to_waypoint(waypointPosition, position);
 
         std::cout << "distance to next waypoint " << distanceToNextWaypoint << std::endl;

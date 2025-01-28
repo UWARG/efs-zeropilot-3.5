@@ -102,10 +102,15 @@ TEST(CruisingStateManagerSuite, CruisingStateManagerStraightTrack) {
 
     auto status1 = cruisingState.pathFollow(input1, &out1);
 
-    auto status2 = cruisingState.pathFollow(input2, &out2);
-
     std::cout << "Actual Track: " << out1.desiredTrack << "\n" << "Actual Altitude: " << out1.desiredAltitude << "\n" << "Actual distance to next waypoint: " << out1.distanceToNextWaypoint << "\n";
     std::cout << "Desired Track: " << ans1.desiredTrack << "\n" << "Desired Altitude: " << ans1.desiredAltitude << "\n" << "Distance to next waypoint: " << ans1.distanceToNextWaypoint << "\n";
+    std::cout << "Test 1 done\n";
+
+    auto status2 = cruisingState.pathFollow(input2, &out2);
+
+    std::cout << "Actual Track: " << out2.desiredTrack << "\n" << "Actual Altitude: " << out2.desiredAltitude << "\n" << "Actual distance to next waypoint: " << out2.distanceToNextWaypoint << "\n";
+    std::cout << "Desired Track: " << ans2.desiredTrack << "\n" << "Desired Altitude: " << ans2.desiredAltitude << "\n" << "Distance to next waypoint: " << ans2.distanceToNextWaypoint << "\n";
+    std::cout << "Test 2 done\n";
 
     auto res1 = compare_output(out1, ans1);
     auto res2 = compare_output(out2, ans2);

@@ -16,6 +16,14 @@ const double TAKEOFF_TARGET = 4.0;
 const double LANDING_SPEED = 0.2;
 const double MAX_SPEED = 1.0;
 
+/********************************************************************
+ * Fixed-wing Constants (currently placeholder values)
+ ********************************************************************/
+
+const double TAKEOFF_TARGET_SPEED_FIXED_WING = 4.0;
+const double STALL_SPEED_FIXED_WING = 0.2;
+const double MAX_SPEED_FIXED_WING = 1.0;
+
 class LandingTakeoffManager{
 
     public:
@@ -96,6 +104,12 @@ class LandingTakeoffManager{
             @return double - this structure holds the range constant to determine the velocity based on altitude.
         */
         double getRangeConstant(double midpointAltitude);
+
+
+        AM::AttitudeManagerInput createTakeoffWaypointFixedWing(const LOS::LosSFData & input);
+
+        AM::AttitudeManagerInput createLandingWaypointFixedWing(const LOS::LosSFData & input);
+
 
     private:
         double groundHeight = -1; // Set by takeoff and used by landing

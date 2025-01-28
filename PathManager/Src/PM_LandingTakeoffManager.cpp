@@ -76,3 +76,80 @@ double LandingTakeoffManager::getRangeConstant(double midpointAltitude)
     return sqrt((pow(midpointAltitude, 2)) / (-2.0 * (log(LANDING_SPEED / MAX_SPEED))));
     // Note log here is log base e (ln)
 }
+
+/*
+struct AttitudeManagerInput {
+    float dist_forward; 
+    float dist_right; 
+    float dist_up; 
+    float magnitude = 0;
+    float heading = 0;
+    double speed = 0;
+}; 
+*/
+
+AM::AttitudeManagerInput LandingTakeoffManager::createTakeoffWaypointFixedWing(const LOS::LosSFData & input)
+{
+    AM::AttitudeManagerInput desiredWaypoint;
+
+    double currentSpeed = input.airspeed;
+
+    // rolling stage
+    if (currentSpeed < TAKEOFF_TARGET_SPEED_FIXED_WING) {
+        desiredWaypoint.dist_forward = 1;
+        desiredWaypoint.dist_right = 0;
+        desiredWaypoint.dist_up = 0;
+
+        desiredWaypoint.speed = TAKEOFF_TARGET_SPEED_FIXED_WING;
+        desiredWaypoint.magnitude = 0; // Use velocity controller
+    }
+    // climbing stage
+    else if(currentSpeed >= TAKEOFF_TARGET_SPEED_FIXED_WING){
+        desiredWaypoint.dist_forward = 1; 
+        desiredWaypoint.dist_right = 0;
+        desiredWaypoint.dist_up = 1;
+
+        desiredWaypoint.speed = input.rateOfClimb; // TODO: Figure out if this is correct
+        desiredWaypoint.magnitude = 0; // Use velocity controller
+    }
+
+    return desiredWaypoint;
+}
+
+AM::AttitudeManagerInput LandingTakeoffManager::createLandingWaypointFixedWing(const LOS::LosSFData & input){
+    // AM::AttitudeManagerInput* desiredWaypoint = new AM::AttitudeManagerInput[3];
+    AM::AttitudeManagerInput desiredWaypoint;
+    double currentSpeed = input.airspeed;
+    double currentAltitude = input.altitude;
+    double flareHeight = 5; // TODO: Figure out what this value should be
+
+    // Slope Stage
+    if (currentAltitude > flareHeight) {
+        desiredWaypoint.dist_forward = 1;
+        desiredWaypoint.dist_right = 0;
+        desiredWaypoint.dist_up = -1;
+
+        desiredWaypoint.speed = currentSpeed * 0.95; // TODO: Figure out if this is correct
+        desiredWaypoint.magnitude = 0; // Use velocity controller
+    }
+    // Flare Stage
+    else if(currentAltitude <= flareHeight && currentAltitude > 0) {
+        desiredWaypoint.dist_forward = 1; 
+        desiredWaypoint.dist_right = 0;
+        desiredWaypoint.dist_up = -1;
+
+        desiredWaypoint.speed = STALL_SPEED_FIXED_WING * 1.1; // TODO: Figure out if this is correct
+        desiredWaypoint.magnitude = 0; // Use velocity controller
+    } 
+    // Landing Stage
+    else if(currentAltitude <= 0) {
+        desiredWaypoint.dist_forward = 0; 
+        desiredWaypoint.dist_right = 0;
+        desiredWaypoint.dist_up = 0;
+
+        desiredWaypoint.speed = 0; // TODO: Figure out if this is correct
+        desiredWaypoint.magnitude = 0; // Use velocity controller
+    }
+
+    return desiredWaypoint;
+}
